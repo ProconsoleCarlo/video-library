@@ -16,9 +16,9 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>it.proconsole</groupId>
-  <artifactId>VideoDB</artifactId>
+  <artifactId>video-library</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>VideoDB</name>
+  <name>video-library</name>
   <description>Demo project for Spring Boot</description>
 
   <properties>

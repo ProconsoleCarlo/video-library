@@ -15,6 +15,10 @@ public class Fixtures {
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
           .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
+  public static ObjectMapper springObjectMapper() {
+    return objectMapper;
+  }
+
   @NonNull
   public static String readFromClasspath(@NonNull String path) {
     try {

@@ -1,7 +1,6 @@
 package it.proconsole.library.video.rest.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import it.proconsole.library.video.adapter.jdbc.model.Film;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.rest.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,9 +32,8 @@ class JdbcControllerTest {
 
   @Test
   void getFilms() throws Exception {
-    List<Film> films = Fixtures.readFromClasspath(FILMS_JSON, new TypeReference<>() {
-    });
-    when(filmRepository.findAll()).thenReturn(films);
+    when(filmRepository.findAll()).thenReturn(Fixtures.readFromClasspath(FILMS_JSON, new TypeReference<>() {
+    }));
 
     mvc.perform(get("/jdbc/films"))
             .andExpect(status().isOk())

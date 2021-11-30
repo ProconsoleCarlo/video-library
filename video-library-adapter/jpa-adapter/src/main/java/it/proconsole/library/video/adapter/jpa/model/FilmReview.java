@@ -3,7 +3,7 @@ package it.proconsole.library.video.adapter.jpa.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Table(name = "film_review", indexes = {
         @Index(name = "fk_film_review_film1_idx", columnList = "film_id")
@@ -16,7 +16,7 @@ public class FilmReview {
   private Integer id;
 
   @Column(name = "date", nullable = false)
-  private Instant date;
+  private LocalDateTime date;
 
   @Column(name = "rating", nullable = false)
   private Integer rating;
@@ -54,11 +54,11 @@ public class FilmReview {
     this.rating = rating;
   }
 
-  public Instant getDate() {
+  public LocalDateTime getDate() {
     return date;
   }
 
-  public void setDate(Instant date) {
+  public void setDate(LocalDateTime date) {
     this.date = date;
   }
 

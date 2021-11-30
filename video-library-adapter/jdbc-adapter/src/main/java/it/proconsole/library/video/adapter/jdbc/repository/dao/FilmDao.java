@@ -1,13 +1,13 @@
-package it.proconsole.library.video.adapter.jdbc.repository;
+package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.model.FilmTable;
+import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class FilmDao implements DatabaseDao<FilmTable> {
+public class FilmDao implements DatabaseDao<FilmEntity> {
   private final JdbcTemplate jdbcTemplateObject;
 
   public FilmDao(DataSource dataSource) {
@@ -15,12 +15,12 @@ public class FilmDao implements DatabaseDao<FilmTable> {
   }
 
   @Override
-  public List<FilmTable> findAll() {
+  public List<FilmEntity> findAll() {
     return jdbcTemplateObject.query("select * from film", rowMapper());
   }
 
-  private RowMapper<FilmTable> rowMapper() {
-    return (rs, rowNum) -> new FilmTable(
+  private RowMapper<FilmEntity> rowMapper() {
+    return (rs, rowNum) -> new FilmEntity(
             rs.getLong("id"),
             rs.getString("title"),
             rs.getInt("year")

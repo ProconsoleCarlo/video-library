@@ -1,4 +1,4 @@
-package it.proconsole.library.video.adapter.jdbc.repository;
+package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import java.util.List;
 

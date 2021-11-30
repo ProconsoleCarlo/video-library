@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
+import it.proconsole.library.video.core.model.GenreEnum;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -14,13 +15,14 @@ public class Genre {
   private Integer id;
 
   @Column(name = "value", nullable = false)
-  private String value;
+  @Enumerated(EnumType.STRING)
+  private GenreEnum value;
 
-  public String getValue() {
+  public GenreEnum getValue() {
     return value;
   }
 
-  public void setValue(String value) {
+  public void setValue(GenreEnum value) {
     this.value = value;
   }
 

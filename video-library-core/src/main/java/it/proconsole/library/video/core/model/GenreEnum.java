@@ -1,4 +1,4 @@
-package it.proconsole.library.video.adapter.jdbc.model;
+package it.proconsole.library.video.core.model;
 
 public enum GenreEnum {
   ACTION,

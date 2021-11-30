@@ -6,6 +6,6 @@ public record Film(long id,
                    String title,
                    int year,
                    List<Genre> genres,
-                   List<Review> reviews
+                   List<FilmReview> reviews
 ) {
 }

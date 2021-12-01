@@ -1,6 +1,5 @@
 package it.proconsole.library.video.rest.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.rest.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +34,7 @@ class JdbcControllerTest {
 
   @Test
   void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readFromClasspath(FILMS_JSON, new TypeReference<>() {
-    }));
+    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON));
 
     mvc.perform(get("/jdbc/films"))
             .andExpect(status().isOk())

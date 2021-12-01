@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class Fixtures {
   private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -50,6 +51,20 @@ public class Fixtures {
     try {
       return objectMapper
               .readValue(Fixtures.class.getResourceAsStream(path), typeReference);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static <T> List<T> readListFromClasspath(@NonNull String path, Class<T> clazz) {
+    return readListFromClasspath(path);
+  }
+
+  public static <T> List<T> readListFromClasspath(@NonNull String path) {
+    try {
+      return objectMapper
+              .readValue(Fixtures.class.getResourceAsStream(path), new TypeReference<>() {
+              });
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

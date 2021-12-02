@@ -1,5 +1,6 @@
 package it.proconsole.library.video.rest.controller;
 
+import it.proconsole.library.video.adapter.jpa.model.Film;
 import it.proconsole.library.video.adapter.jpa.repository.FilmRepository;
 import it.proconsole.library.video.rest.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ class JpaControllerTest {
 
   @Test
   void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON));
+    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
 
     mvc.perform(get("/jpa/films"))
             .andExpect(status().isOk())

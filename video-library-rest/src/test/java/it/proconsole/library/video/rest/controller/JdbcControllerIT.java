@@ -1,5 +1,6 @@
 package it.proconsole.library.video.rest.controller;
 
+import it.proconsole.library.video.adapter.jdbc.model.Film;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.rest.Fixtures;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class JdbcControllerIT {
 
   @Test
   void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON));
+    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
 
     mvc.perform(get("/jdbc/films"))
             .andExpect(status().isOk())

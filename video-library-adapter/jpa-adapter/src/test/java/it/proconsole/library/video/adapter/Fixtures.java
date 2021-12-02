@@ -1,8 +1,7 @@
-package it.proconsole.library.video.rest;
+package it.proconsole.library.video.adapter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
@@ -12,8 +11,7 @@ import java.util.List;
 public class Fixtures {
   private static final ObjectMapper objectMapper = new ObjectMapper()
           .findAndRegisterModules()
-          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-          .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
   public static ObjectMapper springObjectMapper() {
     return objectMapper;

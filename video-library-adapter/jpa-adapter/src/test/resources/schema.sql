@@ -2,8 +2,7 @@ drop table IF EXISTS `genre`;
 create TABLE `genre` (
   `id` int NOT NULL AUTO_INCREMENT,
   `value` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE1` (`id`)
+  PRIMARY KEY (`id`)
 );
 
 drop table IF EXISTS `film`;
@@ -11,8 +10,7 @@ create TABLE `film` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `year` year NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE2` (`id`)
+  PRIMARY KEY (`id`)
 );
 
 drop table IF EXISTS `film_genres`;
@@ -32,6 +30,5 @@ create TABLE `film_review` (
   `detail` text,
   `film_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
   CONSTRAINT `fk_film_review_film1` FOREIGN KEY (`film_id`) REFERENCES `film` (`id`)
 );

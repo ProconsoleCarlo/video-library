@@ -2,7 +2,7 @@ package it.proconsole.library.video.rest.controller;
 
 import it.proconsole.library.video.adapter.jdbc.model.Film;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
-import it.proconsole.library.video.rest.Fixtures;
+import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

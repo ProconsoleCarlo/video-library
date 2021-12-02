@@ -24,7 +24,7 @@ class FilmRepositoryTest {
   private FilmRepository filmRepository;
 
   @Test
-  void name() {
+  void findAll() {
     var all = filmRepository.findAll();
 
     assertEquals(Fixtures.readListFromClasspath(FILMS_JSON, Film.class), all);

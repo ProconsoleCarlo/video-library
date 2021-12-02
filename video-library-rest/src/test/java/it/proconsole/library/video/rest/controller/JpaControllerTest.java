@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 class JpaControllerTest {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/rest/controller/films.json";
+  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Mock
   private FilmRepository filmRepository;

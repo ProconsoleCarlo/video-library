@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @WebMvcTest(controllers = JdbcController.class)
 class JdbcControllerIT {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/rest/controller/films.json";
+  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @MockBean
   private FilmRepository filmRepository;

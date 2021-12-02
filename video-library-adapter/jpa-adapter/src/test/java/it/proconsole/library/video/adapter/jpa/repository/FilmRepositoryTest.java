@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @Transactional
 class FilmRepositoryTest {
-  private static final String FILMS_JSON = "/films.json";
+  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Autowired
   private FilmRepository filmRepository;

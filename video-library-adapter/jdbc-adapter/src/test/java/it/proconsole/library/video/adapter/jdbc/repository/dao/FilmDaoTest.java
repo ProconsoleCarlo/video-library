@@ -35,5 +35,4 @@ class FilmDaoTest {
 
     assertEquals(expected, current);
   }
-
 }

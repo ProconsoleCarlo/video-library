@@ -22,18 +22,19 @@ class GenreDaoTest {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  private GenreDao genreDao;
+  private GenreDao dao;
 
   @BeforeEach
   void setUp() {
-    genreDao = new GenreDao(jdbcTemplate.getDataSource());
+    dao = new GenreDao(jdbcTemplate.getDataSource());
   }
 
   @Test
   void findAll() {
-    var genres = genreDao.findAll();
+    var current = dao.findAll();
+    var expected = Fixtures.readListFromClasspath(GENRES_JSON, GenreEntity.class);
 
-    assertEquals(Fixtures.readListFromClasspath(GENRES_JSON, GenreEntity.class), genres);
+    assertEquals(expected, current);
   }
 
 
@@ -41,17 +42,17 @@ class GenreDaoTest {
   class WhenFindById {
     @Test
     void idIsPresent() {
-      var genres = genreDao.findById(1L);
+      var current = dao.findById(1);
 
-      assertTrue(genres.isPresent());
-      assertEquals(new GenreEntity(1, GenreEnum.ACTION), genres.get());
+      assertTrue(current.isPresent());
+      assertEquals(new GenreEntity(1, GenreEnum.ACTION), current.get());
     }
 
     @Test
     void idIsAbsent() {
-      var genres = genreDao.findById(10L);
+      var current = dao.findById(10);
 
-      assertFalse(genres.isPresent());
+      assertFalse(current.isPresent());
     }
   }
 }

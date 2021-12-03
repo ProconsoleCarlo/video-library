@@ -19,7 +19,7 @@ public class FilmGenreDao implements DatabaseDao<FilmGenreEntity> {
     return jdbcTemplateObject.query("select * from film_genres", rowMapper());
   }
 
-  public List<FilmGenreEntity> findBy(long filmId) {
+  public List<FilmGenreEntity> findByFilmId(long filmId) {
     return jdbcTemplateObject.query("select * from film_genres where film_id = ?", rowMapper(), filmId);
   }
 

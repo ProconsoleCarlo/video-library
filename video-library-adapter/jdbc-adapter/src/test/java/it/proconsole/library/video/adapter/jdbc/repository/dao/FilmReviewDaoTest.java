@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
 class FilmReviewDaoTest {
-  private static final String FILM_REVIEWS_JSON = "/it/proconsole/library/video/adapter/model/filmReviews.json";
+  private static final String FILM_REVIEWS_JSON = "/it/proconsole/library/video/adapter/model/filmReviewEntities.json";
 
   @Autowired
   private DataSource dataSource;

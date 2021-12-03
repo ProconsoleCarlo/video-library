@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
 class GenreDaoTest {
-  private static final String GENRES_JSON = "/it/proconsole/library/video/adapter/model/genres.json";
+  private static final String GENRES_JSON = "/it/proconsole/library/video/adapter/model/genreEntities.json";
 
   @Autowired
   private DataSource dataSource;

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
 class FilmDaoTest {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/adapter/model/films.json";
+  private static final String FILMS_JSON = "/it/proconsole/library/video/adapter/model/filmEntities.json";
 
   @Autowired
   private DataSource dataSource;

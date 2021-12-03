@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
 class FilmGenreDaoTest {
-  private static final String FILM_GENRE_JSON = "/it/proconsole/library/video/adapter/model/filmGenres.json";
+  private static final String FILM_GENRES_JSON = "/it/proconsole/library/video/adapter/model/filmGenres.json";
 
   @Autowired
   private DataSource dataSource;
@@ -34,7 +34,7 @@ class FilmGenreDaoTest {
   @Test
   void findAll() {
     var current = dao.findAll();
-    var expected = Fixtures.readListFromClasspath(FILM_GENRE_JSON, FilmGenreEntity.class);
+    var expected = Fixtures.readListFromClasspath(FILM_GENRES_JSON, FilmGenreEntity.class);
 
     assertEquals(expected, current);
   }

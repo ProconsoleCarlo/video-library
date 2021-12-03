@@ -1,11 +1,10 @@
-datasource:
-  video-library:
+spring:
+  datasource:
     url: jdbc:mysql://localhost:3306/VideoDB
     username: application
     password: AmTu7wih7AZyjg#
+  jpa:
+    database: MYSQL
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#spring.jpa.show-sql: true
 
-spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-spring.jpa.show-sql: true
-spring.jpa.format-sql: true
-spring.jpa.database: MYSQL
-#spring.jpa.hibernate.ddl-auto: create

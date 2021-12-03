@@ -19,7 +19,7 @@ public class FilmReviewDao implements DatabaseDao<FilmReviewEntity> {
     return jdbcTemplateObject.query("select * from film_review", rowMapper());
   }
 
-  public List<FilmReviewEntity> findById(long filmId) {
+  public List<FilmReviewEntity> findByFilmId(long filmId) {
     return jdbcTemplateObject.query("select * from film_review where film_id = ?", rowMapper(), filmId);
   }
 

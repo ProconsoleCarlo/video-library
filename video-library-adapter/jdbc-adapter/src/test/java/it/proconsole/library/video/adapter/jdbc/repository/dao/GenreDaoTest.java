@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,13 +21,13 @@ class GenreDaoTest {
   private static final String GENRES_JSON = "/it/proconsole/library/video/adapter/model/genres.json";
 
   @Autowired
-  private JdbcTemplate jdbcTemplate;
+  private DataSource dataSource;
 
   private GenreDao dao;
 
   @BeforeEach
   void setUp() {
-    dao = new GenreDao(jdbcTemplate.getDataSource());
+    dao = new GenreDao(dataSource);
   }
 
   @Test
@@ -36,7 +37,6 @@ class GenreDaoTest {
 
     assertEquals(expected, current);
   }
-
 
   @Nested
   class WhenFindById {

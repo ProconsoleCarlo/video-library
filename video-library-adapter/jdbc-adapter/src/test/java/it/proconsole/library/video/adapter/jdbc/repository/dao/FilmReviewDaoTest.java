@@ -1,7 +1,7 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import it.proconsole.library.video.adapter.ApplicationConfig;
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmGenreEntity;
+import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,23 +20,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
-class FilmGenreDaoTest {
-  private static final String FILM_GENRE_JSON = "/it/proconsole/library/video/adapter/model/filmGenres.json";
+class FilmReviewDaoTest {
+  private static final String FILM_REVIEWS_JSON = "/it/proconsole/library/video/adapter/model/filmReviews.json";
 
   @Autowired
   private DataSource dataSource;
 
-  private FilmGenreDao dao;
+  private FilmReviewDao dao;
 
   @BeforeEach
   void setUp() {
-    dao = new FilmGenreDao(dataSource);
+    dao = new FilmReviewDao(dataSource);
   }
 
   @Test
   void findAll() {
     var current = dao.findAll();
-    var expected = Fixtures.readListFromClasspath(FILM_GENRE_JSON, FilmGenreEntity.class);
+    var expected = Fixtures.readListFromClasspath(FILM_REVIEWS_JSON, FilmReviewEntity.class);
 
     assertEquals(expected, current);
   }
@@ -45,8 +47,7 @@ class FilmGenreDaoTest {
     void listIfPresent() {
       var current = dao.findByFilmId(1);
       var expected = List.of(
-              new FilmGenreEntity(1, 3),
-              new FilmGenreEntity(1, 4)
+              new FilmReviewEntity(1, LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, null)
       );
 
       assertEquals(expected, current);

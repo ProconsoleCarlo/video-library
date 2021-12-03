@@ -48,7 +48,7 @@ public class FilmRepository {
   }
 
   private List<FilmReview> retrieveReviewsFor(FilmEntity film) {
-    return filmReviewDao.findById(film.id())
+    return filmReviewDao.findByFilmId(film.id())
             .stream().map(FilmReviewEntity::toDomain)
             .toList();
   }

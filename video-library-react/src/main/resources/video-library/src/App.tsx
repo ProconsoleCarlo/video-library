@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  fetch('/jpa/films')
+    .then(response => response.json())
+    .then(data => console.log(data));
   return (
     <div className="App">
       <header className="App-header">

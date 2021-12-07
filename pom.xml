@@ -8,6 +8,7 @@
     <module>video-library-adapter</module>
     <module>video-library-core</module>
     <module>video-library-rest</module>
+    <module>video-library-react</module>
   </modules>
   <parent>
     <groupId>org.springframework.boot</groupId>

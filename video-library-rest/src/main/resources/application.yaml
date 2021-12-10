@@ -1,10 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/VideoDB
-    username: application
-    password: AmTu7wih7AZyjg#
+    url: jdbc:h2:mem:VideoDB
+    driverClassName: org.h2.Driver
   jpa:
-    database: MYSQL
-    properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-#spring.jpa.show-sql: true
-
+    hibernate:
+      ddl-auto: none

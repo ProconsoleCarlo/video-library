@@ -1,8 +1,7 @@
-package it.proconsole.library.video.rest.controller;
+package it.proconsole.library.video.rest.controller.jpa;
 
 import it.proconsole.library.video.adapter.jpa.model.Film;
 import it.proconsole.library.video.adapter.jpa.model.FilmReview;
-import it.proconsole.library.video.adapter.jpa.repository.FilmRepository;
 import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
@@ -17,32 +16,19 @@ import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = JpaController.class)
-class JpaControllerItTest {
+@WebMvcTest(controllers = FilmReviewController.class)
+class FilmReviewControllerIT {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
-  @MockBean
-  private FilmRepository filmRepository;
   @MockBean
   private FilmReviewRepository filmReviewRepository;
 
   @Autowired
   private MockMvc mvc;
-
-  @Test
-  void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
-
-    mvc.perform(get("/jpa/films"))
-        .andExpect(status().isOk())
-        .andExpect(content().json(Fixtures.readFromClasspath(FILMS_JSON)));
-  }
 
   @Test
   void addReview() throws Exception {

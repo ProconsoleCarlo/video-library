@@ -102,6 +102,6 @@ public class FilmReview {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, date, rating, detail, film);
+    return getClass().hashCode();
   }
 }

@@ -1,31 +1,37 @@
-package it.proconsole.library.video.rest.controller;
+package it.proconsole.library.video.rest.controller.jdbc;
 
 import it.proconsole.library.video.adapter.jdbc.model.Film;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.core.Fixtures;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = JdbcController.class)
-class JdbcControllerIT {
+class FilmControllerTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
-  @MockBean
+  @Mock
   private FilmRepository filmRepository;
 
-  @Autowired
   private MockMvc mvc;
+
+  @BeforeEach
+  void setUp() {
+    mvc = standaloneSetup(new FilmController(filmRepository))
+        .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
+        .build();
+  }
 
   @Test
   void getFilms() throws Exception {

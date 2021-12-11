@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController("JpaFilmController")
 @RequestMapping("/jpa")
 public class FilmController {
   private final FilmRepository filmRepository;

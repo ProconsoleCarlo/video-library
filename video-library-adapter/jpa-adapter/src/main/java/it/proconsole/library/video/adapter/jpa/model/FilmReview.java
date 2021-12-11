@@ -1,16 +1,37 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Table(name = "film_review", indexes = {
-        @Index(name = "fk_film_review_film1_idx", columnList = "film_id")
+    @Index(name = "fk_film_review_film1_idx", columnList = "film_id")
 })
 @Entity
 public class FilmReview {
+  public FilmReview() {
+  }
+
+  public FilmReview(LocalDateTime date, Integer rating, String detail, Film film) {
+    this.date = date;
+    this.rating = rating;
+    this.detail = detail;
+    this.film = film;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
@@ -74,9 +95,9 @@ public class FilmReview {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
     FilmReview that = (FilmReview) o;
-    return id.equals(that.id) && date.equals(that.date) && rating.equals(that.rating) && Objects.equals(detail, that.detail) && film.equals(that.film);
+    return Objects.equals(id, that.id);
   }
 
   @Override

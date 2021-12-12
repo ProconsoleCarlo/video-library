@@ -5,10 +5,15 @@ import it.proconsole.library.video.core.model.GenreEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class GenreDao extends DatabaseDao<GenreEntity> {
   public GenreDao(DataSource dataSource) {
     super(dataSource, "genre");
+  }
+
+  public List<GenreEntity> findByFilmId(long filmId) {
+    return jdbcTemplate().query("select id, value from film_genres join genre g on g.id = film_genres.genre_id where film_id = ?", rowMapper(), filmId);
   }
 
   @Override

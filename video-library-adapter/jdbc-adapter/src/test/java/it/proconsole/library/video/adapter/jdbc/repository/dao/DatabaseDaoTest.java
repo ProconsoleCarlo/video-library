@@ -15,7 +15,7 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   DatabaseDao<T> dao;
 
   @AfterEach
-  void afterEach() {
+  void tearDown() {
     dao.deleteAll();
   }
 

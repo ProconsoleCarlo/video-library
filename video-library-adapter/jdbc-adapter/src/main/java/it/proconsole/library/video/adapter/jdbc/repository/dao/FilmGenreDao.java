@@ -19,7 +19,7 @@ public class FilmGenreDao extends DatabaseDao<FilmGenreEntity> {
   RowMapper<FilmGenreEntity> rowMapper() {
     return (rs, rowNum) -> new FilmGenreEntity(
         rs.getLong("film_id"),
-        rs.getInt("genre_id")
+        rs.getLong("genre_id")
     );
   }
 }

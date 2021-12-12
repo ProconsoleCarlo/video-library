@@ -45,8 +45,8 @@ class FilmGenreDaoTest {
     void listIfPresent() {
       var current = dao.findByFilmId(1);
       var expected = List.of(
-              new FilmGenreEntity(1, 3),
-              new FilmGenreEntity(1, 4)
+          new FilmGenreEntity(1L, 3L),
+          new FilmGenreEntity(1L, 4L)
       );
 
       assertEquals(expected, current);

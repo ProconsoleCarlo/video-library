@@ -48,8 +48,8 @@ public class FilmReview {
   private String detail;
 
   @JsonBackReference
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "film_id")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "film_id", nullable = false)
   private Film film;
 
   public Film getFilm() {
@@ -59,6 +59,7 @@ public class FilmReview {
   public void setFilm(Film film) {
     this.film = film;
   }
+
 
   public String getDetail() {
     return detail;
@@ -103,5 +104,14 @@ public class FilmReview {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "(" +
+            "id = " + id + ", " +
+            "date = " + date + ", " +
+            "rating = " + rating + ", " +
+            "detail = " + detail + ")";
   }
 }

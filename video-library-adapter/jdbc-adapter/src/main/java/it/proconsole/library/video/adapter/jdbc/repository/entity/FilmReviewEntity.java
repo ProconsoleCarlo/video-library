@@ -17,6 +17,6 @@ public record FilmReviewEntity(
   }
 
   public FilmReview toDomain() {
-    return new FilmReview(id, date, rating, detail, filmId);
+    return new FilmReview(id, date, rating, detail);
   }
 }

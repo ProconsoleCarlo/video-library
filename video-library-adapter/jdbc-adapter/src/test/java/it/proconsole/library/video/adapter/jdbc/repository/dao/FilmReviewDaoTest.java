@@ -1,20 +1,19 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-@SpringBootTest(classes = ApplicationConfig.class)
-@Profile("test")
+@JdbcTest
+@Sql({"/schema.sql"})
 class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
   private JdbcTemplate jdbcTemplate;
 
@@ -26,19 +25,14 @@ class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
     jdbcTemplate = new JdbcTemplate(dataSource);
     dao = new FilmReviewDao(dataSource);
 
-    jdbcTemplate.update(
-        "insert into `film`" +
-            "VALUES (1, 'Film title', 2011);"
-    );
+    jdbcTemplate.update("insert into film VALUES (1, 'Film title', 2011);");
   }
 
   @Override
   @AfterEach
   void tearDown() {
     super.tearDown();
-    jdbcTemplate.update(
-        "delete from film where id = 1"
-    );
+    jdbcTemplate.update("delete from film where id = 1");
   }
 
   @Override

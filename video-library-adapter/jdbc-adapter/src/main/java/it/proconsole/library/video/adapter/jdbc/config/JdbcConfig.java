@@ -2,7 +2,6 @@ package it.proconsole.library.video.adapter.jdbc.config;
 
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
-import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmGenreDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
 import org.springframework.context.annotation.Bean;
@@ -15,11 +14,10 @@ public class JdbcConfig {
   @Bean
   public FilmRepository jdbcFilmRepository(
           FilmDao filmDao,
-          FilmGenreDao filmGenreDao,
           GenreDao genreDao,
           FilmReviewDao filmReviewDao
   ) {
-    return new FilmRepository(filmDao, filmGenreDao, genreDao, filmReviewDao);
+    return new FilmRepository(filmDao, genreDao, filmReviewDao);
   }
 
   @Bean
@@ -30,11 +28,6 @@ public class JdbcConfig {
   @Bean
   public GenreDao genreDao(DataSource videoLibraryDataSource) {
     return new GenreDao(videoLibraryDataSource);
-  }
-
-  @Bean
-  public FilmGenreDao filmGenreDao(DataSource videoLibraryDataSource) {
-    return new FilmGenreDao(videoLibraryDataSource);
   }
 
   @Bean

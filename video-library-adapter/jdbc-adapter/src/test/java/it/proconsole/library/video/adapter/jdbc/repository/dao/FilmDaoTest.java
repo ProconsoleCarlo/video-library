@@ -1,16 +1,15 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 
-@SpringBootTest(classes = ApplicationConfig.class)
-@Profile("test")
+@JdbcTest
+@Sql({"/schema.sql"})
 class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
   @Autowired
   private DataSource dataSource;

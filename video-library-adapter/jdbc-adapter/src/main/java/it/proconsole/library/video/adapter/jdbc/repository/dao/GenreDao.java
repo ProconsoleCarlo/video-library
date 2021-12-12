@@ -2,30 +2,22 @@ package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import it.proconsole.library.video.adapter.jdbc.repository.entity.GenreEntity;
 import it.proconsole.library.video.core.model.GenreEnum;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.Optional;
 
-public class GenreDao implements DatabaseDao<GenreEntity> {
-  private final JdbcTemplate jdbcTemplateObject;
-
+public class GenreDao extends DatabaseDao<GenreEntity> {
   public GenreDao(DataSource dataSource) {
-    this.jdbcTemplateObject = new JdbcTemplate(dataSource);
-  }
-
-  @Override
-  public List<GenreEntity> findAll() {
-    return jdbcTemplateObject.query("select * from genre", rowMapper());
+    super(dataSource, "genre");
   }
 
   public Optional<GenreEntity> findById(long id) {
-    return jdbcTemplateObject.query("select * from genre where id = ?", rowMapper(), id).stream().findFirst();
+    return jdbcTemplate().query("select * from genre where id = ?", rowMapper(), id).stream().findFirst();
   }
 
-  private RowMapper<GenreEntity> rowMapper() {
-    return (rs, rowNum) -> new GenreEntity(rs.getInt("id"), GenreEnum.valueOf(rs.getString("value")));
+  @Override
+  RowMapper<GenreEntity> rowMapper() {
+    return (rs, rowNum) -> new GenreEntity(rs.getLong("id"), GenreEnum.valueOf(rs.getString("value")));
   }
 }

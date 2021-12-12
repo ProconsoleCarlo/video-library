@@ -5,8 +5,13 @@ import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 
-public record FilmReviewEntity(long id, LocalDateTime date, int rating, @Nullable String detail) {
+public record FilmReviewEntity(Long id, LocalDateTime date, Integer rating, @Nullable String detail,
+                               Integer filmId) implements EntityWithId {
+  public FilmReviewEntity(LocalDateTime date, int rating, @Nullable String detail, int filmId) {
+    this(1L, date, rating, detail, filmId);
+  }
+
   public FilmReview toDomain() {
-    return new FilmReview(id, date, rating, detail);
+    return new FilmReview(id, date, rating, detail, filmId);
   }
 }

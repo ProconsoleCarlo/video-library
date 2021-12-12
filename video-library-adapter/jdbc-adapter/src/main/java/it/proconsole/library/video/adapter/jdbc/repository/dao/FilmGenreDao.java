@@ -1,32 +1,25 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmGenreEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class FilmGenreDao implements DatabaseDao<FilmGenreEntity> {
-  private final JdbcTemplate jdbcTemplateObject;
-
+public class FilmGenreDao extends DatabaseDao<FilmGenreEntity> {
   public FilmGenreDao(DataSource dataSource) {
-    this.jdbcTemplateObject = new JdbcTemplate(dataSource);
-  }
-
-  @Override
-  public List<FilmGenreEntity> findAll() {
-    return jdbcTemplateObject.query("select * from film_genres", rowMapper());
+    super(dataSource, "film_genres");
   }
 
   public List<FilmGenreEntity> findByFilmId(long filmId) {
-    return jdbcTemplateObject.query("select * from film_genres where film_id = ?", rowMapper(), filmId);
+    return jdbcTemplate().query("select * from film_genres where film_id = ?", rowMapper(), filmId);
   }
 
-  private RowMapper<FilmGenreEntity> rowMapper() {
+  @Override
+  RowMapper<FilmGenreEntity> rowMapper() {
     return (rs, rowNum) -> new FilmGenreEntity(
-            rs.getLong("film_id"),
-            rs.getInt("genre_id")
+        rs.getLong("film_id"),
+        rs.getInt("genre_id")
     );
   }
 }

@@ -13,7 +13,9 @@ import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
@@ -45,7 +47,7 @@ class GenreDaoTest {
       var current = dao.findById(1);
 
       assertTrue(current.isPresent());
-      assertEquals(new GenreEntity(1, GenreEnum.ACTION), current.get());
+      assertEquals(new GenreEntity(1L, GenreEnum.ACTION), current.get());
     }
 
     @Test

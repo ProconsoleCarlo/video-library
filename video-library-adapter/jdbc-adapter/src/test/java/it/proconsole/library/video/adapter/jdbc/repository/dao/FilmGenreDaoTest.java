@@ -2,7 +2,6 @@ package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmGenreEntity;
-import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = ApplicationConfig.class)
 @Profile("test")
 class FilmGenreDaoTest {
-  private static final String FILM_GENRES_JSON = "/it/proconsole/library/video/adapter/model/filmGenreEntities.json";
-
   @Autowired
   private DataSource dataSource;
 
@@ -29,14 +26,6 @@ class FilmGenreDaoTest {
   @BeforeEach
   void setUp() {
     dao = new FilmGenreDao(dataSource);
-  }
-
-  @Test
-  void findAll() {
-    var current = dao.findAll();
-    var expected = Fixtures.readListFromClasspath(FILM_GENRES_JSON, FilmGenreEntity.class);
-
-    assertEquals(expected, current);
   }
 
   @Nested

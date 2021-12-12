@@ -23,6 +23,6 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
 
   @Override
   GenreEntity anEntity() {
-    return new GenreEntity(1L, GenreEnum.ACTION);
+    return new GenreEntity(GenreEnum.ACTION);
   }
 }

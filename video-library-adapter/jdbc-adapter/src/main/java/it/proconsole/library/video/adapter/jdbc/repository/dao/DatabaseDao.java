@@ -30,6 +30,10 @@ public abstract class DatabaseDao<T extends EntityWithId> {
     deleteById(entity.id());
   }
 
+  public void deleteAll() {
+    jdbcTemplate().update("delete from " + tableName);
+  }
+
   public void deleteAll(List<T> entities) {
     entities.forEach(this::delete);
   }

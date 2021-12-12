@@ -22,7 +22,7 @@ public class FilmReviewDao extends DatabaseDao<FilmReviewEntity> {
         rs.getTimestamp("date").toLocalDateTime(),
         rs.getInt("rating"),
         rs.getString("detail"),
-        rs.getInt("film_id")
+        rs.getLong("film_id")
     );
   }
 }

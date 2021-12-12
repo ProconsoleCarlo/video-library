@@ -18,10 +18,13 @@ class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
   @BeforeEach
   void setUp() {
     dao = new FilmDao(dataSource);
+
+    new FilmReviewDao(dataSource).findAll();
+    //dao.deleteById(1L);
   }
 
   @Override
   FilmEntity anEntity() {
-    return new FilmEntity(1L, "Film title", 2020);
+    return new FilmEntity("Film title", 2020);
   }
 }

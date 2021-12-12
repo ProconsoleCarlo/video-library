@@ -1,6 +1,7 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
 import it.proconsole.library.video.adapter.jdbc.repository.entity.EntityWithId;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 abstract class DatabaseDaoTest<T extends EntityWithId> {
   DatabaseDao<T> dao;
 
+  @AfterEach
+  void afterEach() {
+    dao.deleteAll();
+  }
+
   @Test
   void delete() {
     var entity = dao.save(anEntity());
@@ -21,6 +27,17 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
     dao.delete(entity);
 
     assertFalse(dao.findById(entity.id()).isPresent());
+  }
+
+  @Test
+  void deleteAllTable() {
+    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
+    var ids = entities.stream().map(EntityWithId::id).toList();
+    assertFalse(dao.findAllById(ids).isEmpty());
+
+    dao.deleteAll();
+
+    assertTrue(dao.findAllById(ids).isEmpty());
   }
 
   @Test

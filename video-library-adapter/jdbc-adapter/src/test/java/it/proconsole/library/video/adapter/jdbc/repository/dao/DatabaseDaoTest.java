@@ -107,8 +107,6 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
     assertEquals(savedEntities, checkEntities);
   }
 
-  abstract T anEntity();
-
   @Nested
   class WhenFindAllById {
     @Test
@@ -152,4 +150,6 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
       assertFalse(current.isPresent());
     }
   }
+
+  abstract T anEntity();
 }

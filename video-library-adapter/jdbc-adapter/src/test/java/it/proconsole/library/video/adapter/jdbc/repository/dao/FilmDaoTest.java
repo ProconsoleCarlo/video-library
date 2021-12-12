@@ -20,7 +20,6 @@ class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
     dao = new FilmDao(dataSource);
 
     new FilmReviewDao(dataSource).findAll();
-    //dao.deleteById(1L);
   }
 
   @Override

@@ -28,17 +28,23 @@ class FilmGenreDaoTest {
     dao = new FilmGenreDao(dataSource);
   }
 
+  FilmGenreEntity anEntity() {
+    return new FilmGenreEntity(1L, 1L);
+  }
+
   @Nested
   class WhenFindByFilmId {
     @Test
     void listIfPresent() {
-      var current = dao.findByFilmId(1);
-      var expected = List.of(
+      var entities = List.of(
           new FilmGenreEntity(1L, 3L),
           new FilmGenreEntity(1L, 4L)
       );
+      dao.saveAll(entities);
 
-      assertEquals(expected, current);
+      var current = dao.findByFilmId(1);
+
+      assertEquals(entities, current);
     }
 
     @Test

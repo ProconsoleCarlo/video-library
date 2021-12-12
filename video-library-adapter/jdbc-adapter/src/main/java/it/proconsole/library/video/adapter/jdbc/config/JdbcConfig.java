@@ -1,6 +1,7 @@
 package it.proconsole.library.video.adapter.jdbc.config;
 
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
+import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
@@ -18,6 +19,13 @@ public class JdbcConfig {
           FilmReviewDao filmReviewDao
   ) {
     return new FilmRepository(filmDao, genreDao, filmReviewDao);
+  }
+
+  @Bean
+  public FilmReviewRepository jdbcFilmReviewRepository(
+          FilmReviewDao filmReviewDao
+  ) {
+    return new FilmReviewRepository(filmReviewDao);
   }
 
   @Bean

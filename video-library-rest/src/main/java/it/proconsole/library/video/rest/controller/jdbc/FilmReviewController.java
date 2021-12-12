@@ -1,13 +1,13 @@
-package it.proconsole.library.video.rest.controller.jpa;
+package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jpa.model.FilmReview;
-import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
+import it.proconsole.library.video.adapter.jdbc.model.FilmReview;
+import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("JpaFilmReviewController")
-@RequestMapping("/jpa")
+@RestController("JdbcFilmReviewController")
+@RequestMapping("/jdbc")
 public class FilmReviewController {
   private final FilmReviewRepository filmReviewRepository;
 

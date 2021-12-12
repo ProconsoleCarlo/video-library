@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @JdbcTest
 @Sql({"/schema.sql", "/data.sql"})
 class FilmRepositoryTest {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
+  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films-in.json";
 
   @Autowired
   private DataSource dataSource;

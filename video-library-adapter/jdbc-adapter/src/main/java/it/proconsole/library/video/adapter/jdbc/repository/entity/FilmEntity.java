@@ -11,6 +11,10 @@ public record FilmEntity(Long id, String title, Integer year) implements EntityW
     this(1L, title, year);
   }
 
+  public static FilmEntity fromDomain(Film film) {
+    return new FilmEntity(film.id(), film.title(), film.year());
+  }
+
   public Film toDomain(List<Genre> genres, List<FilmReview> reviews) {
     return new Film(id, title, year, genres, reviews);
   }

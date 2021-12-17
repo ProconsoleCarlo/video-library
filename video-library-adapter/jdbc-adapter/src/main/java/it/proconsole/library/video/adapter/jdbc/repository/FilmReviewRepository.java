@@ -15,14 +15,13 @@ public class FilmReviewRepository {
   }
 
   public FilmReview save(FilmReview review) {
-
-
-    return null;
+    var filmReviewEntity = FilmReviewEntity.fromDomain(review);
+    return filmReviewDao.save(filmReviewEntity).toDomain();
   }
 
   private List<FilmReview> retrieveReviewsFor(FilmEntity film) {
     return filmReviewDao.findByFilmId(film.id())
-        .stream().map(FilmReviewEntity::toDomain)
-        .toList();
+            .stream().map(FilmReviewEntity::toDomain)
+            .toList();
   }
 }

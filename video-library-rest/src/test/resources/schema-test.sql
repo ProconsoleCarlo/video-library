@@ -1,4 +1,8 @@
+drop table IF EXISTS `film_genres`;
+drop table IF EXISTS `film_review`;
+drop table IF EXISTS `film`;
 drop table IF EXISTS `genre`;
+
 create TABLE `genre`
 (
     `id`    int          NOT NULL AUTO_INCREMENT,
@@ -6,7 +10,6 @@ create TABLE `genre`
     PRIMARY KEY (`id`)
 );
 
-drop table IF EXISTS `film`;
 create TABLE `film`
 (
     `id`    int          NOT NULL AUTO_INCREMENT,
@@ -15,7 +18,6 @@ create TABLE `film`
     PRIMARY KEY (`id`)
 );
 
-drop table IF EXISTS `film_genres`;
 create TABLE `film_genres`
 (
     `film_id`  int NOT NULL,
@@ -25,7 +27,6 @@ create TABLE `film_genres`
     CONSTRAINT `fk_film_genre_genre1` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`)
 );
 
-drop table IF EXISTS `film_review`;
 create TABLE `film_review`
 (
     `id`      int      NOT NULL AUTO_INCREMENT,

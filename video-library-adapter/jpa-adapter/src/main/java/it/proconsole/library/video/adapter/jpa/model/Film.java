@@ -38,7 +38,7 @@ public class Film {
   private List<Genre> genres;
 
   @JsonManagedReference
-  @OneToMany(mappedBy = "film", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FilmReview> reviews;
 
   public List<Genre> getGenres() {

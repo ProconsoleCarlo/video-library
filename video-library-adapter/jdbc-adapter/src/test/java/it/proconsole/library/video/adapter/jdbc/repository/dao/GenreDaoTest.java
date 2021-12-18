@@ -33,6 +33,11 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
     return new GenreEntity(GenreEnum.ACTION);
   }
 
+  @Override
+  GenreEntity anEntityForUpdate(Long id) {
+    return new GenreEntity(id, GenreEnum.ACTION);
+  }
+
   @Test
   void findByFilmId() {
     var entities = dao.saveAll(List.of(

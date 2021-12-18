@@ -1,8 +1,8 @@
 package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jdbc.model.Film;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmRepository;
 import it.proconsole.library.video.core.Fixtures;
+import it.proconsole.library.video.core.model.Film;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +29,8 @@ class FilmControllerTest {
   @BeforeEach
   void setUp() {
     mvc = standaloneSetup(new FilmController(filmRepository))
-        .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
-        .build();
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
+            .build();
   }
 
   @Test

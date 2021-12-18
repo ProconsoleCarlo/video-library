@@ -39,4 +39,9 @@ class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
   FilmReviewEntity anEntity() {
     return new FilmReviewEntity(LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, "This is a review", 1L);
   }
+
+  @Override
+  FilmReviewEntity anEntityForUpdate(Long id) {
+    return new FilmReviewEntity(id, LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, "Updated review", 1L);
+  }
 }

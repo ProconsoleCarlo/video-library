@@ -2,8 +2,8 @@ export interface Film {
   id: number,
   title: string,
   year: number,
-  genres: Genre[],
-  reviews: Review[]
+  genres: Genre[] | null,
+  reviews: Review[] | null
 }
 
 export interface Genre {

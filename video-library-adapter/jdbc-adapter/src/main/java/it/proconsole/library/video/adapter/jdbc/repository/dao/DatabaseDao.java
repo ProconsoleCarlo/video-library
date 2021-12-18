@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class DatabaseDao<T extends EntityWithId> {
   private final JdbcTemplate jdbcTemplate;
@@ -60,8 +61,9 @@ public abstract class DatabaseDao<T extends EntityWithId> {
   }
 
   public T save(T entity) {
-    var id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(entity));
-    return findById(id.longValue()).orElseThrow();
+    return findById(entity.id())
+            .map(e -> update(entity))
+            .orElseGet(() -> insert(entity));
   }
 
   public List<T> saveAll(List<T> entity) {
@@ -70,12 +72,22 @@ public abstract class DatabaseDao<T extends EntityWithId> {
 
   abstract RowMapper<T> rowMapper();
 
+
+  private T insert(T entity) {
+    var id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(entity));
+    return findById(id.longValue()).orElseThrow();
+  }
+
+  private T update(T entity) {
+    var params = entity.data().values().toArray();
+    var setSql = entity.data().keySet().stream().map(c -> c + "=?").collect(Collectors.joining(","));
+    jdbcTemplate.update("update " + tableName + " set " + setSql + " where id = " + entity.id(), params);
+    return entity;
+  }
   /*
 
   public boolean existsById(ID id) {
     return false;
   }
-
-
 */
 }

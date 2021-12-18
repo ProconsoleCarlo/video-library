@@ -25,4 +25,9 @@ class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
   FilmEntity anEntity() {
     return new FilmEntity("Film title", 2020);
   }
+
+  @Override
+  FilmEntity anEntityForUpdate(Long id) {
+    return new FilmEntity(id, "Film title", 2020);
+  }
 }

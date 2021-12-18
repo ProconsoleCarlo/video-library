@@ -92,6 +92,11 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
     var checkEntity = dao.findById(savedEntity.id());
     assertTrue(checkEntity.isPresent());
     assertEquals(savedEntity, checkEntity.get());
+
+    var entityToUpdate = anEntityForUpdate(savedEntity.id());
+
+    var updatedEntity = dao.save(entityToUpdate);
+    assertEquals(savedEntity.id(), updatedEntity.id());
   }
 
   @Test
@@ -152,4 +157,6 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   }
 
   abstract T anEntity();
+
+  abstract T anEntityForUpdate(Long id);
 }

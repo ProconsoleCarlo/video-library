@@ -12,7 +12,7 @@ public class GenreDao extends DatabaseDao<GenreEntity> {
     super(dataSource, "genre");
   }
 
-  public List<GenreEntity> findByFilmId(long filmId) {
+  public List<GenreEntity> findByFilmId(Long filmId) {
     return jdbcTemplate().query("select id, value from film_genres join genre g on g.id = film_genres.genre_id where film_id = ?", rowMapper(), filmId);
   }
 

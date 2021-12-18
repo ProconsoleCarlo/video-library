@@ -1,11 +1,14 @@
 package it.proconsole.library.video.adapter.jdbc.repository.entity;
 
-import it.proconsole.library.video.adapter.jdbc.model.Genre;
+import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
+import org.springframework.lang.Nullable;
 
-public record GenreEntity(Long id, GenreEnum value) implements EntityWithId {
+import java.util.Map;
+
+public record GenreEntity(@Nullable Long id, GenreEnum value) implements EntityWithId {
   public GenreEntity(GenreEnum value) {
-    this(1L, value);
+    this(null, value);
   }
 
   public static GenreEntity fromDomain(Genre genre) {
@@ -14,5 +17,10 @@ public record GenreEntity(Long id, GenreEnum value) implements EntityWithId {
 
   public Genre toDomain() {
     return new Genre(id, value);
+  }
+
+  @Override
+  public Map<String, ?> data() {
+    return Map.of("value", value);
   }
 }

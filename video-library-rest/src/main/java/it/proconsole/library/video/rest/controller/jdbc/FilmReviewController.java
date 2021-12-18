@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jdbc.model.FilmReview;
 import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
+import it.proconsole.library.video.core.model.FilmReview;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

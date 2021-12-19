@@ -1,20 +1,16 @@
-package it.proconsole.library.video.adapter.jpa.repository;
+package it.proconsole.library.video.adapter.jpa.repository.crud;
 
-import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = ApplicationConfig.class)
-@ActiveProfiles("test")
-@Transactional
+@DataJpaTest
+@Sql({"/schema.sql", "/data.sql"})
 class FilmRepositoryTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
-import {FilmView} from "./ui/FilmView";
+import {PageView} from "./ui/PageView";
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header">
         <h1>Video library</h1>
-        <FilmView/>
+        <PageView/>
       </header>
     </div>
   );

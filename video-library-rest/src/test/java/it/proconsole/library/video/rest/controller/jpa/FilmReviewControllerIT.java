@@ -1,6 +1,5 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.Film;
 import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.FilmReview;
@@ -10,19 +9,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = FilmReviewController.class)
 class FilmReviewControllerIT {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
+  private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/existentFilmReview.json";
+  private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/insertFilmReview.json";
 
   @MockBean
   private FilmReviewRepository filmReviewRepository;
@@ -31,15 +31,33 @@ class FilmReviewControllerIT {
   private MockMvc mvc;
 
   @Test
-  void addReview() throws Exception {
-    var film = Fixtures.readListFromClasspath(FILMS_JSON, Film.class).get(0);
-    var review = new FilmReview(1L, LocalDateTime.now(), 8, "This is a review", film.getId());
+  void updateReview() throws Exception {
+    var filmReview = Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON, FilmReview.class);
 
-    when(filmReviewRepository.save(review)).thenReturn(review);
+    when(filmReviewRepository.save(filmReview)).thenReturn(filmReview);
 
-    mvc.perform(post("/jpa/review"))
-            .andExpect(status().isOk());
+    mvc.perform(post("/jpa/review")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
+            .andExpect(status().isOk())
+            .andExpect(content().json(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
 
-    verify(filmReviewRepository).save(review);
+    verify(filmReviewRepository).save(filmReview);
+  }
+
+  @Test
+  void insertReview() throws Exception {
+    var filmReviewToInsert = Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON, FilmReview.class);
+    var filmReviewInserted = Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON, FilmReview.class);
+
+    when(filmReviewRepository.save(filmReviewToInsert)).thenReturn(filmReviewInserted);
+
+    mvc.perform(post("/jpa/review")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
+            .andExpect(status().isOk())
+            .andExpect(content().json(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
+
+    verify(filmReviewRepository).save(filmReviewToInsert);
   }
 }

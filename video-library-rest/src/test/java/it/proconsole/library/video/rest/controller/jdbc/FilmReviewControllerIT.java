@@ -1,6 +1,6 @@
-package it.proconsole.library.video.rest.controller.jpa;
+package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
+import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.FilmReview;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class FilmReviewControllerIT {
 
     when(filmReviewRepository.save(filmReview)).thenReturn(filmReview);
 
-    mvc.perform(post("/jpa/review")
+    mvc.perform(post("/jdbc/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
             .andExpect(status().isOk())
@@ -53,7 +53,7 @@ class FilmReviewControllerIT {
 
     when(filmReviewRepository.save(filmReviewToInsert)).thenReturn(filmReviewInserted);
 
-    mvc.perform(put("/jpa/review")
+    mvc.perform(put("/jdbc/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
             .andExpect(status().isOk())

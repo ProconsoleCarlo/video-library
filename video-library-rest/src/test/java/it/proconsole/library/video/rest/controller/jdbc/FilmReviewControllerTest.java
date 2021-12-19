@@ -1,15 +1,15 @@
-package it.proconsole.library.video.rest.controller.jpa;
+package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
+import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.FilmReview;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.verify;
@@ -18,18 +18,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = FilmReviewController.class)
-class FilmReviewControllerIT {
+class FilmReviewControllerTest {
   private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/existentFilmReview.json";
   private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/insertFilmReview.json";
 
-  @MockBean
+  @Mock
   private FilmReviewRepository filmReviewRepository;
 
-  @Autowired
   private MockMvc mvc;
+
+  @BeforeEach
+  void setUp() {
+    mvc = standaloneSetup(new FilmReviewController(filmReviewRepository))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
+            .build();
+  }
 
   @Test
   void updateReview() throws Exception {
@@ -37,7 +43,7 @@ class FilmReviewControllerIT {
 
     when(filmReviewRepository.save(filmReview)).thenReturn(filmReview);
 
-    mvc.perform(post("/jpa/review")
+    mvc.perform(post("/jdbc/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
             .andExpect(status().isOk())
@@ -53,7 +59,7 @@ class FilmReviewControllerIT {
 
     when(filmReviewRepository.save(filmReviewToInsert)).thenReturn(filmReviewInserted);
 
-    mvc.perform(put("/jpa/review")
+    mvc.perform(put("/jdbc/review")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
             .andExpect(status().isOk())

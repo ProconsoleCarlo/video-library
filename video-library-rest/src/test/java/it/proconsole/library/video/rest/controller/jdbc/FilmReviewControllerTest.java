@@ -1,8 +1,8 @@
 package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.FilmReview;
+import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

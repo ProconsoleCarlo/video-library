@@ -1,29 +1,29 @@
-package it.proconsole.library.video.adapter.jdbc.repository;
+package it.proconsole.library.video.adapter.jpa.repository;
 
-import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
 import it.proconsole.library.video.core.model.FilmReview;
+import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@JdbcTest
+@DataJpaTest
 @Sql({"/schema.sql", "/data.sql"})
-class FilmReviewRepositoryTest {
+class JpaFilmReviewRepositoryTest {
   @Autowired
-  private DataSource dataSource;
+  private FilmReviewCrudRepository filmReviewCrudRepository;
 
   private FilmReviewRepository repository;
 
   @BeforeEach
   void setUp() {
-    repository = new FilmReviewRepository(new FilmReviewDao(dataSource));
+    repository = new JpaFilmReviewRepository(filmReviewCrudRepository);
   }
 
   @Test

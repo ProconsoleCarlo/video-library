@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jdbc;
 
-import it.proconsole.library.video.adapter.jdbc.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.model.FilmReview;
+import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class FilmReviewController {
   private final FilmReviewRepository filmReviewRepository;
 
-  public FilmReviewController(FilmReviewRepository filmReviewRepository) {
-    this.filmReviewRepository = filmReviewRepository;
+  public FilmReviewController(FilmReviewRepository jdbcFilmReviewRepository) {
+    this.filmReviewRepository = jdbcFilmReviewRepository;
   }
 
   @PostMapping("/review")

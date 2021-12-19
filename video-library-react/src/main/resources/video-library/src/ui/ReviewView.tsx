@@ -37,7 +37,6 @@ export const ReviewView: React.FC<Props> = ({filmId, reviews, rootPath}) => {
         .then((review) => {
           console.log("review updated");
           console.log(review);
-          reviews.push(review);
         })
     } else {
       addReview(rootPath)
@@ -55,7 +54,7 @@ export const ReviewView: React.FC<Props> = ({filmId, reviews, rootPath}) => {
       <div className={"table"}>
         {
           reviews.map((review) =>
-            <div className={"row"}>
+            <div className={"row"} onClick={() => setJsonReview(JSON.stringify(review, null, 4))}>
               <div className={"col width_40"}>{review.id}</div>
               <div className={"col width_200"}>{review.date}</div>
               <div className={"col width_40"}>{review.rating}</div>

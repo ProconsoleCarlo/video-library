@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
+import it.proconsole.library.video.core.model.FilmReview;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
@@ -21,7 +22,7 @@ public class FilmReviewEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  private Integer id;
+  private Long id;
   @Column(name = "date", nullable = false)
   private LocalDateTime date;
   @Column(name = "rating", nullable = false)
@@ -35,6 +36,14 @@ public class FilmReviewEntity {
   public FilmReviewEntity() {
   }
 
+  public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail, Long filmId) {
+    this.id = id;
+    this.date = date;
+    this.rating = rating;
+    this.detail = detail;
+    this.filmId = filmId;
+  }
+
   public FilmReviewEntity(LocalDateTime date, Integer rating, String detail, Long filmId) {
     this.date = date;
     this.rating = rating;
@@ -42,11 +51,25 @@ public class FilmReviewEntity {
     this.filmId = filmId;
   }
 
-  public Integer getId() {
+  public static FilmReviewEntity fromDomain(FilmReview filmReview) {
+    return new FilmReviewEntity(
+            filmReview.id(),
+            filmReview.date(),
+            filmReview.rating(),
+            filmReview.detail(),
+            filmReview.filmId()
+    );
+  }
+
+  public FilmReview toDomain() {
+    return new FilmReview(id, date, rating, detail, filmId);
+  }
+
+  public Long getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

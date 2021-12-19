@@ -2,7 +2,7 @@ package it.proconsole.library.video.rest.controller.jpa;
 
 import it.proconsole.library.video.adapter.jpa.model.Film;
 import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewRepository;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class FilmReviewControllerIT {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @MockBean
-  private FilmReviewRepository filmReviewRepository;
+  private FilmReviewCrudRepository filmReviewRepository;
 
   @Autowired
   private MockMvc mvc;

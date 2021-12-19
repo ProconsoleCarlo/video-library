@@ -5,6 +5,7 @@ import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.Film;
+import it.proconsole.library.video.core.repository.FilmRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @Sql({"/schema.sql", "/data.sql"})
-class FilmRepositoryTest {
+class JdbcFilmRepositoryTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films-in.json";
 
   @Autowired
@@ -27,7 +28,7 @@ class FilmRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    repository = new FilmRepository(new FilmDao(dataSource), new GenreDao(dataSource), new FilmReviewDao(dataSource));
+    repository = new JdbcFilmRepository(new FilmDao(dataSource), new GenreDao(dataSource), new FilmReviewDao(dataSource));
   }
 
   @Test

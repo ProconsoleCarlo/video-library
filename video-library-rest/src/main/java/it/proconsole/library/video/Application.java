@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
         scanBasePackages = {
-            "it.proconsole.library.video.rest.config",
-            "it.proconsole.library.video.rest.controller.jpa",
-            "it.proconsole.library.video.rest.controller.jdbc",
-            "it.proconsole.library.video.adapter.jdbc.config",
-            "it.proconsole.library.video.adapter.jpa.repository.crud"
+                "it.proconsole.library.video.rest.config",
+                "it.proconsole.library.video.rest.controller.jpa",
+                "it.proconsole.library.video.rest.controller.jdbc",
+                "it.proconsole.library.video.adapter.jdbc.config",
+                "it.proconsole.library.video.adapter.jpa.repository.crud",
+                "it.proconsole.library.video.adapter.jpa.config"
         }
 )
 public class Application {

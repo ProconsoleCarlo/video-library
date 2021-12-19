@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
+import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
+import it.proconsole.library.video.core.model.FilmReview;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("JpaFilmReviewController")
 @RequestMapping("/jpa")
 public class FilmReviewController {
-  private final FilmReviewCrudRepository filmReviewRepository;
+  private final FilmReviewRepository filmReviewRepository;
 
-  public FilmReviewController(FilmReviewCrudRepository filmReviewRepository) {
+  public FilmReviewController(FilmReviewRepository filmReviewRepository) {
     this.filmReviewRepository = filmReviewRepository;
   }
 
   @PostMapping("/review")
-  public FilmReviewEntity updateReview(@RequestBody FilmReviewEntity review) {
+  public FilmReview updateReview(@RequestBody FilmReview review) {
     return filmReviewRepository.save(review);
   }
 
   @PutMapping("/review")
-  public FilmReviewEntity insertReview(@RequestBody FilmReviewEntity review) {
+  public FilmReview insertReview(@RequestBody FilmReview review) {
     return filmReviewRepository.save(review);
   }
 }

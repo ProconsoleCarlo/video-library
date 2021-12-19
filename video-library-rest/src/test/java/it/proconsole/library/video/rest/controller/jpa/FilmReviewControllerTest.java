@@ -1,9 +1,9 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
 import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
+import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
+import it.proconsole.library.video.core.model.FilmReview;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class FilmReviewControllerTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Mock
-  private FilmReviewCrudRepository filmReviewRepository;
+  private FilmReviewRepository filmReviewRepository;
 
   private MockMvc mvc;
 
@@ -39,7 +39,7 @@ class FilmReviewControllerTest {
   @Test
   void addReview() throws Exception {
     var film = Fixtures.readListFromClasspath(FILMS_JSON, Film.class).get(0);
-    var review = new FilmReviewEntity(LocalDateTime.now(), 8, "This is a review", film.getId());
+    var review = new FilmReview(1L, LocalDateTime.now(), 8, "This is a review", film.getId());
 
     when(filmReviewRepository.save(review)).thenReturn(review);
 

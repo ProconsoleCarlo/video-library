@@ -18,7 +18,8 @@
         "id": 1,
         "date": "2013-12-31T00:00:00",
         "rating": 8,
-        "detail": "Updated review"
+        "detail": "Updated review",
+        "filmId": 1
       }
     ]
   },
@@ -45,7 +46,8 @@
         "id": 2,
         "date": "2013-10-18T00:00:00",
         "rating": 10,
-        "detail": "Molto bello"
+        "detail": "Molto bello",
+        "filmId": 2
       }
     ]
   }

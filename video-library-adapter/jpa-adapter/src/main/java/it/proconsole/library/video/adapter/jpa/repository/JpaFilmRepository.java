@@ -31,11 +31,14 @@ public class JpaFilmRepository implements FilmRepository {
 
   @Override
   public List<Film> saveAll(List<Film> films) {
-    return findAllById(
-            filmCrudRepository.saveAll(films.stream().map(FilmEntity::fromDomain).toList()).stream()
-                    .map(FilmEntity::getId)
-                    .toList()
-    );
+    var filmEntities = films.stream().map(FilmEntity::fromDomain).toList();
+    var ids = filmCrudRepository.saveAll(filmEntities).stream().map(FilmEntity::getId).toList();
+    var filmReviews = films.stream()
+            .flatMap(f -> f.reviews().stream())
+            .map(FilmReviewEntity::fromDomain)
+            .toList();
+    filmReviewCrudRepository.saveAll(filmReviews);
+    return findAllById(ids);
   }
 
   private List<Film> findAllById(List<Long> filmIds) {

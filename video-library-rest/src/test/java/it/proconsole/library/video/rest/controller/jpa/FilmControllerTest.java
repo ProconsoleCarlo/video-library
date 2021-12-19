@@ -1,8 +1,8 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.CompleteFilmEntity;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.core.Fixtures;
+import it.proconsole.library.video.core.model.Film;
+import it.proconsole.library.video.core.repository.FilmRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,23 +22,23 @@ class FilmControllerTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Mock
-  private FilmCrudRepository filmRepository;
+  private FilmRepository filmRepository;
 
   private MockMvc mvc;
 
   @BeforeEach
   void setUp() {
     mvc = standaloneSetup(new FilmController(filmRepository))
-        .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
-        .build();
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
+            .build();
   }
 
   @Test
   void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, CompleteFilmEntity.class));
+    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
 
     mvc.perform(get("/jpa/films"))
-        .andExpect(status().isOk())
-        .andExpect(content().json(Fixtures.readFromClasspath(FILMS_JSON)));
+            .andExpect(status().isOk())
+            .andExpect(content().json(Fixtures.readFromClasspath(FILMS_JSON)));
   }
 }

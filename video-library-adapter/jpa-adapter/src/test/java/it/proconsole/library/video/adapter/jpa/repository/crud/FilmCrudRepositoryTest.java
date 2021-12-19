@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.repository.crud;
 
-import it.proconsole.library.video.adapter.jpa.model.CompleteFilmEntity;
+import it.proconsole.library.video.adapter.jpa.model.FilmEntity;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,6 @@ class FilmCrudRepositoryTest {
   void findAll() {
     var all = filmRepository.findAll();
 
-    assertEquals(Fixtures.readListFromClasspath(FILMS_JSON, CompleteFilmEntity.class), all);
+    assertEquals(Fixtures.readListFromClasspath(FILMS_JSON, FilmEntity.class), all);
   }
 }

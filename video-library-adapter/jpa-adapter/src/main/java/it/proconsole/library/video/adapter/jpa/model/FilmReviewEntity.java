@@ -44,13 +44,6 @@ public class FilmReviewEntity {
     this.filmId = filmId;
   }
 
-  public FilmReviewEntity(LocalDateTime date, Integer rating, String detail, Long filmId) {
-    this.date = date;
-    this.rating = rating;
-    this.detail = detail;
-    this.filmId = filmId;
-  }
-
   public static FilmReviewEntity fromDomain(FilmReview filmReview) {
     return new FilmReviewEntity(
             filmReview.id(),

@@ -33,19 +33,19 @@ public class JdbcFilmRepository implements FilmRepository {
             .toList();
   }
 
+  @Override
+  public List<Film> saveAll(List<Film> films) {
+    var filmEntities = films.stream().map(FilmEntity::fromDomain).toList();
+    var ids = filmDao.saveAll(filmEntities).stream().map(FilmEntity::id).toList();
+    var filmReviewEntities = films.stream().flatMap(f -> f.reviews().stream()).map(FilmReviewEntity::fromDomain).toList();
+    filmReviewDao.saveAll(filmReviewEntities);
+    return findAllById(ids);
+  }
+
   private List<Film> findAllById(List<Long> filmIds) {
     return filmDao.findAllById(filmIds).stream()
             .map(this::enrichFilm)
             .toList();
-  }
-
-  @Override
-  public List<Film> saveAll(List<Film> films) {
-    var filmEntities = films.stream().map(FilmEntity::fromDomain).toList();
-    filmDao.saveAll(filmEntities);
-    var filmReviewEntities = films.stream().flatMap(f -> f.reviews().stream()).map(FilmReviewEntity::fromDomain).toList();
-    filmReviewDao.saveAll(filmReviewEntities);
-    return findAllById(films.stream().map(Film::id).toList());
   }
 
   private Film enrichFilm(FilmEntity entity) {

@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
+import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.hibernate.Hibernate;
 
@@ -19,11 +20,35 @@ public class GenreEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  private Integer id;
+  private Long id;
 
   @Column(name = "value", nullable = false)
   @Enumerated(EnumType.STRING)
   private GenreEnum value;
+
+  public GenreEntity() {
+  }
+
+  public GenreEntity(Long id, GenreEnum value) {
+    this.id = id;
+    this.value = value;
+  }
+
+  public static GenreEntity fromDomain(Genre genre) {
+    return new GenreEntity(genre.id(), genre.value());
+  }
+
+  public Genre toDomain() {
+    return new Genre(id, value);
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public GenreEnum getValue() {
     return value;
@@ -31,14 +56,6 @@ public class GenreEntity {
 
   public void setValue(GenreEnum value) {
     this.value = value;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
   }
 
   @Override
@@ -51,6 +68,6 @@ public class GenreEntity {
 
   @Override
   public int hashCode() {
-    return 0;
+    return getClass().hashCode();
   }
 }

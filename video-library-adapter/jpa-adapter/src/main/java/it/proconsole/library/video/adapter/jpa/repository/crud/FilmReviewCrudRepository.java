@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FilmReviewCrudRepository extends JpaRepository<FilmReviewEntity, Integer> {
+public interface FilmReviewCrudRepository extends JpaRepository<FilmReviewEntity, Long> {
   List<FilmReviewEntity> findByFilmId(Long filmId);
 }

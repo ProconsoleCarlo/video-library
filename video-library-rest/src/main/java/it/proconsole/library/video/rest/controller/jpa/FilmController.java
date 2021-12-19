@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.CompleteFilmEntity;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
+import it.proconsole.library.video.core.model.Film;
+import it.proconsole.library.video.core.repository.FilmRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,19 +13,19 @@ import java.util.List;
 @RestController("JpaFilmController")
 @RequestMapping("/jpa")
 public class FilmController {
-  private final FilmCrudRepository filmRepository;
+  private final FilmRepository filmRepository;
 
-  public FilmController(FilmCrudRepository filmRepository) {
-    this.filmRepository = filmRepository;
+  public FilmController(FilmRepository jpaFilmRepository) {
+    this.filmRepository = jpaFilmRepository;
   }
 
   @GetMapping("/films")
-  public List<CompleteFilmEntity> getFilms() {
+  public List<Film> getFilms() {
     return filmRepository.findAll();
   }
 
   @PutMapping("/films")
-  public List<CompleteFilmEntity> updateFilms(@RequestBody List<CompleteFilmEntity> films) {
+  public List<Film> updateFilms(@RequestBody List<Film> films) {
     return filmRepository.saveAll(films);
   }
 }

@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
 import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.repository.FilmRepository;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

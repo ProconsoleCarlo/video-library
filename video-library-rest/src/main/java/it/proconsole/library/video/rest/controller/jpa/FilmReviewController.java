@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.FilmReview;
-import it.proconsole.library.video.adapter.jpa.repository.FilmReviewRepository;
+import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +18,12 @@ public class FilmReviewController {
   }
 
   @PostMapping("/review")
-  public FilmReview updateReview(@RequestBody FilmReview review) {
+  public FilmReviewEntity updateReview(@RequestBody FilmReviewEntity review) {
     return filmReviewRepository.save(review);
   }
 
   @PutMapping("/review")
-  public FilmReview insertReview(@RequestBody FilmReview review) {
+  public FilmReviewEntity insertReview(@RequestBody FilmReviewEntity review) {
     return filmReviewRepository.save(review);
   }
 }

@@ -2,6 +2,7 @@ package it.proconsole.library.video.adapter.jpa.repository;
 
 import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jpa.model.Film;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

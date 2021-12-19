@@ -2,7 +2,8 @@ package it.proconsole.library.video.adapter.jpa.repository;
 
 import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.model.FilmReview;
+import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,10 @@ class FilmReviewRepositoryTest {
   @Test
   void findAll() {
     var film = Fixtures.readListFromClasspath(FILMS_JSON, Film.class).get(0);
-    var review = new FilmReview(LocalDateTime.now(), 8, "This is a review", film);
+    var review = new FilmReviewEntity(LocalDateTime.now(), 8, "This is a review", film.getId());
 
     var savedReview = filmReviewRepository.save(review);
 
-    assertTrue(filmReviewRepository.findByFilm(film).contains(savedReview));
+    assertTrue(filmReviewRepository.findByFilmId(film.getId()).contains(savedReview));
   }
 }

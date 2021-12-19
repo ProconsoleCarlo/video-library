@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
             "it.proconsole.library.video.rest.controller.jpa",
             "it.proconsole.library.video.rest.controller.jdbc",
             "it.proconsole.library.video.adapter.jdbc.config",
-            "it.proconsole.library.video.adapter.jpa.repository"
+            "it.proconsole.library.video.adapter.jpa.repository.crud"
         }
 )
 public class Application {

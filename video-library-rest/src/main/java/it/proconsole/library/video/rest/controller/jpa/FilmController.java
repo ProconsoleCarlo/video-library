@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
 import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.repository.FilmRepository;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

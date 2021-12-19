@@ -3,12 +3,19 @@ package it.proconsole.library.video.adapter.jpa.model;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Table(name = "genre")
 @Entity
-public class Genre {
+public class GenreEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
@@ -38,7 +45,7 @@ public class Genre {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-    Genre genre = (Genre) o;
+    GenreEntity genre = (GenreEntity) o;
     return Objects.equals(id, genre.id);
   }
 

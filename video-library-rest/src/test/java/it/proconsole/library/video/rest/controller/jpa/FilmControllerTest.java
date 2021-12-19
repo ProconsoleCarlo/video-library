@@ -1,7 +1,7 @@
 package it.proconsole.library.video.rest.controller.jpa;
 
-import it.proconsole.library.video.adapter.jpa.model.Film;
-import it.proconsole.library.video.adapter.jpa.repository.crud.FilmRepository;
+import it.proconsole.library.video.adapter.jpa.model.CompleteFilmEntity;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class FilmControllerTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Mock
-  private FilmRepository filmRepository;
+  private FilmCrudRepository filmRepository;
 
   private MockMvc mvc;
 
@@ -35,7 +35,7 @@ class FilmControllerTest {
 
   @Test
   void getFilms() throws Exception {
-    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
+    when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, CompleteFilmEntity.class));
 
     mvc.perform(get("/jpa/films"))
         .andExpect(status().isOk())

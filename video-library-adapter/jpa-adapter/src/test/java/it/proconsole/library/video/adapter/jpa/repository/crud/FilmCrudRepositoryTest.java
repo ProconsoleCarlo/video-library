@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.repository.crud;
 
-import it.proconsole.library.video.adapter.jpa.model.Film;
+import it.proconsole.library.video.adapter.jpa.model.CompleteFilmEntity;
 import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +11,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @Sql({"/schema.sql", "/data.sql"})
-class FilmRepositoryTest {
+class FilmCrudRepositoryTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Autowired
-  private FilmRepository filmRepository;
+  private FilmCrudRepository filmRepository;
 
   @Test
   void findAll() {
     var all = filmRepository.findAll();
 
-    assertEquals(Fixtures.readListFromClasspath(FILMS_JSON, Film.class), all);
+    assertEquals(Fixtures.readListFromClasspath(FILMS_JSON, CompleteFilmEntity.class), all);
   }
 }

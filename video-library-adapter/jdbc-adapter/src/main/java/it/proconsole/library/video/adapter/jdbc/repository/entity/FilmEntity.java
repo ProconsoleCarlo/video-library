@@ -5,6 +5,7 @@ import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.model.Genre;
 import org.springframework.lang.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,10 @@ public record FilmEntity(@Nullable Long id, String title, Integer year) implemen
 
   public static FilmEntity fromDomain(Film film) {
     return new FilmEntity(film.id(), film.title(), film.year());
+  }
+
+  public Film toDomain() {
+    return new Film(id, title, year, Collections.emptyList(), Collections.emptyList());
   }
 
   public Film toDomain(List<Genre> genres, List<FilmReview> reviews) {

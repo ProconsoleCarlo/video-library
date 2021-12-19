@@ -11,6 +11,7 @@ import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.model.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FilmRepository {
   private final FilmDao filmDao;
@@ -26,20 +27,14 @@ public class FilmRepository {
   public List<Film> findAll() {
     return filmDao.findAll()
             .stream()
-            .map(film -> {
-              var genres = retrieveGenresFor(film);
-              var reviews = retrieveReviewsFor(film);
-              return film.toDomain(genres, reviews);
-            }).toList();
+            .map(this::enrichFilm)
+            .toList();
   }
 
   public List<Film> findAllById(List<Long> filmIds) {
     return filmDao.findAllById(filmIds).stream()
-            .map(film -> {
-              var genres = retrieveGenresFor(film);
-              var reviews = retrieveReviewsFor(film);
-              return film.toDomain(genres, reviews);
-            }).toList();
+            .map(this::enrichFilm)
+            .toList();
   }
 
   public List<Film> saveAll(List<Film> films) {
@@ -50,15 +45,21 @@ public class FilmRepository {
     return findAllById(films.stream().map(Film::id).toList());
   }
 
-  private List<Genre> retrieveGenresFor(FilmEntity film) {
-    return genreDao.findByFilmId(film.id()).stream()
+  private Film enrichFilm(FilmEntity entity) {
+    return Optional.ofNullable(entity.id())
+            .map(id -> entity.toDomain(retrieveGenresFor(id), retrieveReviewsFor(id)))
+            .orElseGet(entity::toDomain);
+  }
+
+  private List<Genre> retrieveGenresFor(Long filmId) {
+    return genreDao.findByFilmId(filmId).stream()
             .map(GenreEntity::toDomain)
             .toList();
   }
 
-  private List<FilmReview> retrieveReviewsFor(FilmEntity film) {
-    return filmReviewDao.findByFilmId(film.id())
-            .stream().map(FilmReviewEntity::toDomain)
+  private List<FilmReview> retrieveReviewsFor(Long filmId) {
+    return filmReviewDao.findByFilmId(filmId).stream()
+            .map(FilmReviewEntity::toDomain)
             .toList();
   }
 }

@@ -31,13 +31,12 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
 
   @Test
   void deleteAllTable() {
-    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
-    var ids = entities.stream().map(EntityWithId::id).toList();
-    assertFalse(dao.findAllById(ids).isEmpty());
+    dao.saveAll(List.of(anEntity(), anEntity()));
+    assertFalse(dao.findAll().isEmpty());
 
     dao.deleteAll();
 
-    assertTrue(dao.findAllById(ids).isEmpty());
+    assertTrue(dao.findAll().isEmpty());
   }
 
   @Test

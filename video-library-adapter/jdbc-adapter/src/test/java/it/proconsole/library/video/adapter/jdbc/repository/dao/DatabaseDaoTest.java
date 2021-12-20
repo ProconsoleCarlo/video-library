@@ -126,8 +126,6 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
 
     @Test
     void emptyIfAbsent() {
-      dao.save(anEntity());
-
       var current = dao.findAllById(List.of(Long.MAX_VALUE));
 
       assertTrue(current.isEmpty());
@@ -148,8 +146,6 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
 
     @Test
     void emptyIfAbsent() {
-      dao.save(anEntity());
-
       var current = dao.findById(Long.MAX_VALUE);
 
       assertFalse(current.isPresent());

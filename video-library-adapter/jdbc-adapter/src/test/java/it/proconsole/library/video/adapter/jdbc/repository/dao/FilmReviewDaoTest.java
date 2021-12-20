@@ -1,63 +1,47 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.ApplicationConfig;
 import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
-import it.proconsole.library.video.core.Fixtures;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@SpringBootTest(classes = ApplicationConfig.class)
-@Profile("test")
-class FilmReviewDaoTest {
-  private static final String FILM_REVIEWS_JSON = "/it/proconsole/library/video/adapter/model/filmReviewEntities.json";
+@JdbcTest
+@Sql({"/schema.sql"})
+class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
+  private JdbcTemplate jdbcTemplate;
 
   @Autowired
   private DataSource dataSource;
 
-  private FilmReviewDao dao;
-
   @BeforeEach
   void setUp() {
+    jdbcTemplate = new JdbcTemplate(dataSource);
     dao = new FilmReviewDao(dataSource);
+
+    jdbcTemplate.update("insert into film VALUES (1, 'Film title', 2011);");
   }
 
-  @Test
-  void findAll() {
-    var current = dao.findAll();
-    var expected = Fixtures.readListFromClasspath(FILM_REVIEWS_JSON, FilmReviewEntity.class);
-
-    assertEquals(expected, current);
+  @Override
+  @AfterEach
+  void tearDown() {
+    super.tearDown();
+    jdbcTemplate.update("delete from film where id = 1");
   }
 
-  @Nested
-  class WhenFindByFilmId {
-    @Test
-    void listIfPresent() {
-      var current = dao.findByFilmId(1);
-      var expected = List.of(
-              new FilmReviewEntity(1, LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, null)
-      );
+  @Override
+  FilmReviewEntity anEntity() {
+    return new FilmReviewEntity(LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, "This is a review", 1L);
+  }
 
-      assertEquals(expected, current);
-    }
-
-    @Test
-    void emptyListIfAbsent() {
-      var current = dao.findByFilmId(10);
-
-      assertTrue(current.isEmpty());
-    }
+  @Override
+  FilmReviewEntity anEntityForUpdate(Long id) {
+    return new FilmReviewEntity(id, LocalDateTime.of(2012, Month.DECEMBER, 31, 0, 0), 7, "Updated review", 1L);
   }
 }

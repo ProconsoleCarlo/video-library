@@ -15,5 +15,5 @@ export interface Review {
   id: number,
   date: string,
   rating: number,
-  detail: string | null;
+  detail: string | null
 }

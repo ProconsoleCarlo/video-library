@@ -3,6 +3,7 @@ spring:
     url: jdbc:mysql://localhost:3306/VideoDB
     username: application
     password: AmTu7wih7AZyjg#
+    driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     database: MYSQL
     properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect

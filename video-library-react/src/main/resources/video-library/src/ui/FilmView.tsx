@@ -1,58 +1,26 @@
-import React, {useState} from "react";
+import React from "react";
 import {Film} from "../model/Film";
-import {fetchHttpClient} from "../utils/HttpClient";
-
-const httpClient = fetchHttpClient<any, any>();
-
-const dbProtocols = ["jpa", "jdbc"];
+import {GenresView} from "./GenresView";
+import {ReviewView} from "./ReviewView";
 
 interface Props {
+  film: Film,
+  rootPath: string
 }
 
-export const FilmView: React.FC<Props> = () => {
-  const [selectedDbProtocol, setSelectedDbProtocol] = useState("jpa");
-  const [films, setFilms] = useState<Film[]>([])
-
-  const retrieveFilms = (dbProtocol: string): Promise<Film[]> => {
-    return httpClient.get({url: `/${dbProtocol}/films`})
-  }
-
-  const onRetrieveFilmClick = (): void => {
-    retrieveFilms(selectedDbProtocol.toLowerCase())
-      .then((films) => setFilms(films))
-  }
-
+export const FilmView: React.FC<Props> = ({film, rootPath}) => {
   return (
-    <div>
-      <div>
-        <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value)}>
-          {dbProtocols.map((dbProtocol) =>
-            <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
-          )}
-        </select>
-        <button onClick={onRetrieveFilmClick}>Retrieve films</button>
+    <>
+      <div>Selected film</div>
+      <div className={"table"}>
+        <div className={"row"}>
+          <div className={"col width_40"}>{film.id}</div>
+          <div className={"col width_200"}>{film.title}</div>
+          <div className={"col width_40"}>{film.year}</div>
+        </div>
       </div>
-      <table className="output">
-        <tbody>
-        <tr>
-          <td>ID</td>
-          <td>Title</td>
-          <td>Year</td>
-          <td>Genres</td>
-          <td>Reviews</td>
-        </tr>
-        {
-          films.map((film) =>
-            <tr key={film.id}>
-              <td>{film.id}</td>
-              <td>{film.title}</td>
-              <td>{film.year}</td>
-              <td>{film.genres.map((genre) => genre.value).join(", ")}</td>
-              <td>{film.reviews.map((review) => review.date + " " + review.rating + " " + review.detail).join(", ")}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+      <GenresView genres={film.genres}/>
+      <ReviewView filmId={film.id} reviews={film.reviews} rootPath={rootPath}/>
+    </>
   );
 }

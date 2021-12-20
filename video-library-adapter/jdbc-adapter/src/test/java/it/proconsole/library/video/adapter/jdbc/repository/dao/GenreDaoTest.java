@@ -46,11 +46,11 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
     ));
     var ids = entities.stream().map(GenreEntity::id).toList();
     jdbcTemplate.update(
-            "insert into `film`" +
-                    "VALUES (1, 'Film title', 2011);" +
-                    "insert into `film_genres`" +
-                    "VALUES (1, " + ids.get(0) + ")," +
-                    "       (1, " + ids.get(1) + ");"
+            "insert into `film`"
+                    + "VALUES (1, 'Film title', 2011);"
+                    + "insert into `film_genres`"
+                    + "VALUES (1, " + ids.get(0) + "),"
+                    + "       (1, " + ids.get(1) + ");"
     );
 
 
@@ -59,8 +59,7 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
     assertEquals(entities, current);
 
     jdbcTemplate.update(
-            "delete from film_genres;" +
-                    "delete from film;"
+            "delete from film_genres; delete from film;"
     );
   }
 }

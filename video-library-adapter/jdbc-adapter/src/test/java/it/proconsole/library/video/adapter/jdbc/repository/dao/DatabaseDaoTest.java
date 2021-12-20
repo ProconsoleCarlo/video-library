@@ -109,6 +109,13 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
     var savedIds = savedEntities.stream().map(EntityWithId::id).toList();
     var checkEntities = dao.findAllById(savedIds);
     assertEquals(savedEntities, checkEntities);
+
+    var entityToUpdate = anEntityForUpdate(savedEntities.get(0).id());
+    var entitiesToUpdate = List.of(entityToUpdate);
+
+    var updatedEntities = dao.saveAll(entitiesToUpdate);
+
+    assertEquals(entityToUpdate.id(), updatedEntities.get(0).id());
   }
 
   @Nested

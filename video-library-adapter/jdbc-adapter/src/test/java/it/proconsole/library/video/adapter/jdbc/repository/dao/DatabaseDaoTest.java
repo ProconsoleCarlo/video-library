@@ -53,13 +53,12 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
 
   @Test
   void deleteById() {
-    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
-    var ids = entities.stream().map(EntityWithId::id).toList();
-    assertFalse(dao.findAllById(ids).isEmpty());
+    var entity = dao.save(anEntity());
+    assertTrue(dao.findById(entity.id()).isPresent());
 
-    dao.deleteAllById(ids);
+    dao.deleteById(entity.id());
 
-    assertTrue(dao.findAllById(ids).isEmpty());
+    assertFalse(dao.findById(entity.id()).isPresent());
   }
 
   @Test
@@ -96,6 +95,7 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
     var entityToUpdate = anEntityForUpdate(savedEntity.id());
 
     var updatedEntity = dao.save(entityToUpdate);
+
     assertEquals(savedEntity.id(), updatedEntity.id());
   }
 

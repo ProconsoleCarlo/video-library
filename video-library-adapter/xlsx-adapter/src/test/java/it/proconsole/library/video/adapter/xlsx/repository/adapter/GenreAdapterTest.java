@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.xlsx.repository.adapter;
 
+import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GenreAdapterTest {
-  private static final List<GenreEnum> DOMAIN = Arrays.stream(GenreEnum.values()).toList();
+  private static final List<Genre> DOMAIN = Arrays.stream(GenreEnum.values()).map(it -> new Genre(it.id(), it)).toList();
   private static final String FRONTIER = "Azione, avventura, commedia, drammatico, fantastico, romantico, fantascienza, suspense/thriller";
 
   private final GenreAdapter adapter = new GenreAdapter();

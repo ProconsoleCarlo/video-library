@@ -20,7 +20,7 @@ public class FilmController {
   }
 
   @GetMapping("/films")
-  public Iterable<Film> getFilms() {
+  public List<Film> getFilms() {
     return filmRepository.findAll();
   }
 

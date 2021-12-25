@@ -17,5 +17,10 @@
       <artifactId>poi-ooxml</artifactId>
       <version>${apache-poi-ooxml.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
   </dependencies>
 </project>

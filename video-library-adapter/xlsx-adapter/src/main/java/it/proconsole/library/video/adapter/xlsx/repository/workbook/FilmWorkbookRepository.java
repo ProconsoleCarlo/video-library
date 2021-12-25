@@ -29,7 +29,6 @@ public class FilmWorkbookRepository {
 
   public FilmWorkbookRepository(String xlsxPath) {
     this.xlsxPath = xlsxPath;
-    //"./src/main/resources/CatalogoFilm.xlsx"
   }
 
   public List<FilmRow> findAll() {
@@ -38,14 +37,16 @@ public class FilmWorkbookRepository {
       var sheets = new XSSFWorkbook(xlsxPath);
       var filmsSheet = sheets.getSheetAt(FILM_SHEET);
       var spliterator = filmsSheet.spliterator();
-      return StreamSupport.stream(spliterator, false)
+      var films = StreamSupport.stream(spliterator, false)
               .skip(3)
               .filter(this::emptyRows)
               .map(this::adaptRow)
               .toList();
+      sheets.close();
+      return films;
     } catch (IOException | InvalidOperationException e) {
       logger.error("An error as occurred trying to read {}", xlsxPath, e);
-      throw new InvalidXlsxFileException();
+      throw new InvalidXlsxFileException(e);
     }
   }
 
@@ -80,23 +81,30 @@ public class FilmWorkbookRepository {
                         filmReviewId++;
                       }
               );
+
       i = i + 2;
     }
     return reviewRows;
   }
 
   private record DateComment(LocalDateTime date, @Nullable String comment) {
+    private static final Logger logger = LoggerFactory.getLogger(DateComment.class);
     private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
 
     public static Optional<DateComment> from(Cell dateCell, @Nullable Cell commentCell) {
-      var date = DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE;
-      var comment = Optional.ofNullable(commentCell)
-              .map(Cell::getStringCellValue)
-              .filter(it -> !it.isBlank())
-              .orElse(null);
-      if (date != null) {
-        return Optional.of(new DateComment(date, comment));
-      } else {
+      try {
+        var date = DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE;
+        var comment = Optional.ofNullable(commentCell)
+                .map(Cell::getStringCellValue)
+                .filter(it -> !it.isBlank())
+                .orElse(null);
+        if (date != null) {
+          return Optional.of(new DateComment(date, comment));
+        } else {
+          return Optional.empty();
+        }
+      } catch (Exception e) {
+        logger.error("Error parsing review {} {}", dateCell, commentCell, e);
         return Optional.empty();
       }
     }

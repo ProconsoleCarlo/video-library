@@ -12,11 +12,13 @@ public class ApplicationConfig {
   @Bean
   public Map<Protocol, FilmRepository> protocolRepositories(
           FilmRepository jdbcFilmRepository,
-          FilmRepository jpaFilmRepository
+          FilmRepository jpaFilmRepository,
+          FilmRepository xlsxFilmRepository
   ) {
     return Map.of(
             Protocol.JDBC, jdbcFilmRepository,
-            Protocol.JPA, jpaFilmRepository
+            Protocol.JPA, jpaFilmRepository,
+            Protocol.XLSX, xlsxFilmRepository
     );
   }
 }

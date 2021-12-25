@@ -22,6 +22,11 @@
       <artifactId>jpa-adapter</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>it.proconsole</groupId>
+      <artifactId>xlsx-adapter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

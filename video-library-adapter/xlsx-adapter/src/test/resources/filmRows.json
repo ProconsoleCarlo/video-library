@@ -1,0 +1,26 @@
+[
+  {
+    "id": 3,
+    "title": "300",
+    "year": 2007,
+    "genres": "Azione, guerra"
+  },
+  {
+    "id": 4,
+    "title": "2012",
+    "year": 2009,
+    "genres": "Avventura, azione, drammatico, fantascienza, suspense/thriller"
+  },
+  {
+    "id": 5,
+    "title": "(S)ex list - What's your number?",
+    "year": 2011,
+    "genres": "Commedia, romantico"
+  },
+  {
+    "id": 6,
+    "title": "007 - 01 Licenza di uccidere",
+    "year": 1962,
+    "genres": "Avventura, azione, suspense/thriller"
+  }
+]

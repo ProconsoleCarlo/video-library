@@ -15,16 +15,16 @@ class GenreAdapterTest {
   private final GenreAdapter adapter = new GenreAdapter();
 
   @Test
-  void toDomain() {
-    var current = adapter.toDomain(FRONTIER);
-
-    assertEquals(DOMAIN, current);
-  }
-
-  @Test
   void fromDomain() {
     var current = adapter.fromDomain(DOMAIN);
 
     assertEquals(FRONTIER, current);
+  }
+
+  @Test
+  void toDomain() {
+    var current = adapter.toDomain(FRONTIER);
+
+    assertEquals(DOMAIN, current);
   }
 }

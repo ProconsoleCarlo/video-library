@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GenreAdapter {
-  public List<GenreEnum> toDomain(String xlsxGenres) {
-    return Arrays.stream(xlsxGenres.toLowerCase().split(", "))
-            .map(this::domainFrom)
-            .toList();
-  }
-
   public String fromDomain(List<GenreEnum> genres) {
     return StringUtils.capitalize(
             genres.stream()
                     .map(this::xlsxFrom)
                     .collect(Collectors.joining(", "))
     );
+  }
+
+  public List<GenreEnum> toDomain(String xlsxGenres) {
+    return Arrays.stream(xlsxGenres.toLowerCase().split(", "))
+            .map(this::domainFrom)
+            .toList();
   }
 
   private GenreEnum domainFrom(String xlsxGenre) {

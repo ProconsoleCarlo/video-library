@@ -55,7 +55,7 @@ public class FilmWorkbookRepository {
 
   private FilmRow adaptRow(Row row) {
     return new FilmRow(
-            (long) row.getRowNum(),
+            (long) row.getRowNum() - 2,
             row.getCell(0).getStringCellValue(),
             (int) row.getCell(1).getNumericCellValue(),
             row.getCell(3).getStringCellValue(),

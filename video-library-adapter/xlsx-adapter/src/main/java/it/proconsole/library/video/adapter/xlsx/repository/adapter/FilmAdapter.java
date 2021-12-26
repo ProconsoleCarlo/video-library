@@ -3,6 +3,8 @@ package it.proconsole.library.video.adapter.xlsx.repository.adapter;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import it.proconsole.library.video.core.model.Film;
 
+import java.util.List;
+
 public class FilmAdapter {
   private final GenreAdapter genreAdapter;
   private final FilmReviewAdapter filmReviewAdapter;
@@ -12,7 +14,15 @@ public class FilmAdapter {
     this.filmReviewAdapter = filmReviewAdapter;
   }
 
-  public FilmRow fromDomain(Film film) {
+  public List<FilmRow> fromDomain(List<Film> films) {
+    return films.stream().map(this::fromDomain).toList();
+  }
+
+  public List<Film> toDomain(List<FilmRow> filmRows) {
+    return filmRows.stream().map(this::toDomain).toList();
+  }
+
+  private FilmRow fromDomain(Film film) {
     return new FilmRow(
             film.id(),
             film.title(),
@@ -22,7 +32,7 @@ public class FilmAdapter {
     );
   }
 
-  public Film toDomain(FilmRow filmRow) {
+  private Film toDomain(FilmRow filmRow) {
     return new Film(
             filmRow.id(),
             filmRow.title(),

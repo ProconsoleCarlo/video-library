@@ -25,9 +25,7 @@ public class XlsxFilmRepository implements FilmRepository {
 
   @Override
   public List<Film> findAll() {
-    return repository.findAll().stream()
-            .map(filmAdapter::toDomain)
-            .toList();
+    return filmAdapter.toDomain(repository.findAll());
   }
 
   @Override

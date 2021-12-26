@@ -1,10 +1,9 @@
 package it.proconsole.library.video.adapter.xlsx.repository.adapter;
 
+import it.proconsole.library.video.adapter.xlsx.exception.UnknownGenreException;
 import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,25 +11,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GenreAdapter {
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
   public String fromDomain(List<Genre> genres) {
     return StringUtils.capitalize(
             genres.stream()
-                    .map(this::xlsxFrom)
+                    .map(this::fromDomain)
                     .collect(Collectors.joining(", "))
     );
   }
 
   public List<Genre> toDomain(String xlsxGenres) {
     return Arrays.stream(xlsxGenres.toLowerCase().split(", "))
-            .map(this::domainFrom)
+            .map(this::genreToDomain)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .toList();
   }
 
-  private Optional<Genre> domainFrom(String genre) {
+  private Optional<Genre> genreToDomain(String genre) {
     var genreEnum = switch (genre) {
       case "avventura" -> GenreEnum.ADVENTURE;
       case "azione" -> GenreEnum.ACTION;
@@ -49,16 +46,13 @@ public class GenreAdapter {
       case "suspense/thriller" -> GenreEnum.THRILLER;
       case "western" -> GenreEnum.WESTERN;
       case "" -> null;
-      default -> {
-        logger.error("Unknown genre " + genre + " found");
-        yield null;
-      }
+      default -> throw new UnknownGenreException(genre);
     };
     return Optional.ofNullable(genreEnum)
             .map(it -> new Genre(it.id(), it));
   }
 
-  private String xlsxFrom(Genre genre) {
+  private String fromDomain(Genre genre) {
     return switch (genre.value()) {
       case ACTION -> "azione";
       case ADVENTURE -> "avventura";

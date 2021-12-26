@@ -1,8 +1,8 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
+import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
-import it.proconsole.library.video.adapter.xlsx.model.ReviewRow;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -64,19 +64,19 @@ public class FilmWorkbookRepository {
     );
   }
 
-  private List<ReviewRow> adaptFilmReview(Row row) {
-    var reviewRows = new ArrayList<ReviewRow>();
+  private List<FilmReviewRow> adaptFilmReview(Row row) {
+    var reviewRows = new ArrayList<FilmReviewRow>();
     int i = 16;
     while (i < row.getLastCellNum()) {
       DateComment.from(row.getCell(i), row.getCell(i + 1))
               .ifPresent(xlsxReview -> {
-                        reviewRows.add(
-                                new ReviewRow(
-                                        filmReviewId,
-                                        xlsxReview.date,
-                                        (int) row.getCell(2).getNumericCellValue(),
-                                        xlsxReview.comment
-                                )
+                reviewRows.add(
+                        new FilmReviewRow(
+                                filmReviewId,
+                                xlsxReview.date,
+                                (int) row.getCell(2).getNumericCellValue(),
+                                xlsxReview.comment
+                        )
                         );
                         filmReviewId++;
                       }

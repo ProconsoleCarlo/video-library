@@ -57,26 +57,26 @@ public class FilmWorkbookRepository {
   private FilmRow adaptRow(Row row) {
     return new FilmRow(
             (long) row.getRowNum() - 2,
-            row.getCell(0).getStringCellValue(),
-            (int) row.getCell(1).getNumericCellValue(),
-            row.getCell(3).getStringCellValue(),
+            row.getCell(CellValue.TITLE.id()).getStringCellValue(),
+            (int) row.getCell(CellValue.YEAR.id()).getNumericCellValue(),
+            row.getCell(CellValue.GENRES.id()).getStringCellValue(),
             adaptFilmReview(row)
     );
   }
 
   private List<FilmReviewRow> adaptFilmReview(Row row) {
     var reviewRows = new ArrayList<FilmReviewRow>();
-    int i = 16;
+    int i = CellValue.FIRST_REVIEW.id();
     while (i < row.getLastCellNum()) {
       DateComment.from(row.getCell(i), row.getCell(i + 1))
               .ifPresent(xlsxReview -> {
-                reviewRows.add(
-                        new FilmReviewRow(
-                                filmReviewId,
-                                xlsxReview.date,
-                                (int) row.getCell(2).getNumericCellValue(),
-                                xlsxReview.comment
-                        )
+                        reviewRows.add(
+                                new FilmReviewRow(
+                                        filmReviewId,
+                                        xlsxReview.date,
+                                        (int) row.getCell(2).getNumericCellValue(),
+                                        xlsxReview.comment
+                                )
                         );
                         filmReviewId++;
                       }

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class FilmAdapterTest {
   private static final LocalDateTime DATE = LocalDateTime.now();
   private static final List<Genre> DOMAIN_GENRE = List.of(new Genre(GenreEnum.ACTION.id(), GenreEnum.ACTION));
-  private static final String FRONTIER_GENRE = "Action";
+  private static final String FRONTIER_GENRE = "Azione";
   private static final List<FilmReview> DOMAIN_FILM_REVIEW = List.of(
           new FilmReview(1L, DATE, 10, "Review", 1L),
           new FilmReview(2L, DATE, 6, null, 1L)

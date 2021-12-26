@@ -7,6 +7,7 @@ import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRep
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.repository.Protocol;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,11 @@ public class JpaFilmRepository implements FilmRepository {
   public JpaFilmRepository(FilmCrudRepository filmCrudRepository, FilmReviewCrudRepository filmReviewCrudRepository) {
     this.filmCrudRepository = filmCrudRepository;
     this.filmReviewCrudRepository = filmReviewCrudRepository;
+  }
+
+  @Override
+  public Protocol protocol() {
+    return Protocol.JPA;
   }
 
   @Override

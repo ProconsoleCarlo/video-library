@@ -1,43 +1,41 @@
 package it.proconsole.library.video.rest.controller;
 
-import it.proconsole.library.video.core.model.Film;
-import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.model.FilmReview;
+import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.repository.Protocol;
 import it.proconsole.library.video.rest.exception.UnknownProtocolException;
 import it.proconsole.library.video.rest.repository.ProtocolRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping
-public class FilmController {
-  private final ProtocolRepository<FilmRepository> filmProtocolRepository;
+public class FilmReviewController {
+  private final ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository;
 
-  public FilmController(ProtocolRepository<FilmRepository> filmProtocolRepository) {
-    this.filmProtocolRepository = filmProtocolRepository;
+  public FilmReviewController(ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository) {
+    this.filmReviewProtocolRepository = filmReviewProtocolRepository;
   }
 
-  @GetMapping("/{protocol}/films")
-  public List<Film> getFilms(@PathVariable String protocol) {
+  @PostMapping("/{protocol}/review")
+  public FilmReview updateReview(@PathVariable String protocol, @RequestBody FilmReview review) {
     try {
-      return filmProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).findAll();
+      return filmReviewProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).save(review);
     } catch (IllegalArgumentException e) {
       throw new UnknownProtocolException(protocol);
     }
   }
 
-  @PutMapping("/{protocol}/films")
-  public List<Film> updateFilms(@PathVariable String protocol, @RequestBody List<Film> films) {
+  @PutMapping("/{protocol}/review")
+  public FilmReview insertReview(@PathVariable String protocol, @RequestBody FilmReview review) {
     try {
-      return filmProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).saveAll(films);
+      return filmReviewProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).save(review);
     } catch (IllegalArgumentException e) {
       throw new UnknownProtocolException(protocol);
     }

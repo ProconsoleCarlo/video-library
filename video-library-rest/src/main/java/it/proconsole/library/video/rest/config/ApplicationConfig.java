@@ -1,24 +1,29 @@
 package it.proconsole.library.video.rest.config;
 
 import it.proconsole.library.video.core.repository.FilmRepository;
-import it.proconsole.library.video.rest.controller.Protocol;
+import it.proconsole.library.video.core.repository.FilmReviewRepository;
+import it.proconsole.library.video.rest.repository.FilmProtocolRepository;
+import it.proconsole.library.video.rest.repository.FilmReviewProtocolRepository;
+import it.proconsole.library.video.rest.repository.ProtocolRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 public class ApplicationConfig {
   @Bean
-  public Map<Protocol, FilmRepository> protocolRepositories(
+  public ProtocolRepository<FilmRepository> filmProtocolRepository(
           FilmRepository jdbcFilmRepository,
           FilmRepository jpaFilmRepository,
           FilmRepository xlsxFilmRepository
   ) {
-    return Map.of(
-            Protocol.JDBC, jdbcFilmRepository,
-            Protocol.JPA, jpaFilmRepository,
-            Protocol.XLSX, xlsxFilmRepository
-    );
+    return new FilmProtocolRepository(jdbcFilmRepository, jpaFilmRepository, xlsxFilmRepository);
+  }
+
+  @Bean
+  public ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository(
+          FilmReviewRepository jdbcFilmReviewRepository,
+          FilmReviewRepository jpaFilmReviewRepository
+  ) {
+    return new FilmReviewProtocolRepository(jdbcFilmReviewRepository, jpaFilmReviewRepository);
   }
 }

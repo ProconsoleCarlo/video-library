@@ -3,6 +3,8 @@ package it.proconsole.library.video.rest.controller;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.repository.Protocol;
+import it.proconsole.library.video.rest.repository.ProtocolRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
 
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -29,7 +29,7 @@ class FilmControllerIT {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @MockBean
-  private Map<Protocol, FilmRepository> protocolRepositories;
+  private ProtocolRepository<FilmRepository> filmProtocolRepository;
   @Mock
   private FilmRepository filmRepository;
 
@@ -41,7 +41,7 @@ class FilmControllerIT {
     @ParameterizedTest
     @EnumSource(Protocol.class)
     void getFilms(Protocol protocol) throws Exception {
-      when(protocolRepositories.get(protocol)).thenReturn(filmRepository);
+      when(filmProtocolRepository.getBy(protocol)).thenReturn(filmRepository);
       when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
 
       mvc.perform(get("/" + protocol.name().toLowerCase() + "/films"))
@@ -54,7 +54,7 @@ class FilmControllerIT {
       mvc.perform(get("/invalidProtocol/films"))
               .andExpect(status().isNotFound());
 
-      verifyNoInteractions(protocolRepositories);
+      verifyNoInteractions(filmProtocolRepository);
       verifyNoInteractions(filmRepository);
     }
   }

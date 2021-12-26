@@ -3,6 +3,8 @@ package it.proconsole.library.video.rest.controller;
 import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.repository.Protocol;
+import it.proconsole.library.video.rest.repository.ProtocolRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
 
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ class FilmControllerTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 
   @Mock
-  private Map<Protocol, FilmRepository> protocolRepositories;
+  private ProtocolRepository<FilmRepository> filmProtocolRepository;
   @Mock
   private FilmRepository filmRepository;
 
@@ -36,7 +36,7 @@ class FilmControllerTest {
 
   @BeforeEach
   void setUp() {
-    mvc = standaloneSetup(new FilmController(protocolRepositories))
+    mvc = standaloneSetup(new FilmController(filmProtocolRepository))
             .setMessageConverters(new MappingJackson2HttpMessageConverter(Fixtures.springObjectMapper()))
             .build();
   }
@@ -46,7 +46,7 @@ class FilmControllerTest {
     @ParameterizedTest
     @EnumSource(Protocol.class)
     void getFilms(Protocol protocol) throws Exception {
-      when(protocolRepositories.get(protocol)).thenReturn(filmRepository);
+      when(filmProtocolRepository.getBy(protocol)).thenReturn(filmRepository);
       when(filmRepository.findAll()).thenReturn(Fixtures.readListFromClasspath(FILMS_JSON, Film.class));
 
       mvc.perform(get("/" + protocol.name().toLowerCase() + "/films"))
@@ -59,7 +59,7 @@ class FilmControllerTest {
       mvc.perform(get("/invalidProtocol/films"))
               .andExpect(status().isNotFound());
 
-      verifyNoInteractions(protocolRepositories);
+      verifyNoInteractions(filmProtocolRepository);
       verifyNoInteractions(filmRepository);
     }
   }

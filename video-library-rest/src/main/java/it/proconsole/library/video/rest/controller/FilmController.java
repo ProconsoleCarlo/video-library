@@ -27,17 +27,17 @@ public class FilmController {
 
   @GetMapping("/{protocol}/films")
   public List<Film> getFilms(@PathVariable String protocol) {
-    try {
-      return filmProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).findAll();
-    } catch (IllegalArgumentException e) {
-      throw new UnknownProtocolException(protocol);
-    }
+    return filmProtocolRepository.getBy(protocolFrom(protocol)).findAll();
   }
 
   @PutMapping("/{protocol}/films")
   public List<Film> updateFilms(@PathVariable String protocol, @RequestBody List<Film> films) {
+    return filmProtocolRepository.getBy(protocolFrom(protocol)).saveAll(films);
+  }
+
+  private Protocol protocolFrom(String protocol) {
     try {
-      return filmProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).saveAll(films);
+      return Protocol.valueOf(protocol.toUpperCase());
     } catch (IllegalArgumentException e) {
       throw new UnknownProtocolException(protocol);
     }

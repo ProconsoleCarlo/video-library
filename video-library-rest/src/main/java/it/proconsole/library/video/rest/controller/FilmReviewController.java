@@ -25,17 +25,17 @@ public class FilmReviewController {
 
   @PostMapping("/{protocol}/review")
   public FilmReview updateReview(@PathVariable String protocol, @RequestBody FilmReview review) {
-    try {
-      return filmReviewProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).save(review);
-    } catch (IllegalArgumentException e) {
-      throw new UnknownProtocolException(protocol);
-    }
+    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review);
   }
 
   @PutMapping("/{protocol}/review")
   public FilmReview insertReview(@PathVariable String protocol, @RequestBody FilmReview review) {
+    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review);
+  }
+
+  private Protocol protocolFrom(String protocol) {
     try {
-      return filmReviewProtocolRepository.getBy(Protocol.valueOf(protocol.toUpperCase())).save(review);
+      return Protocol.valueOf(protocol.toUpperCase());
     } catch (IllegalArgumentException e) {
       throw new UnknownProtocolException(protocol);
     }

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GenreAdapterTest {
   private static final List<Genre> DOMAIN = Arrays.stream(GenreEnum.values()).map(it -> new Genre(it.id(), it)).toList();
-  private static final String FRONTIER = "Azione, avventura, commedia, drammatico, fantastico, romantico, fantascienza, suspense/thriller";
+  private static final String FRONTIER = "Azione, avventura, biografico, commedia, crimine, catastrofico, documentario, drammatico, erotico, fantastico, storico, horror, romantico, fantascienza, suspense/thriller, western";
 
   private final GenreAdapter adapter = new GenreAdapter();
 

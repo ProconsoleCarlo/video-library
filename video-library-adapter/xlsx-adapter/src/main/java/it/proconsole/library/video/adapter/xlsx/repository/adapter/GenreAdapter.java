@@ -66,7 +66,7 @@ public class GenreAdapter {
       case COMEDY -> "commedia";
       case CRIME -> "crimine";
       case DISASTER -> "catastrofico";
-      case DOCUMENTARY -> "documentary";
+      case DOCUMENTARY -> "documentario";
       case DRAMA -> "drammatico";
       case EROTIC -> "erotico";
       case FANTASY -> "fantastico";

@@ -38,7 +38,7 @@ public class FilmWorkbookRepository {
       var spliterator = filmsSheet.spliterator();
       return StreamSupport.stream(spliterator, false)
               .skip(3)
-              .filter(this::emptyRows)
+              .filter(this::notEmptyRows)
               .map(this::adaptRow)
               .toList();
     } catch (IOException | InvalidOperationException e) {
@@ -47,7 +47,7 @@ public class FilmWorkbookRepository {
     }
   }
 
-  private boolean emptyRows(Row row) {
+  private boolean notEmptyRows(Row row) {
     return row.getCell(0) != null;
   }
 

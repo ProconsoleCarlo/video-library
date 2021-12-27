@@ -8,6 +8,6 @@ public class UnknownProtocolException extends RuntimeException {
   }
 
   public UnknownProtocolException(Protocol protocol) {
-    super("Unknown protocol " + protocol + " received");
+    super("Action not allowed for protocol " + protocol);
   }
 }

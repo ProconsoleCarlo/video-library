@@ -82,7 +82,7 @@ public abstract class DatabaseDao<T extends EntityWithId> {
     var params = entity.data().values().toArray();
     var setSql = entity.data().keySet().stream().map(c -> c + "=?").collect(Collectors.joining(","));
     jdbcTemplate.update("update " + tableName + " set " + setSql + " where id = " + entity.id(), params);
-    return entity;
+    return findById(entity.id()).orElseThrow();
   }
   /*
 

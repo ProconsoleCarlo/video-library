@@ -10,5 +10,7 @@ public record Film(@Nullable Long id,
                    List<Genre> genres,
                    List<FilmReview> reviews
 ) {
-
+  public Film(String title, int year, List<Genre> genres, List<FilmReview> reviews) {
+    this(null, title, year, genres, reviews);
+  }
 }

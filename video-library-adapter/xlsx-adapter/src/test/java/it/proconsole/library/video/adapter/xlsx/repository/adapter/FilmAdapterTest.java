@@ -28,13 +28,13 @@ class FilmAdapterTest {
           new FilmReview(1L, DATE, 10, "Review", 1L),
           new FilmReview(2L, DATE, 6, null, 1L)
   );
-  private static final List<Film> DOMAIN = List.of(
-          new Film(1L, "Title", 2021, DOMAIN_GENRE, DOMAIN_FILM_REVIEW),
-          new Film(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
-  );
   private static final List<FilmReviewRow> FRONTIER_FILM_REVIEW = List.of(
           new FilmReviewRow(1L, DATE, 10, "Review"),
           new FilmReviewRow(2L, DATE, 6, null)
+  );
+  private static final List<Film> DOMAIN = List.of(
+          new Film(1L, "Title", 2021, DOMAIN_GENRE, DOMAIN_FILM_REVIEW),
+          new Film(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
   private static final List<FilmRow> FRONTIER = List.of(
           new FilmRow(1L, "Title", 2021, FRONTIER_GENRE, FRONTIER_FILM_REVIEW),

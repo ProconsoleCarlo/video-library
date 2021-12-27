@@ -5,8 +5,8 @@ import it.proconsole.library.video.adapter.xlsx.repository.workbook.FilmWorkbook
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
 import it.proconsole.library.video.core.repository.Protocol;
+import org.apache.commons.lang3.NotImplementedException;
 
-import java.util.Collections;
 import java.util.List;
 
 public class XlsxFilmRepository implements FilmRepository {
@@ -30,6 +30,6 @@ public class XlsxFilmRepository implements FilmRepository {
 
   @Override
   public List<Film> saveAll(List<Film> films) {
-    return Collections.emptyList();
+    throw new NotImplementedException();
   }
 }

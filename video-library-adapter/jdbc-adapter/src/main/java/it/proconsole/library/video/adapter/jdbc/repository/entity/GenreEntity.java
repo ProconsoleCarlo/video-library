@@ -20,7 +20,7 @@ public record GenreEntity(@Nullable Long id, GenreEnum value) implements EntityW
   }
 
   @Override
-  public Map<String, ?> data() {
-    return Map.of("value", value);
+  public Map<String, Object> data() {
+    return Map.of("value", value.name());
   }
 }

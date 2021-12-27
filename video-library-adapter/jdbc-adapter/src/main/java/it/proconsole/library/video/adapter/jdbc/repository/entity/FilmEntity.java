@@ -27,7 +27,7 @@ public record FilmEntity(@Nullable Long id, String title, Integer year) implemen
   }
 
   @Override
-  public Map<String, ?> data() {
+  public Map<String, Object> data() {
     return Map.of(
             "title", title,
             "year", year

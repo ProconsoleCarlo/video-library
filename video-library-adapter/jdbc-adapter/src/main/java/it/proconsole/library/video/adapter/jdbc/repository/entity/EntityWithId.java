@@ -5,5 +5,5 @@ import java.util.Map;
 public interface EntityWithId {
   Long id();
 
-  Map<String, ?> data();
+  Map<String, Object> data();
 }

@@ -33,7 +33,7 @@ public record FilmReviewEntity(
   }
 
   @Override
-  public Map<String, ?> data() {
+  public Map<String, Object> data() {
     return new HashMap<>() {{
       put("date", date);
       put("rating", rating);

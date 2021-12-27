@@ -45,8 +45,8 @@ public class FilmWorkbookRepository {
       sheets.close();
       return films;
     } catch (IOException | InvalidOperationException e) {
-      logger.error("An error as occurred trying to read {}", xlsxPath, e);
-      throw new InvalidXlsxFileException(e);
+      logger.error("Error trying to read {}", xlsxPath, e);
+      throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }
 

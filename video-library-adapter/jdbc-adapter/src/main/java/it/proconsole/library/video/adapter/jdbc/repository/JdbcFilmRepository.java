@@ -10,6 +10,7 @@ import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.repository.Protocol;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,11 @@ public class JdbcFilmRepository implements FilmRepository {
     this.filmDao = filmDao;
     this.genreDao = genreDao;
     this.filmReviewDao = filmReviewDao;
+  }
+
+  @Override
+  public Protocol protocol() {
+    return Protocol.JDBC;
   }
 
   @Override

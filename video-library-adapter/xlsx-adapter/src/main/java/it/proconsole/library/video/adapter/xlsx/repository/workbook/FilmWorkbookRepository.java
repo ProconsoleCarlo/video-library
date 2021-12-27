@@ -33,17 +33,14 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> findAll() {
     filmReviewId = 1L;
-    try {
-      var sheets = new XSSFWorkbook(xlsxPath);
+    try (var sheets = new XSSFWorkbook(xlsxPath)) {
       var filmsSheet = sheets.getSheetAt(FILM_SHEET);
       var spliterator = filmsSheet.spliterator();
-      var films = StreamSupport.stream(spliterator, false)
+      return StreamSupport.stream(spliterator, false)
               .skip(3)
               .filter(this::emptyRows)
               .map(this::adaptRow)
               .toList();
-      sheets.close();
-      return films;
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);

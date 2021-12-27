@@ -16,6 +16,10 @@ public class GenreDao extends DatabaseDao<GenreEntity> {
     return jdbcTemplate().query("select id, value from film_genres join genre g on g.id = film_genres.genre_id where film_id = ?", rowMapper(), filmId);
   }
 
+  public void addToFilmId(GenreEntity entity, Long filmId) {
+    jdbcTemplate().update("insert into film_genres values (?, ?)", filmId, entity.id());
+  }
+
   @Override
   RowMapper<GenreEntity> rowMapper() {
     return (rs, rowNum) -> new GenreEntity(rs.getLong("id"), GenreEnum.valueOf(rs.getString("value")));

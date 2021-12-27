@@ -8,7 +8,7 @@ import java.util.Map;
 
 public record GenreEntity(@Nullable Long id, GenreEnum value) implements EntityWithId {
   public GenreEntity(GenreEnum value) {
-    this(null, value);
+    this(value.id(), value);
   }
 
   public static GenreEntity fromDomain(Genre genre) {

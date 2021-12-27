@@ -72,7 +72,6 @@ public abstract class DatabaseDao<T extends EntityWithId> {
 
   abstract RowMapper<T> rowMapper();
 
-
   private T insert(T entity) {
     var id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(entity));
     return findById(id.longValue()).orElseThrow();

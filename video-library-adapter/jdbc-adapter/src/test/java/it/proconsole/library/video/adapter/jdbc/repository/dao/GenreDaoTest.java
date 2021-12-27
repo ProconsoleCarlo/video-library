@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
@@ -17,40 +16,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @JdbcTest
 @Sql({"/schema.sql"})
 class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
-  private JdbcTemplate jdbcTemplate;
-
   @Autowired
   private DataSource dataSource;
 
   @BeforeEach
   void setUp() {
-    jdbcTemplate = new JdbcTemplate(dataSource);
     dao = new GenreDao(dataSource);
   }
 
   @Override
   GenreEntity anEntity() {
-    return new GenreEntity(GenreEnum.ACTION);
+    return new GenreEntity(null, GenreEnum.ACTION);
   }
 
   @Override
   GenreEntity anEntityForUpdate(Long id) {
-    return new GenreEntity(id, GenreEnum.ACTION);
+    return new GenreEntity(id, GenreEnum.COMEDY);
   }
 
   @Test
   void findByFilmId() {
     var entities = dao.saveAll(List.of(
-            new GenreEntity(GenreEnum.COMEDY),
-            new GenreEntity(GenreEnum.ACTION)
+            new GenreEntity(GenreEnum.ACTION.id(), GenreEnum.ACTION),
+            new GenreEntity(GenreEnum.ADVENTURE.id(), GenreEnum.ADVENTURE)
     ));
-    var ids = entities.stream().map(GenreEntity::id).toList();
-    jdbcTemplate.update(
-            "insert into `film`"
-                    + "VALUES (1, 'Film title', 2011);"
-                    + "insert into `film_genres`"
-                    + "VALUES (1, " + ids.get(0) + "),"
-                    + "       (1, " + ids.get(1) + ");"
+    dao.jdbcTemplate().update(
+            """
+                    insert into `film`
+                    values (1, 'Film title', 2011);
+                    insert into `film_genres`
+                    values (1, %d),
+                           (1, %d);
+                           """.formatted(GenreEnum.ACTION.id(), GenreEnum.ADVENTURE.id())
     );
 
 
@@ -58,8 +55,35 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
 
     assertEquals(entities, current);
 
-    jdbcTemplate.update(
-            "delete from film_genres; delete from film;"
+    cleanSupportTables();
+  }
+
+  @Test
+  void saveByFilmId() {
+    var entities = dao.saveAll(List.of(
+            new GenreEntity(GenreEnum.ACTION),
+            new GenreEntity(GenreEnum.ADVENTURE)
+    ));
+
+    dao.jdbcTemplate().update(
+            """
+                    insert into film
+                    values (1, 'Film title', 2011);
+                    insert into film_genres
+                    values (1, %d)
+                    """.formatted(GenreEnum.ACTION.id())
     );
+
+    ((GenreDao) dao).addToFilmId(new GenreEntity(GenreEnum.ADVENTURE), 1L);
+
+    var current = ((GenreDao) dao).findByFilmId(1L);
+
+    assertEquals(entities, current);
+
+    cleanSupportTables();
+  }
+
+  private void cleanSupportTables() {
+    dao.jdbcTemplate().update("delete from film_genres; delete from film;");
   }
 }

@@ -98,11 +98,7 @@ public class FilmWorkbookRepository {
                 .map(Cell::getStringCellValue)
                 .filter(it -> !it.isBlank())
                 .orElse(null);
-        if (date != null) {
-          return Optional.of(new DateComment(date, comment));
-        } else {
-          return Optional.empty();
-        }
+        return Optional.ofNullable(date).map(it -> new DateComment(it, comment));
       } catch (Exception e) {
         logger.error("Error parsing review {} {}", dateCell, commentCell, e);
         return Optional.empty();

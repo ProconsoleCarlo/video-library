@@ -1,9 +1,11 @@
 package it.proconsole.library.video.adapter.xlsx.model;
 
+import org.springframework.lang.Nullable;
+
 import java.util.List;
 
 public record FilmRow(
-        Long id,
+        @Nullable Long id,
         String title,
         Integer year,
         String genres,

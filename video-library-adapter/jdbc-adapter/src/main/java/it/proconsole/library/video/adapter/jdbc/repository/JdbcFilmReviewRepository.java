@@ -1,7 +1,7 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
+import it.proconsole.library.video.adapter.jdbc.entity.FilmReviewEntity;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.repository.Protocol;

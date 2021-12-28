@@ -1,11 +1,11 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
+import it.proconsole.library.video.adapter.jdbc.entity.FilmEntity;
+import it.proconsole.library.video.adapter.jdbc.entity.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jdbc.entity.GenreEntity;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmEntity;
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
-import it.proconsole.library.video.adapter.jdbc.repository.entity.GenreEntity;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.model.Genre;
@@ -42,9 +42,15 @@ public class JdbcFilmRepository implements FilmRepository {
   @Override
   public List<Film> saveAll(List<Film> films) {
     var filmEntities = films.stream().map(FilmEntity::fromDomain).toList();
-    var ids = filmDao.saveAll(filmEntities).stream().map(FilmEntity::id).toList();
+
+    var genreEntities = films.stream()
+            .flatMap(it -> it.genres().stream())
+            .map(GenreEntity::fromDomain)
+            .toList();
+
     var filmReviewEntities = films.stream().flatMap(f -> f.reviews().stream()).map(FilmReviewEntity::fromDomain).toList();
     filmReviewDao.saveAll(filmReviewEntities);
+    var ids = filmDao.saveAll(filmEntities).stream().map(FilmEntity::id).toList();
     return findAllById(ids);
   }
 

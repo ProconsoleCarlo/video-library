@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.repository.entity.GenreEntity;
+import it.proconsole.library.video.adapter.jdbc.entity.GenreEntity;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

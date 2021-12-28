@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmEntity;
+import it.proconsole.library.video.adapter.jdbc.entity.FilmEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;

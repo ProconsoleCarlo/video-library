@@ -1,4 +1,4 @@
-package it.proconsole.library.video.adapter.jdbc.repository.entity;
+package it.proconsole.library.video.adapter.jdbc.entity;
 
 import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;

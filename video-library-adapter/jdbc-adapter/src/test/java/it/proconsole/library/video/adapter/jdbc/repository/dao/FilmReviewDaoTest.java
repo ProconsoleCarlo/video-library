@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jdbc.entity.FilmReviewEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

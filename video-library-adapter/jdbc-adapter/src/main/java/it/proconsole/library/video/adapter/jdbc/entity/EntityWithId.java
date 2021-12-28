@@ -1,4 +1,4 @@
-package it.proconsole.library.video.adapter.jdbc.repository.entity;
+package it.proconsole.library.video.adapter.jdbc.entity;
 
 import java.util.Map;
 

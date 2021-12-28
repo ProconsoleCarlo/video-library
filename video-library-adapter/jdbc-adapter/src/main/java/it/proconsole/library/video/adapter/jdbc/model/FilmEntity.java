@@ -1,4 +1,4 @@
-package it.proconsole.library.video.adapter.jdbc.entity;
+package it.proconsole.library.video.adapter.jdbc.model;
 
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;

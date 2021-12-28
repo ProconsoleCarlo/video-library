@@ -1,8 +1,8 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
-import it.proconsole.library.video.adapter.jdbc.entity.FilmEntity;
-import it.proconsole.library.video.adapter.jdbc.entity.FilmReviewEntity;
-import it.proconsole.library.video.adapter.jdbc.entity.GenreEntity;
+import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
+import it.proconsole.library.video.adapter.jdbc.model.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jdbc.model.GenreEntity;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;

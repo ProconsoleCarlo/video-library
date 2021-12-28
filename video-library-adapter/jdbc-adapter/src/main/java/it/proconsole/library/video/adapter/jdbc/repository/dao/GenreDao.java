@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.entity.GenreEntity;
+import it.proconsole.library.video.adapter.jdbc.model.GenreEntity;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.springframework.jdbc.core.RowMapper;
 

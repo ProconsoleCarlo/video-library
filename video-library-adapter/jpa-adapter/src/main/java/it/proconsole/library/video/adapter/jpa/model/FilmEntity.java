@@ -94,8 +94,8 @@ public class FilmEntity {
     return reviews;
   }
 
-  public void setReviews(List<FilmReviewEntity> filmReviewEntities) {
-    this.reviews = filmReviewEntities;
+  public void setReviews(List<FilmReviewEntity> reviews) {
+    this.reviews = reviews;
   }
 
   @Override

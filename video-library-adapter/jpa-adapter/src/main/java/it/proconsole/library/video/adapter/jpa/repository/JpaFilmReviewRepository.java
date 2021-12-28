@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.repository;
 
-import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
+import it.proconsole.library.video.adapter.jpa.model.FilmEntity;
 import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
 import it.proconsole.library.video.core.model.FilmReview;
@@ -26,6 +26,8 @@ public class JpaFilmReviewRepository implements FilmReviewRepository {
 
   @Override
   public FilmReview save(FilmReview review) {
-    return filmReviewAdapter.toDomain(filmReviewCrudRepository.save(FilmReviewEntity.fromDomain(review)));
+    var entity = filmReviewAdapter.fromDomain(review, new FilmEntity());
+    var saved = filmReviewCrudRepository.save(entity);
+    return filmReviewAdapter.toDomain(saved);
   }
 }

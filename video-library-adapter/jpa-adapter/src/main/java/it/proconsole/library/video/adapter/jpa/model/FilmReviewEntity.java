@@ -3,6 +3,7 @@ package it.proconsole.library.video.adapter.jpa.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import it.proconsole.library.video.core.model.FilmReview;
 import org.hibernate.Hibernate;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,7 @@ public class FilmReviewEntity {
   private Integer rating;
   @Lob
   @Column(name = "detail")
+  @Nullable
   private String detail;
 
   @JsonBackReference
@@ -49,16 +51,6 @@ public class FilmReviewEntity {
     this.rating = rating;
     this.detail = detail;
     this.film = null;
-  }
-
-  @Deprecated
-  public static FilmReviewEntity fromDomain(FilmReview filmReview) {
-    return new FilmReviewEntity(
-            filmReview.id(),
-            filmReview.date(),
-            filmReview.rating(),
-            filmReview.detail()
-    );
   }
 
   public FilmReview toDomain() {
@@ -89,11 +81,12 @@ public class FilmReviewEntity {
     this.rating = rating;
   }
 
+  @Nullable
   public String getDetail() {
     return detail;
   }
 
-  public void setDetail(String detail) {
+  public void setDetail(@Nullable String detail) {
     this.detail = detail;
   }
 

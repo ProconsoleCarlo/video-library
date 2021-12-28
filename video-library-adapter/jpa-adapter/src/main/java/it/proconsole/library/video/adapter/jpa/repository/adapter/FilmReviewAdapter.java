@@ -18,7 +18,7 @@ public class FilmReviewAdapter {
     return filmReviews.stream().map(this::toDomain).toList();
   }
 
-  private FilmReviewEntity fromDomain(FilmReview filmReview, @Nullable FilmEntity film) {
+  public FilmReviewEntity fromDomain(FilmReview filmReview, @Nullable FilmEntity film) {
     var review = new FilmReviewEntity();
     Optional.ofNullable(filmReview.id()).ifPresent(review::setId);
     review.setDate(filmReview.date());

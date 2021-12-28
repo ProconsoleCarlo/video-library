@@ -19,9 +19,10 @@ public class JpaConfig {
   @Bean
   public FilmReviewRepository jpaFilmReviewRepository(
           FilmReviewCrudRepository filmReviewCrudRepository,
-          FilmCrudRepository filmCrudRepository
+          FilmCrudRepository filmCrudRepository,
+          FilmReviewAdapter jpaFilmReviewAdapter
   ) {
-    return new JpaFilmReviewRepository(filmReviewCrudRepository, filmCrudRepository, new FilmReviewAdapter());
+    return new JpaFilmReviewRepository(filmReviewCrudRepository, filmCrudRepository, jpaFilmReviewAdapter);
   }
 
   @Bean

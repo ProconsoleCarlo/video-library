@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@Sql({"/schema.sql", "/data.sql"})
+@Sql({"/schema.sql", "/dataOld.sql"})
 class JpaFilmReviewRepositoryTest {
   @Autowired
   private FilmReviewCrudRepository filmReviewCrudRepository;

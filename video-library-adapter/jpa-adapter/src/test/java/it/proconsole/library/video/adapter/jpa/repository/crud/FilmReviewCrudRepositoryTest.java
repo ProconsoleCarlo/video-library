@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-@Sql({"/schema.sql", "/data.sql"})
+@Sql({"/schema.sql", "/dataOld.sql"})
 class FilmReviewCrudRepositoryTest {
   @Autowired
   private FilmReviewCrudRepository filmReviewRepository;
@@ -19,7 +19,7 @@ class FilmReviewCrudRepositoryTest {
   @Test
   void findByFilmId() {
     var filmId = 1L;
-    var review = new FilmReviewEntity(1L, LocalDateTime.now(), 8, "This is a review", filmId);
+    var review = new FilmReviewEntity(1L, LocalDateTime.now(), 8, "This is a review");
 
     var savedReview = filmReviewRepository.save(review);
 

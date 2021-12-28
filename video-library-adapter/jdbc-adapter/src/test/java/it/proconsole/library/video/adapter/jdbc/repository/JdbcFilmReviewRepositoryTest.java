@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
-@Sql({"/schema.sql", "/data.sql"})
+@Sql({"/schema.sql", "/dataOld.sql"})
 class JdbcFilmReviewRepositoryTest {
   @Autowired
   private DataSource dataSource;

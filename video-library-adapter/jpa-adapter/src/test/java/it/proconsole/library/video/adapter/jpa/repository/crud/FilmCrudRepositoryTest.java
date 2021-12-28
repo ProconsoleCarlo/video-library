@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@Sql({"/schema.sql", "/data.sql"})
+@Sql({"/schema.sql", "/dataOld.sql"})
 class FilmCrudRepositoryTest {
   private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films.json";
 

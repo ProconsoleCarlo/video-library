@@ -1,17 +1,14 @@
 package it.proconsole.library.video.adapter.jpa.repository;
 
 import it.proconsole.library.video.adapter.jpa.model.FilmEntity;
-import it.proconsole.library.video.adapter.jpa.model.FilmReviewEntity;
 import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
 import it.proconsole.library.video.core.model.Film;
-import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmRepository;
 import it.proconsole.library.video.core.repository.Protocol;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,33 +71,5 @@ public class JpaFilmRepository implements FilmRepository {
             genreAdapter.toDomain(film.getGenres()),
             filmReviewAdapter.toDomain(film.getReviews())
     );
-  }
-
-  private FilmEntity from(Film film) {
-    return Optional.ofNullable(film.id())
-            .map(it -> FilmEntity.fromDomain(film, from(film.reviews(), it)))
-            .orElseGet(() -> new FilmEntity(film.id(), film.title(), film.year(), Collections.emptyList(), Collections.emptyList()));
-  }
-
-  private List<FilmReviewEntity> from(List<FilmReview> reviews, Long filmId) {
-    return reviews.stream().map(it -> FilmReviewEntity.fromDomain(it, filmCrudRepository.getById(filmId))).toList();
-  }
-
-  private List<Film> findAllById(List<Long> filmIds) {
-    return filmCrudRepository.findAllById(filmIds).stream()
-            .map(this::enrichFilm)
-            .toList();
-  }
-
-  private Film enrichFilm(FilmEntity entity) {
-    return Optional.ofNullable(entity.getId())
-            .map(id -> entity.toDomain(retrieveReviewsFor(id)))
-            .orElseGet(entity::toDomain);
-  }
-
-  private List<FilmReview> retrieveReviewsFor(Long filmId) {
-    return filmReviewCrudRepository.findByFilmId(filmId).stream()
-            .map(FilmReviewEntity::toDomain)
-            .toList();
   }
 }

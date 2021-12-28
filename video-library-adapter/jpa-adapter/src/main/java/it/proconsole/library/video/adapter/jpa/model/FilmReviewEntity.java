@@ -43,14 +43,6 @@ public class FilmReviewEntity {
   public FilmReviewEntity() {
   }
 
-  public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail, FilmEntity film) {
-    this.id = id;
-    this.date = date;
-    this.rating = rating;
-    this.detail = detail;
-    this.film = film;
-  }
-
   public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail) {
     this.id = id;
     this.date = date;
@@ -59,16 +51,7 @@ public class FilmReviewEntity {
     this.film = null;
   }
 
-  public static FilmReviewEntity fromDomain(FilmReview filmReview, FilmEntity film) {
-    return new FilmReviewEntity(
-            filmReview.id(),
-            filmReview.date(),
-            filmReview.rating(),
-            filmReview.detail(),
-            film
-    );
-  }
-
+  @Deprecated
   public static FilmReviewEntity fromDomain(FilmReview filmReview) {
     return new FilmReviewEntity(
             filmReview.id(),

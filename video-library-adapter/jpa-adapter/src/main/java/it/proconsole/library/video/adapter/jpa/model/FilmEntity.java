@@ -2,7 +2,6 @@ package it.proconsole.library.video.adapter.jpa.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.proconsole.library.video.core.model.Film;
-import it.proconsole.library.video.core.model.FilmReview;
 import org.hibernate.Hibernate;
 
 import javax.persistence.CascadeType;
@@ -55,16 +54,7 @@ public class FilmEntity {
     this.reviews = reviews;
   }
 
-  public static FilmEntity fromDomain(Film film, List<FilmReviewEntity> filmReviews) {
-    return new FilmEntity(
-            film.id(),
-            film.title(),
-            film.year(),
-            film.genres().stream().map(GenreEntity::fromDomain).toList(),
-            filmReviews
-    );
-  }
-
+  @Deprecated
   public Film toDomain() {
     return new Film(
             id,
@@ -72,16 +62,6 @@ public class FilmEntity {
             year,
             genres.stream().map(GenreEntity::toDomain).toList(),
             Collections.emptyList()
-    );
-  }
-
-  public Film toDomain(List<FilmReview> reviews) {
-    return new Film(
-            id,
-            title,
-            year,
-            genres.stream().map(GenreEntity::toDomain).toList(),
-            reviews
     );
   }
 

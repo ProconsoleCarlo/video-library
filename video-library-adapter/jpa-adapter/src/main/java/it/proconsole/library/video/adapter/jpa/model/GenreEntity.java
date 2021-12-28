@@ -34,10 +34,6 @@ public class GenreEntity {
     this.value = value;
   }
 
-  public static GenreEntity fromDomain(Genre genre) {
-    return new GenreEntity(genre.id(), genre.value());
-  }
-
   public Genre toDomain() {
     return new Genre(id, value);
   }

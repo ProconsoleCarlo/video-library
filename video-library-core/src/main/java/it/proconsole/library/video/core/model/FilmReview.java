@@ -11,10 +11,6 @@ public record FilmReview(
         @Nullable String detail,
         @Nullable Long filmId
 ) {
-  public FilmReview(LocalDateTime date, int rating, @Nullable String detail, @Nullable Long filmId) {
-    this(null, date, rating, detail, filmId);
-  }
-
   public FilmReview(LocalDateTime date, int rating, @Nullable String detail) {
     this(null, date, rating, detail, null);
   }

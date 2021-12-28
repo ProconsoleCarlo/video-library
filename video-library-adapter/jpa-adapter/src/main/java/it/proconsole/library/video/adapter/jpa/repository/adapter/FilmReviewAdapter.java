@@ -28,7 +28,7 @@ public class FilmReviewAdapter {
     return review;
   }
 
-  private FilmReview toDomain(FilmReviewEntity filmReview) {
+  public FilmReview toDomain(FilmReviewEntity filmReview) {
     return new FilmReview(
             filmReview.getId(),
             filmReview.getDate(),

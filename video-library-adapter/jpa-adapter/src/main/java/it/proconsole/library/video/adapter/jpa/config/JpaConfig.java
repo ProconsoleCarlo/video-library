@@ -2,6 +2,7 @@ package it.proconsole.library.video.adapter.jpa.config;
 
 import it.proconsole.library.video.adapter.jpa.repository.JpaFilmRepository;
 import it.proconsole.library.video.adapter.jpa.repository.JpaFilmReviewRepository;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
 import it.proconsole.library.video.core.repository.FilmRepository;
@@ -15,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class JpaConfig {
   @Bean
   public FilmReviewRepository jpaFilmReviewRepository(FilmReviewCrudRepository filmReviewCrudRepository) {
-    return new JpaFilmReviewRepository(filmReviewCrudRepository);
+    return new JpaFilmReviewRepository(filmReviewCrudRepository, new FilmReviewAdapter());
   }
 
   @Bean

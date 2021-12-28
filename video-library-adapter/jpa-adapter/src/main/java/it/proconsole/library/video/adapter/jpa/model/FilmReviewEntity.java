@@ -1,7 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import it.proconsole.library.video.core.model.FilmReview;
 import org.hibernate.Hibernate;
 import org.springframework.lang.Nullable;
 
@@ -45,16 +44,13 @@ public class FilmReviewEntity {
   public FilmReviewEntity() {
   }
 
+  @Deprecated
   public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail) {
     this.id = id;
     this.date = date;
     this.rating = rating;
     this.detail = detail;
     this.film = null;
-  }
-
-  public FilmReview toDomain() {
-    return new FilmReview(id, date, rating, detail, null);
   }
 
   public Long getId() {

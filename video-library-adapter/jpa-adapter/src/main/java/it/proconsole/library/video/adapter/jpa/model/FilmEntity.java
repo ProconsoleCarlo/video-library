@@ -41,17 +41,6 @@ public class FilmEntity {
   @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FilmReviewEntity> reviews;
 
-  public FilmEntity() {
-  }
-
-  public FilmEntity(Long id, String title, Integer year, List<GenreEntity> genres, List<FilmReviewEntity> reviews) {
-    this.id = id;
-    this.title = title;
-    this.year = year;
-    this.genres = genres;
-    this.reviews = reviews;
-  }
-
   public Long getId() {
     return id;
   }

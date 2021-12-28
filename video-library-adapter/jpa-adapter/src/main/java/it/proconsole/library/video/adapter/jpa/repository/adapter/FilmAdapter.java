@@ -19,8 +19,8 @@ public class FilmAdapter {
     return films.stream().map(this::fromDomain).toList();
   }
 
-  public List<Film> toDomain(List<FilmEntity> filmRows) {
-    return filmRows.stream().map(this::toDomain).toList();
+  public List<Film> toDomain(List<FilmEntity> films) {
+    return films.stream().map(this::toDomain).toList();
   }
 
   private FilmEntity fromDomain(Film film) {

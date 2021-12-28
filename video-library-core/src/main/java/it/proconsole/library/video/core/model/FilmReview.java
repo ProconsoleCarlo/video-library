@@ -9,7 +9,7 @@ public record FilmReview(
         LocalDateTime date,
         int rating,
         @Nullable String detail,
-        @Nullable Long filmId
+        @Deprecated @Nullable Long filmId
 ) {
   public FilmReview(LocalDateTime date, int rating, @Nullable String detail, Long filmId) {
     this(null, date, rating, detail, filmId);
@@ -31,6 +31,7 @@ public record FilmReview(
     @Nullable
     private String detail;
     @Nullable
+    @Deprecated
     private Long filmId;
 
     Builder(@Nullable Long id, LocalDateTime date, int rating, @Nullable String detail, @Nullable Long filmId) {

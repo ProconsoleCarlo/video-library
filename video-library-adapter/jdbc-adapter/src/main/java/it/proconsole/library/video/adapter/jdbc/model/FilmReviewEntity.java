@@ -12,10 +12,14 @@ public record FilmReviewEntity(
         LocalDateTime date,
         Integer rating,
         @Nullable String detail,
-        Long filmId
+        @Nullable Long filmId
 ) implements EntityWithId {
   public FilmReviewEntity(LocalDateTime date, int rating, @Nullable String detail, Long filmId) {
     this(null, date, rating, detail, filmId);
+  }
+
+  public FilmReviewEntity(LocalDateTime date, int rating, @Nullable String detail) {
+    this(null, date, rating, detail, null);
   }
 
   public static FilmReviewEntity fromDomain(FilmReview filmReview) {

@@ -1,8 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.repository;
 
 import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmAdapter;
-import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
-import it.proconsole.library.video.adapter.jpa.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
@@ -12,13 +10,11 @@ import java.util.List;
 
 public class JpaFilmRepository implements FilmRepository {
   private final FilmCrudRepository filmCrudRepository;
+  private final FilmAdapter filmAdapter;
 
-  private final GenreAdapter genreAdapter = new GenreAdapter();
-  private final FilmReviewAdapter filmReviewAdapter = new FilmReviewAdapter();
-  private final FilmAdapter filmAdapter = new FilmAdapter(genreAdapter, filmReviewAdapter);
-
-  public JpaFilmRepository(FilmCrudRepository filmCrudRepository) {
+  public JpaFilmRepository(FilmCrudRepository filmCrudRepository, FilmAdapter filmAdapter) {
     this.filmCrudRepository = filmCrudRepository;
+    this.filmAdapter = filmAdapter;
   }
 
   @Override

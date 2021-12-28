@@ -1,5 +1,8 @@
 package it.proconsole.library.video.adapter.jpa.repository;
 
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
@@ -21,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 @Sql({"/schema.sql", "/data.sql"})
 class JpaFilmRepositoryTest {
+  private final FilmAdapter filmAdapter = new FilmAdapter(new GenreAdapter(), new FilmReviewAdapter());
+
   @Autowired
   private FilmCrudRepository filmCrudRepository;
 
@@ -28,7 +33,7 @@ class JpaFilmRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    repository = new JpaFilmRepository(filmCrudRepository);
+    repository = new JpaFilmRepository(filmCrudRepository, filmAdapter);
   }
 
   @Test

@@ -33,7 +33,7 @@ public class JpaFilmRepository implements FilmRepository {
   @Override
   public List<Film> findAll() {
     return filmCrudRepository.findAll().stream()
-            .map(FilmEntity::toDomain)
+            .map(it -> convert(it))
             .toList();
   }
 

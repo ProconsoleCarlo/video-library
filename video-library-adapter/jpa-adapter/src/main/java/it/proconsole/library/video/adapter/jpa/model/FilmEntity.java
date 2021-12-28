@@ -1,7 +1,6 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import it.proconsole.library.video.core.model.Film;
 import org.hibernate.Hibernate;
 
 import javax.persistence.CascadeType;
@@ -15,7 +14,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,17 +50,6 @@ public class FilmEntity {
     this.year = year;
     this.genres = genres;
     this.reviews = reviews;
-  }
-
-  @Deprecated
-  public Film toDomain() {
-    return new Film(
-            id,
-            title,
-            year,
-            genres.stream().map(GenreEntity::toDomain).toList(),
-            Collections.emptyList()
-    );
   }
 
   public Long getId() {

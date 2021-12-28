@@ -44,13 +44,18 @@ public class FilmReviewEntity {
   public FilmReviewEntity() {
   }
 
-  @Deprecated
-  public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail) {
+  public FilmReviewEntity(
+          Long id,
+          LocalDateTime date,
+          Integer rating,
+          @Nullable String detail,
+          FilmEntity film
+  ) {
     this.id = id;
     this.date = date;
     this.rating = rating;
     this.detail = detail;
-    this.film = null;
+    this.film = film;
   }
 
   public Long getId() {

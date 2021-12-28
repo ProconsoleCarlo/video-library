@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GenreAdapterTest {
-  private static final List<Genre> DOMAIN = Arrays.stream(GenreEnum.values()).map(it -> new Genre(it.id(), it)).toList();
+  private static final List<Genre> DOMAIN = Arrays.stream(GenreEnum.values()).map(it -> new Genre(it)).toList();
   private static final List<GenreEntity> FRONTIER = Arrays.stream(GenreEnum.values()).map(it -> new GenreEntity(it.id(), it)).toList();
 
   private final GenreAdapter adapter = new GenreAdapter();

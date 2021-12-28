@@ -1,8 +1,12 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
+import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
+import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmReviewAdapter;
+import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
+import it.proconsole.library.video.core.repository.Protocol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +15,14 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
-@Sql({"/schema.sql", "/dataOld.sql"})
+@Sql("/schema.sql")
 class JdbcFilmReviewRepositoryTest {
+  private FilmDao filmDao;
   @Autowired
   private DataSource dataSource;
 
@@ -24,18 +30,26 @@ class JdbcFilmReviewRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    repository = new JdbcFilmReviewRepository(new FilmReviewDao(dataSource));
+    filmDao = new FilmDao(dataSource);
+    repository = new JdbcFilmReviewRepository(new FilmReviewDao(dataSource), new FilmReviewAdapter());
+  }
+
+  @Test
+  void protocol() {
+    assertEquals(Protocol.JDBC, repository.protocol());
   }
 
   @Test
   void save() {
-    var review = new FilmReview(1L, LocalDateTime.now(), 8, "A review", 1L);
+    var film = filmDao.save(new FilmEntity("Title", 2018));
+
+    var review = new FilmReview(1L, LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "A review", film.id());
 
     var savedReview = repository.save(review);
 
     assertEquals(review, savedReview);
 
-    var reviewToUpdate = new FilmReview(1L, LocalDateTime.now(), 8, "A review updated", 1L);
+    var reviewToUpdate = review.copy().withRating(7).withDetail("A review updated").build();
 
     var updatedReview = repository.save(reviewToUpdate);
 

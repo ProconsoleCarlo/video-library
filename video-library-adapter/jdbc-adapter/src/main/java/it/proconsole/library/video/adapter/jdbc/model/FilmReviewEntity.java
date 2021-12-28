@@ -4,6 +4,7 @@ import it.proconsole.library.video.core.model.FilmReview;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public record FilmReviewEntity(
   @Override
   public Map<String, Object> data() {
     return new HashMap<>() {{
-      put("date", date);
+      put("date", date.truncatedTo(ChronoUnit.MILLIS));
       put("rating", rating);
       put("detail", detail);
       put("film_id", filmId);

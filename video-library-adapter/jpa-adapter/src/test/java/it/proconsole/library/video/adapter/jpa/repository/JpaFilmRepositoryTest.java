@@ -45,11 +45,11 @@ class JpaFilmRepositoryTest {
   void findAll() {
     var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC), Collections.emptyList());
     var anotherFilm = new Film("Another Title", 2019, List.of(GenreEnum.ACTION), Collections.emptyList());
+    var savedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 
-    var current = repository.saveAll(List.of(aFilm, anotherFilm));
+    var current = repository.findAll();
 
-    var expected = List.of(aFilm.copy().withId(1L).build(), anotherFilm.copy().withId(2L).build());
-    assertEquals(expected, current);
+    assertEquals(savedFilms, current);
   }
 
   @Test

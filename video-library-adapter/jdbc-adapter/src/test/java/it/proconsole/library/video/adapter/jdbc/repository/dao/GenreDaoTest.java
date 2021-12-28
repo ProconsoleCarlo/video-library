@@ -59,7 +59,7 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
   }
 
   @Test
-  void saveByFilmId() {
+  void addGenreToFilmId() {
     var entities = dao.saveAll(List.of(
             new GenreEntity(GenreEnum.ACTION),
             new GenreEntity(GenreEnum.ADVENTURE)
@@ -75,6 +75,32 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
     );
 
     ((GenreDao) dao).addToFilmId(new GenreEntity(GenreEnum.ADVENTURE), 1L);
+
+    var current = ((GenreDao) dao).findByFilmId(1L);
+
+    assertEquals(entities, current);
+
+    cleanSupportTables();
+  }
+
+  @Test
+  void addGenresToFilmId() {
+    var entities = dao.saveAll(List.of(
+            new GenreEntity(GenreEnum.ACTION),
+            new GenreEntity(GenreEnum.ADVENTURE),
+            new GenreEntity(GenreEnum.BIOGRAPHICAL)
+    ));
+
+    dao.jdbcTemplate().update(
+            """
+                    insert into film
+                    values (1, 'Film title', 2011);
+                    insert into film_genres
+                    values (1, %d)
+                    """.formatted(GenreEnum.ACTION.id())
+    );
+
+    ((GenreDao) dao).addToFilmId(List.of(new GenreEntity(GenreEnum.ADVENTURE), new GenreEntity(GenreEnum.BIOGRAPHICAL)), 1L);
 
     var current = ((GenreDao) dao).findByFilmId(1L);
 

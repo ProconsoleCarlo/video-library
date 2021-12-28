@@ -40,13 +40,6 @@ class JpaFilmReviewRepositoryTest {
     assertEquals(Protocol.JPA, repository.protocol());
   }
 
-  private FilmEntity aFilm() {
-    var film = new FilmEntity();
-    film.setTitle("Film title");
-    film.setYear(2018);
-    return film;
-  }
-
   @Nested
   class WhenSave {
     @Test
@@ -72,5 +65,12 @@ class JpaFilmReviewRepositoryTest {
 
       assertThrows(FilmNotFoundException.class, () -> repository.save(review));
     }
+  }
+
+  private FilmEntity aFilm() {
+    var film = new FilmEntity();
+    film.setTitle("Film title");
+    film.setYear(2018);
+    return film;
   }
 }

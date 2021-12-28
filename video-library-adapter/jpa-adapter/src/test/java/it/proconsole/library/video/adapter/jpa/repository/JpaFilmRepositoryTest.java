@@ -57,12 +57,14 @@ class JpaFilmRepositoryTest {
     var aFilmReview = new FilmReview(LocalDateTime.now(), 8, "Comment");
     var anotherFilmReview = new FilmReview(LocalDateTime.now(), 8, "Another comment");
     var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC), List.of(aFilmReview, anotherFilmReview));
-    var currentSavedFilms = repository.saveAll(List.of(aFilm));
+    var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
+    var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 
     var savedFilmReview = aFilmReview.copy().withId(1L).withFilmId(1L).build();
     var anotherSavedFilmReview = anotherFilmReview.copy().withId(2L).withFilmId(1L).build();
     var savedFilm = aFilm.copy().withId(1L).withReviews(savedFilmReview, anotherSavedFilmReview).build();
-    assertEquals(List.of(savedFilm), currentSavedFilms);
+    var anotherSavedFilm = anotherFilm.copy().withId(2L).build();
+    assertEquals(List.of(savedFilm, anotherSavedFilm), currentSavedFilms);
 
     var filmReviewToUpdate = savedFilmReview.copy().withRating(1).withDetail("Updated comment").build();
     var filmToUpdate = savedFilm.copy()

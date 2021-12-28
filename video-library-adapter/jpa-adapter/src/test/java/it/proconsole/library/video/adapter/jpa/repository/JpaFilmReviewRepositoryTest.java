@@ -11,6 +11,9 @@ import it.proconsole.library.video.core.repository.Protocol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -59,9 +62,11 @@ class JpaFilmReviewRepositoryTest {
       assertEquals(reviewToUpdate, updatedReview);
     }
 
-    @Test
-    void notFoundExceptionWhenFilmDoesNotExist() {
-      var review = new FilmReview(LocalDateTime.now(), 8, "Review", Long.MAX_VALUE);
+    @ParameterizedTest
+    @ValueSource(longs = Long.MAX_VALUE)
+    @NullSource
+    void notFoundExceptionWhenFilmDoesNotExist(Long filmId) {
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review", filmId);
 
       assertThrows(FilmNotFoundException.class, () -> repository.save(review));
     }

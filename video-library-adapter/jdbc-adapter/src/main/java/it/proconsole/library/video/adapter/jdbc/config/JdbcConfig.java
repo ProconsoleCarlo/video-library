@@ -25,8 +25,8 @@ public class JdbcConfig {
   }
 
   @Bean
-  public FilmReviewRepository jdbcFilmReviewRepository(FilmReviewDao filmReviewDao) {
-    return new JdbcFilmReviewRepository(filmReviewDao, new FilmReviewAdapter());
+  public FilmReviewRepository jdbcFilmReviewRepository(FilmReviewDao filmReviewDao, FilmDao filmDao) {
+    return new JdbcFilmReviewRepository(filmReviewDao, filmDao, new FilmReviewAdapter());
   }
 
   @Bean

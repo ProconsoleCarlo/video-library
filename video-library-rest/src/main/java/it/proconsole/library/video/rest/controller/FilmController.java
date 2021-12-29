@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +31,13 @@ public class FilmController {
     return filmProtocolRepository.getBy(protocolFrom(protocol)).findAll();
   }
 
-  @PutMapping("/{protocol}/films")
+  @PostMapping("/{protocol}/films")
   public List<Film> updateFilms(@PathVariable String protocol, @RequestBody List<Film> films) {
+    return filmProtocolRepository.getBy(protocolFrom(protocol)).saveAll(films);
+  }
+
+  @PutMapping("/{protocol}/films")
+  public List<Film> insertFilms(@PathVariable String protocol, @RequestBody List<Film> films) {
     return filmProtocolRepository.getBy(protocolFrom(protocol)).saveAll(films);
   }
 

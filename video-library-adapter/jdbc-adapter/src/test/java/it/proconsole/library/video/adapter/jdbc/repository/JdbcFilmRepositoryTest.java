@@ -58,8 +58,9 @@ class JdbcFilmRepositoryTest {
 
   @Test
   void saveAll() {
-    var aFilmReview = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "Comment");
-    var anotherFilmReview = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "Another comment");
+    var date = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+    var aFilmReview = new FilmReview(date, 8, "Comment");
+    var anotherFilmReview = new FilmReview(date, 8, "Another comment");
     var aFilm = new Film("Title", 2018, List.of(GenreEnum.ACTION, GenreEnum.ROMANTIC), List.of(aFilmReview, anotherFilmReview));
     var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
     var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));

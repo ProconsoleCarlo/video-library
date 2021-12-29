@@ -63,7 +63,7 @@ public abstract class DatabaseDao<T extends EntityWithId> {
 
   public T save(T entity) {
     return Optional.ofNullable(entity.id())
-            .map(this::findById)
+            .flatMap(this::findById)
             .map(e -> update(entity))
             .orElseGet(() -> insert(entity));
   }

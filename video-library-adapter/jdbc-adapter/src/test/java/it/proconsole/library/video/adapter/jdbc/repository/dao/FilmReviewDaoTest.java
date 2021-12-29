@@ -12,10 +12,10 @@ import org.springframework.test.context.jdbc.Sql;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @JdbcTest
 @Sql({"/schema.sql"})
@@ -55,17 +55,33 @@ class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
     jdbcTemplate.update("insert into film VALUES (2, 'Another film title', 2012);");
     var aFilmReview = new FilmReviewEntity(LocalDateTime.now(), 8, "Review", 1L);
     var anotherFilmReview = new FilmReviewEntity(LocalDateTime.now(), 7, "Another review", 2L);
-    var savedFilmReviews = dao.saveAll(List.of(aFilmReview, anotherFilmReview));
+    var dbFilmReviews = dao.saveAll(List.of(aFilmReview, anotherFilmReview));
 
-    var savedFilmReview = dao.findById(1L);
-    var anotherSavedFilmReview = dao.findById(2L);
+    var savedFilmReviews = ((FilmReviewDao) dao).findByFilmId(1L);
+    var anotherSavedFilmReviews = ((FilmReviewDao) dao).findByFilmId(2L);
 
-    assertTrue(savedFilmReview.isPresent());
-    assertEquals(savedFilmReviews.get(0), savedFilmReview.get());
-    assertTrue(anotherSavedFilmReview.isPresent());
-    assertEquals(savedFilmReviews.get(1), anotherSavedFilmReview.get());
+    assertEquals(List.of(dbFilmReviews.get(0)), savedFilmReviews);
+    assertEquals(List.of(dbFilmReviews.get(1)), anotherSavedFilmReviews);
 
-    dao.delete(anotherSavedFilmReview.get());
+    dao.deleteAll(anotherSavedFilmReviews);
     jdbcTemplate.update("delete from film where id = 2");
+  }
+
+  @Test
+  void saveByFilmId() {
+    var date = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+    var aFilmReview = new FilmReviewEntity(LocalDateTime.now(), 8, "Review", 1L);
+    var anotherFilmReview = new FilmReviewEntity(date, 7, "Another review", 1L);
+    var dbFilmReviews = dao.saveAll(List.of(aFilmReview, anotherFilmReview));
+
+    var newFilmReview = new FilmReviewEntity(date, 9, "New review", 1L);
+
+    var savedFilmReviews = ((FilmReviewDao) dao).saveByFilmId(List.of(dbFilmReviews.get(1), newFilmReview), 1L);
+
+    var expected = List.of(
+            dbFilmReviews.get(1),
+            new FilmReviewEntity(3L, date, 9, "New review", 1L)
+    );
+    assertEquals(expected, savedFilmReviews);
   }
 }

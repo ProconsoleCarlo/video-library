@@ -21,14 +21,19 @@ public class JdbcConfig {
   public FilmRepository jdbcFilmRepository(
           FilmDao filmDao,
           GenreDao genreDao,
-          FilmReviewDao filmReviewDao
+          FilmReviewDao filmReviewDao,
+          FilmAdapter jdbcFilmAdapter
   ) {
-    return new JdbcFilmRepository(filmDao, genreDao, filmReviewDao, new FilmAdapter(new GenreAdapter(), new FilmReviewAdapter()));
+    return new JdbcFilmRepository(filmDao, genreDao, filmReviewDao, jdbcFilmAdapter);
   }
 
   @Bean
-  public FilmReviewRepository jdbcFilmReviewRepository(FilmReviewDao filmReviewDao, FilmDao filmDao) {
-    return new JdbcFilmReviewRepository(filmReviewDao, filmDao, new FilmReviewAdapter());
+  public FilmReviewRepository jdbcFilmReviewRepository(
+          FilmReviewDao filmReviewDao,
+          FilmDao filmDao,
+          FilmReviewAdapter jdbcFilmReviewAdapter
+  ) {
+    return new JdbcFilmReviewRepository(filmReviewDao, filmDao, jdbcFilmReviewAdapter);
   }
 
   @Bean
@@ -44,5 +49,15 @@ public class JdbcConfig {
   @Bean
   public FilmReviewDao filmReviewDao(DataSource videoLibraryDataSource) {
     return new FilmReviewDao(videoLibraryDataSource);
+  }
+
+  @Bean
+  public FilmAdapter jdbcFilmAdapter(FilmReviewAdapter jdbcFilmReviewAdapter) {
+    return new FilmAdapter(new GenreAdapter(), jdbcFilmReviewAdapter);
+  }
+
+  @Bean
+  public FilmReviewAdapter jdbcFilmReviewAdapter() {
+    return new FilmReviewAdapter();
   }
 }

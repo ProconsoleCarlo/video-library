@@ -13,8 +13,8 @@ class FilmReviewAdapterTest {
   private static final LocalDateTime DATE = LocalDateTime.now();
   private static final Long FILM_ID = 1L;
   private static final List<FilmReview> DOMAIN = List.of(
-          new FilmReview(1L, DATE, 10, "Review", FILM_ID),
-          new FilmReview(2L, DATE, 6, null, FILM_ID)
+          new FilmReview(1L, DATE, 10, "Review"),
+          new FilmReview(2L, DATE, 6, null)
   );
   private static final List<FilmReviewEntity> FRONTIER = List.of(
           new FilmReviewEntity(1L, DATE, 10, "Review", FILM_ID),

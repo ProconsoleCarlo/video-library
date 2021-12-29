@@ -23,14 +23,14 @@ public class FilmReviewController {
     this.filmReviewProtocolRepository = filmReviewProtocolRepository;
   }
 
-  @PostMapping("/{protocol}/review")
-  public FilmReview updateReview(@PathVariable String protocol, @RequestBody FilmReview review) {
-    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review);
+  @PostMapping("/{protocol}/review/{filmId}")
+  public FilmReview updateReview(@PathVariable String protocol, @PathVariable Long filmId, @RequestBody FilmReview review) {
+    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review, filmId);
   }
 
-  @PutMapping("/{protocol}/review")
-  public FilmReview insertReview(@PathVariable String protocol, @RequestBody FilmReview review) {
-    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review);
+  @PutMapping("/{protocol}/review/{filmId}")
+  public FilmReview insertReview(@PathVariable String protocol, @PathVariable Long filmId, @RequestBody FilmReview review) {
+    return filmReviewProtocolRepository.getBy(protocolFrom(protocol)).save(review, filmId);
   }
 
   private Protocol protocolFrom(String protocol) {

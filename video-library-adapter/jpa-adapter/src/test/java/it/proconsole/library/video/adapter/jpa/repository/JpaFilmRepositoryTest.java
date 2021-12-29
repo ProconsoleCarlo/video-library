@@ -60,8 +60,8 @@ class JpaFilmRepositoryTest {
     var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
     var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 
-    var savedFilmReview = aFilmReview.copy().withId(1L).withFilmId(1L).build();
-    var anotherSavedFilmReview = anotherFilmReview.copy().withId(2L).withFilmId(1L).build();
+    var savedFilmReview = aFilmReview.copy().withId(1L).build();
+    var anotherSavedFilmReview = anotherFilmReview.copy().withId(2L).build();
     var savedFilm = aFilm.copy().withId(1L).withReviews(savedFilmReview, anotherSavedFilmReview).build();
     var anotherSavedFilm = anotherFilm.copy().withId(2L).build();
     assertEquals(List.of(savedFilm, anotherSavedFilm), currentSavedFilms);

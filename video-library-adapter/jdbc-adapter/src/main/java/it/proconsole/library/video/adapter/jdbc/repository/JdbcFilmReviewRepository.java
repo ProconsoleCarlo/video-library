@@ -8,8 +8,6 @@ import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.repository.Protocol;
 
-import java.util.Optional;
-
 public class JdbcFilmReviewRepository implements FilmReviewRepository {
   private final FilmReviewDao filmReviewDao;
   private final FilmDao filmDao;
@@ -27,13 +25,12 @@ public class JdbcFilmReviewRepository implements FilmReviewRepository {
   }
 
   @Override
-  public FilmReview save(FilmReview review) {
-    return Optional.ofNullable(review.filmId())
-            .flatMap(filmDao::findById)
+  public FilmReview save(FilmReview review, Long filmId) {
+    return filmDao.findById(filmId)
             .map(it -> {
               var entity = filmReviewAdapter.fromDomain(review, it.id());
               var saved = filmReviewDao.save(entity);
               return filmReviewAdapter.toDomain(saved);
-            }).orElseThrow(() -> new FilmNotFoundException(review));
+            }).orElseThrow(() -> new FilmNotFoundException(review, filmId));
   }
 }

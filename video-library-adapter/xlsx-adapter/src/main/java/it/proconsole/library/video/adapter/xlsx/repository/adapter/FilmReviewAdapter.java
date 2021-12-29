@@ -10,15 +10,15 @@ public class FilmReviewAdapter {
     return filmReviews.stream().map(this::fromDomain).toList();
   }
 
-  public List<FilmReview> toDomain(List<FilmReviewRow> filmReviewRows, Long filmId) {
-    return filmReviewRows.stream().map(it -> toDomain(it, filmId)).toList();
+  public List<FilmReview> toDomain(List<FilmReviewRow> filmReviewRows) {
+    return filmReviewRows.stream().map(this::toDomain).toList();
   }
 
   private FilmReviewRow fromDomain(FilmReview filmReview) {
     return new FilmReviewRow(filmReview.id(), filmReview.date(), filmReview.rating(), filmReview.detail());
   }
 
-  private FilmReview toDomain(FilmReviewRow filmReviewRow, Long filmId) {
-    return new FilmReview(filmReviewRow.id(), filmReviewRow.date(), filmReviewRow.rating(), filmReviewRow.detail(), filmId);
+  private FilmReview toDomain(FilmReviewRow filmReviewRow) {
+    return new FilmReview(filmReviewRow.id(), filmReviewRow.date(), filmReviewRow.rating(), filmReviewRow.detail());
   }
 }

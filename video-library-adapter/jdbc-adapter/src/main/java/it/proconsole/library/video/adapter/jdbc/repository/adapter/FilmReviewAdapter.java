@@ -30,8 +30,7 @@ public class FilmReviewAdapter {
             filmReview.id(),
             filmReview.date(),
             filmReview.rating(),
-            filmReview.detail(),
-            filmReview.filmId()
+            filmReview.detail()
     );
   }
 }

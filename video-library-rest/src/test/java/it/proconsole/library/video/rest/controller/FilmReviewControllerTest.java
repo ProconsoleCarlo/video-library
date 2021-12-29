@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 class FilmReviewControllerTest {
   private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/existentFilmReview.json";
   private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/insertFilmReview.json";
+  private static final Long FILM_ID = 1L;
 
   @Mock
   private ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository;
@@ -53,9 +54,9 @@ class FilmReviewControllerTest {
       var filmReview = Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON, FilmReview.class);
 
       when(filmReviewProtocolRepository.getBy(protocol)).thenReturn(filmReviewRepository);
-      when(filmReviewRepository.save(filmReview)).thenReturn(filmReview);
+      when(filmReviewRepository.save(filmReview, FILM_ID)).thenReturn(filmReview);
 
-      mvc.perform(post("/" + protocol.name().toLowerCase() + "/review")
+      mvc.perform(post("/" + protocol.name().toLowerCase() + "/review/" + FILM_ID)
                       .contentType(MediaType.APPLICATION_JSON)
                       .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
               .andExpect(status().isOk())
@@ -64,7 +65,7 @@ class FilmReviewControllerTest {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review")
+      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review/" + FILM_ID)
               .contentType(MediaType.APPLICATION_JSON)
               .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
     }
@@ -79,9 +80,9 @@ class FilmReviewControllerTest {
       var filmReviewInserted = Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON, FilmReview.class);
 
       when(filmReviewProtocolRepository.getBy(protocol)).thenReturn(filmReviewRepository);
-      when(filmReviewRepository.save(filmReviewToInsert)).thenReturn(filmReviewInserted);
+      when(filmReviewRepository.save(filmReviewToInsert, FILM_ID)).thenReturn(filmReviewInserted);
 
-      mvc.perform(put("/" + protocol.name().toLowerCase() + "/review")
+      mvc.perform(put("/" + protocol.name().toLowerCase() + "/review/" + FILM_ID)
                       .contentType(MediaType.APPLICATION_JSON)
                       .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
               .andExpect(status().isOk())
@@ -90,7 +91,7 @@ class FilmReviewControllerTest {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review")
+      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review/" + FILM_ID)
               .contentType(MediaType.APPLICATION_JSON)
               .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)));
     }

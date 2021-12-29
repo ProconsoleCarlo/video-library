@@ -52,16 +52,16 @@ class JdbcFilmReviewRepositoryTest {
     void save() {
       var film = filmDao.save(new FilmEntity("Title", 2018));
       assertNotNull(film.id());
-      var review = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "A review", film.id());
+      var review = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "A review");
 
-      var savedReview = repository.save(review);
+      var savedReview = repository.save(review, film.id());
 
       var expectedSavedReview = review.copy().withId(1L).build();
       assertEquals(expectedSavedReview, savedReview);
 
       var reviewToUpdate = expectedSavedReview.copy().withRating(7).withDetail("A review updated").build();
 
-      var updatedReview = repository.save(reviewToUpdate);
+      var updatedReview = repository.save(reviewToUpdate, film.id());
 
       assertEquals(reviewToUpdate, updatedReview);
     }
@@ -70,9 +70,9 @@ class JdbcFilmReviewRepositoryTest {
     @ValueSource(longs = Long.MAX_VALUE)
     @NullSource
     void notFoundExceptionWhenFilmDoesNotExist(Long filmId) {
-      var review = new FilmReview(LocalDateTime.now(), 8, "Review", filmId);
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review");
 
-      assertThrows(FilmNotFoundException.class, () -> repository.save(review));
+      assertThrows(FilmNotFoundException.class, () -> repository.save(review, filmId));
     }
   }
 }

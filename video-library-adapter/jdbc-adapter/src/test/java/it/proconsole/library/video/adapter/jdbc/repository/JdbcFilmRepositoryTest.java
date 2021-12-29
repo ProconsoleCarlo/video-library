@@ -81,6 +81,5 @@ class JdbcFilmRepositoryTest {
     var currentUpdatedFilms = repository.saveAll(List.of(filmToUpdate));
 
     assertEquals(List.of(filmToUpdate), currentUpdatedFilms);
-
   }
 }

@@ -5,8 +5,6 @@ import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
 import it.proconsole.library.video.adapter.jdbc.model.FilmReviewEntity;
 import it.proconsole.library.video.adapter.jdbc.model.GenreEntity;
 import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmAdapter;
-import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmReviewAdapter;
-import it.proconsole.library.video.adapter.jdbc.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
@@ -22,8 +20,6 @@ public class JdbcFilmRepository implements FilmRepository {
   private final GenreDao genreDao;
   private final FilmReviewDao filmReviewDao;
   private final FilmAdapter filmAdapter;
-  private final GenreAdapter genreAdapter = new GenreAdapter();
-  private final FilmReviewAdapter filmReviewAdapter = new FilmReviewAdapter();
 
   public JdbcFilmRepository(
           FilmDao filmDao,
@@ -56,10 +52,10 @@ public class JdbcFilmRepository implements FilmRepository {
       var film = filmDao.save(filmAdapter.fromDomain(it));
       Optional.ofNullable(film.id())
               .ifPresentOrElse(id -> {
-                var genreEntities = genreAdapter.fromDomain(it.genres());
+                var genreEntities = filmAdapter.genresFromDomain(it.genres());
                 genreDao.saveForFilmId(genreEntities, id);
 
-                var filmReviewEntities = filmReviewAdapter.fromDomain(it.reviews(), id);
+                var filmReviewEntities = filmAdapter.reviewsFromDomain(it.reviews(), id);
                 filmReviewDao.saveByFilmId(filmReviewEntities, id);
               }, () -> {
                 throw new EntityNotSavedException(film);
@@ -70,23 +66,23 @@ public class JdbcFilmRepository implements FilmRepository {
     return findAllById(filmEntities.map(FilmEntity::id).toList());
   }
 
-  private List<Film> findAllById(List<Long> filmIds) {
-    return filmDao.findAllById(filmIds).stream()
+  private List<Film> findAllById(List<Long> ids) {
+    return filmDao.findAllById(ids).stream()
             .map(this::enrichFilm)
             .toList();
   }
 
   private Film enrichFilm(FilmEntity entity) {
     return Optional.ofNullable(entity.id())
-            .map(id -> filmAdapter.toDomain(entity, retrieveGenresFor(id), retrieveReviewsFor(id)))
+            .map(id -> filmAdapter.toDomain(entity, genresOf(id), reviewsOf(id)))
             .orElseThrow(() -> new EntityNotSavedException(entity));
   }
 
-  private List<GenreEntity> retrieveGenresFor(Long filmId) {
+  private List<GenreEntity> genresOf(Long filmId) {
     return genreDao.findByFilmId(filmId);
   }
 
-  private List<FilmReviewEntity> retrieveReviewsFor(Long filmId) {
+  private List<FilmReviewEntity> reviewsOf(Long filmId) {
     return filmReviewDao.findByFilmId(filmId);
   }
 }

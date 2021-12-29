@@ -4,6 +4,8 @@ import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
 import it.proconsole.library.video.adapter.jdbc.model.FilmReviewEntity;
 import it.proconsole.library.video.adapter.jdbc.model.GenreEntity;
 import it.proconsole.library.video.core.model.Film;
+import it.proconsole.library.video.core.model.FilmReview;
+import it.proconsole.library.video.core.model.Genre;
 
 import java.util.List;
 
@@ -32,5 +34,13 @@ public class FilmAdapter {
             genreAdapter.toDomain(genres),
             filmReviewAdapter.toDomain(reviews)
     );
+  }
+
+  public List<GenreEntity> genresFromDomain(List<Genre> genres) {
+    return genreAdapter.fromDomain(genres);
+  }
+
+  public List<FilmReviewEntity> reviewsFromDomain(List<FilmReview> reviews, Long filmId) {
+    return filmReviewAdapter.fromDomain(reviews, filmId);
   }
 }

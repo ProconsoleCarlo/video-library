@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -58,13 +59,9 @@ class FilmReviewControllerIT {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      mvc.perform(post("/invalidProtocol/review")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
-              .andExpect(status().isNotFound());
-
-      verifyNoInteractions(filmReviewProtocolRepository);
-      verifyNoInteractions(filmReviewRepository);
+      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
     }
   }
 
@@ -88,13 +85,16 @@ class FilmReviewControllerIT {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      mvc.perform(put("/invalidProtocol/review")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
-              .andExpect(status().isNotFound());
-
-      verifyNoInteractions(filmReviewProtocolRepository);
-      verifyNoInteractions(filmReviewRepository);
+      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)));
     }
+  }
+
+  private void notFoundIfInvalidProtocolFor(MockHttpServletRequestBuilder mockedRequest) throws Exception {
+    mvc.perform(mockedRequest).andExpect(status().isNotFound());
+
+    verifyNoInteractions(filmReviewProtocolRepository);
+    verifyNoInteractions(filmReviewRepository);
   }
 }

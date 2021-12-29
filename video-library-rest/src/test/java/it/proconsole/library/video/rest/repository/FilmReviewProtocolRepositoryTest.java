@@ -1,7 +1,6 @@
 package it.proconsole.library.video.rest.repository;
 
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
-import it.proconsole.library.video.core.repository.Protocol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +12,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FilmReviewProtocolRepositoryTest extends ProtocolRepositoryTest<FilmReviewRepository> {
-  private static final Protocol A_PROTOCOL = Protocol.JDBC;
-  private static final Protocol ANOTHER_PROTOCOL = Protocol.JPA;
-
   @Mock
   private FilmReviewRepository aFilmReviewRepository;
   @Mock

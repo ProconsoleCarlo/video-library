@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class ProtocolRepositoryTest<R> {
+  static final Protocol A_PROTOCOL = Protocol.JDBC;
+  static final Protocol ANOTHER_PROTOCOL = Protocol.JPA;
   private static final Protocol INVALID_PROTOCOL = Protocol.XLSX;
 
   abstract ProtocolRepository<R> repository();

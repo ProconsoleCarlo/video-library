@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
+import it.proconsole.library.video.adapter.jdbc.exception.EntityNotSavedException;
 import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
 import it.proconsole.library.video.adapter.jdbc.model.FilmReviewEntity;
 import it.proconsole.library.video.adapter.jdbc.model.GenreEntity;
@@ -54,15 +55,14 @@ public class JdbcFilmRepository implements FilmRepository {
     var filmEntities = films.stream().map(it -> {
       var film = filmDao.save(filmAdapter.fromDomain(it));
       Optional.ofNullable(film.id())
-              .ifPresent(id -> {
+              .ifPresentOrElse(id -> {
                 var genreEntities = genreAdapter.fromDomain(it.genres());
                 genreDao.saveForFilmId(genreEntities, id);
 
                 var filmReviewEntities = filmReviewAdapter.fromDomain(it.reviews(), id);
-                var savedFilmReviewEntities = filmReviewDao.saveAll(filmReviewEntities);
-                var existentReviews = filmReviewDao.findByFilmId(id);
-                existentReviews.removeAll(savedFilmReviewEntities);
-                filmReviewDao.deleteAll(existentReviews);
+                filmReviewDao.saveByFilmId(filmReviewEntities, id);
+              }, () -> {
+                throw new EntityNotSavedException(film);
               });
       return film;
     });
@@ -79,7 +79,7 @@ public class JdbcFilmRepository implements FilmRepository {
   private Film enrichFilm(FilmEntity entity) {
     return Optional.ofNullable(entity.id())
             .map(id -> filmAdapter.toDomain(entity, retrieveGenresFor(id), retrieveReviewsFor(id)))
-            .orElseThrow(); //Sto leggendo dal DB e mi arriva id null!!!
+            .orElseThrow(() -> new EntityNotSavedException(entity));
   }
 
   private List<GenreEntity> retrieveGenresFor(Long filmId) {

@@ -15,14 +15,22 @@ public class FilmReviewDao extends DatabaseDao<FilmReviewEntity> {
     return jdbcTemplate().query("select * from film_review where film_id = ?", rowMapper(), filmId);
   }
 
+  public List<FilmReviewEntity> saveByFilmId(List<FilmReviewEntity> entities, Long filmId) {
+    var savedReviews = saveAll(entities);
+    var existentReviews = findByFilmId(filmId);
+    var reviewsToRemove = existentReviews.stream().filter(it -> !savedReviews.contains(it)).toList();
+    deleteAll(reviewsToRemove);
+    return findByFilmId(filmId);
+  }
+
   @Override
   RowMapper<FilmReviewEntity> rowMapper() {
     return (rs, rowNum) -> new FilmReviewEntity(
-        rs.getLong("id"),
-        rs.getTimestamp("date").toLocalDateTime(),
-        rs.getInt("rating"),
-        rs.getString("detail"),
-        rs.getLong("film_id")
+            rs.getLong("id"),
+            rs.getTimestamp("date").toLocalDateTime(),
+            rs.getInt("rating"),
+            rs.getString("detail"),
+            rs.getLong("film_id")
     );
   }
 }

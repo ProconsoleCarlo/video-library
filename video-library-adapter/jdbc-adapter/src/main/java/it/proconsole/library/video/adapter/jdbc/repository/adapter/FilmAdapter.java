@@ -20,7 +20,7 @@ public class FilmAdapter {
     return films.stream().map(this::fromDomain).toList();
   }
 
-  private FilmEntity fromDomain(Film film) {
+  public FilmEntity fromDomain(Film film) {
     return new FilmEntity(film.id(), film.title(), film.year());
   }
 

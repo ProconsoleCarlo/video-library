@@ -109,6 +109,57 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
     cleanSupportTables();
   }
 
+  @Test
+  void removeGenreFromFilmId() {
+    dao.saveAll(List.of(
+            new GenreEntity(GenreEnum.ACTION),
+            new GenreEntity(GenreEnum.ADVENTURE),
+            new GenreEntity(GenreEnum.BIOGRAPHICAL)
+    ));
+
+    dao.jdbcTemplate().update(
+            """
+                    insert into film
+                    values (1, 'Film title', 2011);
+                    insert into film_genres
+                    values (1, %d), (1, %d), (1, %d)
+                    """.formatted(GenreEnum.ACTION.id(), GenreEnum.ADVENTURE.id(), GenreEnum.BIOGRAPHICAL.id())
+    );
+
+    ((GenreDao) dao).removeFromFilmId(List.of(new GenreEntity(GenreEnum.ADVENTURE), new GenreEntity(GenreEnum.ACTION)), 1L);
+
+    var current = ((GenreDao) dao).findByFilmId(1L);
+
+    assertEquals(List.of(new GenreEntity(GenreEnum.BIOGRAPHICAL)), current);
+
+    cleanSupportTables();
+  }
+
+  @Test
+  void saveForFilmId() {
+    dao.saveAll(List.of(
+            new GenreEntity(GenreEnum.ACTION),
+            new GenreEntity(GenreEnum.ADVENTURE),
+            new GenreEntity(GenreEnum.BIOGRAPHICAL)
+    ));
+
+    dao.jdbcTemplate().update(
+            """
+                    insert into film
+                    values (1, 'Film title', 2011);
+                    insert into film_genres
+                    values (1, %d), (1, %d)
+                    """.formatted(GenreEnum.ACTION.id(), GenreEnum.ADVENTURE.id())
+    );
+
+    var genresToSave = List.of(new GenreEntity(GenreEnum.ADVENTURE), new GenreEntity(GenreEnum.BIOGRAPHICAL));
+    var savedEntities = ((GenreDao) dao).saveForFilmId(genresToSave, 1L);
+
+    assertEquals(genresToSave, savedEntities);
+
+    cleanSupportTables();
+  }
+
   private void cleanSupportTables() {
     dao.jdbcTemplate().update("delete from film_genres; delete from film;");
   }

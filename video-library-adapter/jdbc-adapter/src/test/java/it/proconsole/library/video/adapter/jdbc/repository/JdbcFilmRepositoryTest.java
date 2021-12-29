@@ -1,12 +1,13 @@
 package it.proconsole.library.video.adapter.jdbc.repository;
 
+import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmAdapter;
+import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmReviewAdapter;
+import it.proconsole.library.video.adapter.jdbc.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
 import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
-import it.proconsole.library.video.core.Fixtures;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
-import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
 import it.proconsole.library.video.core.repository.FilmRepository;
 import it.proconsole.library.video.core.repository.Protocol;
@@ -17,15 +18,17 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
-@Sql({"/schema.sql"})
+@Sql({"/schema.sql", "/data.sql"})
 class JdbcFilmRepositoryTest {
-  private static final String FILMS_JSON = "/it/proconsole/library/video/core/model/films-in.json";
+  private final FilmAdapter filmAdapter = new FilmAdapter(new GenreAdapter(), new FilmReviewAdapter());
 
   @Autowired
   private DataSource dataSource;
@@ -34,7 +37,7 @@ class JdbcFilmRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    repository = new JdbcFilmRepository(new FilmDao(dataSource), new GenreDao(dataSource), new FilmReviewDao(dataSource));
+    repository = new JdbcFilmRepository(new FilmDao(dataSource), new GenreDao(dataSource), new FilmReviewDao(dataSource), filmAdapter);
   }
 
   @Test
@@ -44,34 +47,40 @@ class JdbcFilmRepositoryTest {
 
   @Test
   void findAll() {
+    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC), Collections.emptyList());
+    var anotherFilm = new Film("Another Title", 2019, List.of(GenreEnum.ACTION), Collections.emptyList());
+    var savedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
+
     var current = repository.findAll();
-    var expected = Fixtures.readListFromClasspath(FILMS_JSON, Film.class);
 
-    assertEquals(expected, current);
+    assertEquals(savedFilms, current);
   }
 
-  /*@Test
+  @Test
   void saveAll() {
-    var aFilmReview = new FilmReview(1L, LocalDateTime.now(), 7, "Comment", 1L);
-    var anotherFilmReview = new FilmReview(2L, LocalDateTime.now(), 9, "Comment", 1L);
-    var aFilm = new FilmBuilder().withId(1L).withTitle("Title").withYear(2018).withGenres(genres(GenreEnum.ROMANTIC)).withReviews(reviews(aFilmReview, anotherFilmReview)).createFilm();
-    assertEquals(List.of(aFilm), repository.saveAll(List.of(aFilm)));
+    var aFilmReview = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "Comment");
+    var anotherFilmReview = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "Another comment");
+    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ACTION, GenreEnum.ROMANTIC), List.of(aFilmReview, anotherFilmReview));
+    var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
+    var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 
-    var updatedFilmReview = new FilmReview(2L, LocalDateTime.now(), 8, "Updated comment", 1L);
-    var newFilmReview = new FilmReview(LocalDateTime.now(), 8, "Updated comment", 1L);
-    var filmToUpdate = new FilmBuilder().withId(1L).withTitle("Title to update").withYear(2021).withGenres(genres(GenreEnum.COMEDY, GenreEnum.ACTION)).withReviews(reviews(aFilmReview, updatedFilmReview, newFilmReview)).createFilm();
-    var filmToInsert = new FilmBuilder().withTitle("Title to insert").withYear(2018).withGenres(Collections.emptyList()).withReviews(Collections.emptyList()).createFilm();
-    var filmInserted = new FilmBuilder().withId(2L).withTitle("Title to insert").withYear(2018).withGenres(Collections.emptyList()).withReviews(Collections.emptyList()).createFilm();
+    var savedFilmReview = aFilmReview.copy().withId(1L).withFilmId(1L).build();
+    var anotherSavedFilmReview = anotherFilmReview.copy().withId(2L).withFilmId(1L).build();
+    var savedFilm = aFilm.copy().withId(1L).withReviews(savedFilmReview, anotherSavedFilmReview).build();
+    var anotherSavedFilm = anotherFilm.copy().withId(2L).build();
+    assertEquals(List.of(savedFilm, anotherSavedFilm), currentSavedFilms);
 
-    var current = repository.saveAll(List.of(filmToUpdate, filmToInsert));
-    assertEquals(List.of(filmToUpdate, filmInserted), current);
-  }*/
+    var filmReviewToUpdate = savedFilmReview.copy().withRating(1).withDetail("Updated comment").build();
+    var filmToUpdate = savedFilm.copy()
+            .withTitle("New title")
+            .withYear(2021)
+            .withGenres(GenreEnum.ACTION, GenreEnum.ADVENTURE)
+            .withReviews(filmReviewToUpdate)
+            .build();
 
-  private List<Genre> genres(GenreEnum... genreEnum) {
-    return Arrays.stream(genreEnum).map(it -> new Genre(it)).toList();
-  }
+    var currentUpdatedFilms = repository.saveAll(List.of(filmToUpdate));
 
-  private List<FilmReview> reviews(FilmReview... filmReview) {
-    return Arrays.stream(filmReview).toList();
+    assertEquals(List.of(filmToUpdate), currentUpdatedFilms);
+
   }
 }

@@ -1,6 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
-import it.proconsole.library.video.adapter.jdbc.repository.entity.FilmEntity;
+import it.proconsole.library.video.adapter.jdbc.model.FilmEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -14,11 +14,18 @@ class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
   @Autowired
   private DataSource dataSource;
 
+  private DatabaseDao<FilmEntity> dao;
+
   @BeforeEach
   void setUp() {
     dao = new FilmDao(dataSource);
 
     new FilmReviewDao(dataSource).findAll();
+  }
+
+  @Override
+  DatabaseDao<FilmEntity> dao() {
+    return dao;
   }
 
   @Override

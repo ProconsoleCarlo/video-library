@@ -1,6 +1,5 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
-import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
 import org.hibernate.Hibernate;
 
@@ -32,14 +31,6 @@ public class GenreEntity {
   public GenreEntity(Long id, GenreEnum value) {
     this.id = id;
     this.value = value;
-  }
-
-  public static GenreEntity fromDomain(Genre genre) {
-    return new GenreEntity(genre.id(), genre.value());
-  }
-
-  public Genre toDomain() {
-    return new Genre(id, value);
   }
 
   public Long getId() {

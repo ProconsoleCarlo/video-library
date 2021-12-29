@@ -1,10 +1,19 @@
 package it.proconsole.library.video.adapter.jpa.repository;
 
+import it.proconsole.library.video.adapter.jpa.model.FilmEntity;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.adapter.jpa.repository.crud.FilmReviewCrudRepository;
+import it.proconsole.library.video.core.exception.FilmNotFoundException;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
+import it.proconsole.library.video.core.repository.Protocol;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,32 +21,61 @@ import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
-@Sql({"/schema.sql", "/data.sql"})
+@Sql("/schema.sql")
 class JpaFilmReviewRepositoryTest {
   @Autowired
   private FilmReviewCrudRepository filmReviewCrudRepository;
+  @Autowired
+  private FilmCrudRepository filmCrudRepository;
 
   private FilmReviewRepository repository;
 
   @BeforeEach
   void setUp() {
-    repository = new JpaFilmReviewRepository(filmReviewCrudRepository);
+    repository = new JpaFilmReviewRepository(filmReviewCrudRepository, filmCrudRepository, new FilmReviewAdapter());
   }
 
   @Test
-  void save() {
-    var review = new FilmReview(1L, LocalDateTime.now(), 8, "A review", 1L);
+  void protocol() {
+    assertEquals(Protocol.JPA, repository.protocol());
+  }
 
-    var savedReview = repository.save(review);
+  @Nested
+  class WhenSave {
+    @Test
+    void save() {
+      var film = filmCrudRepository.save(aFilm());
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review", film.getId());
 
-    assertEquals(review, savedReview);
+      var currentSavedReview = repository.save(review);
 
-    var reviewToUpdate = new FilmReview(1L, LocalDateTime.now(), 8, "A review updated", 1L);
+      var savedReview = review.copy().withId(1L).build();
+      assertEquals(savedReview, currentSavedReview);
 
-    var updatedReview = repository.save(reviewToUpdate);
+      var reviewToUpdate = savedReview.copy().withRating(7).withDetail("Updated review").build();
 
-    assertEquals(reviewToUpdate, updatedReview);
+      var updatedReview = repository.save(reviewToUpdate);
+
+      assertEquals(reviewToUpdate, updatedReview);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = Long.MAX_VALUE)
+    @NullSource
+    void notFoundExceptionWhenFilmDoesNotExist(Long filmId) {
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review", filmId);
+
+      assertThrows(FilmNotFoundException.class, () -> repository.save(review));
+    }
+  }
+
+  private FilmEntity aFilm() {
+    var film = new FilmEntity();
+    film.setTitle("Film title");
+    film.setYear(2018);
+    return film;
   }
 }

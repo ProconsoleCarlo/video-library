@@ -1,11 +1,9 @@
-package it.proconsole.library.video.adapter.jdbc.repository;
+package it.proconsole.library.video.adapter.jpa.repository;
 
-import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmAdapter;
-import it.proconsole.library.video.adapter.jdbc.repository.adapter.FilmReviewAdapter;
-import it.proconsole.library.video.adapter.jdbc.repository.adapter.GenreAdapter;
-import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmDao;
-import it.proconsole.library.video.adapter.jdbc.repository.dao.FilmReviewDao;
-import it.proconsole.library.video.adapter.jdbc.repository.dao.GenreDao;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.FilmReviewAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.adapter.GenreAdapter;
+import it.proconsole.library.video.adapter.jpa.repository.crud.FilmCrudRepository;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.model.GenreEnum;
@@ -14,35 +12,33 @@ import it.proconsole.library.video.core.repository.Protocol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@JdbcTest
+@DataJpaTest
 @Sql({"/schema.sql", "/data.sql"})
-class JdbcFilmRepositoryTest {
+class JpaFilmRepositoryTest {
   private final FilmAdapter filmAdapter = new FilmAdapter(new GenreAdapter(), new FilmReviewAdapter());
 
   @Autowired
-  private DataSource dataSource;
+  private FilmCrudRepository filmCrudRepository;
 
   private FilmRepository repository;
 
   @BeforeEach
   void setUp() {
-    repository = new JdbcFilmRepository(new FilmDao(dataSource), new GenreDao(dataSource), new FilmReviewDao(dataSource), filmAdapter);
+    repository = new JpaFilmRepository(filmCrudRepository, filmAdapter);
   }
 
   @Test
   void protocol() {
-    assertEquals(Protocol.JDBC, repository.protocol());
+    assertEquals(Protocol.JPA, repository.protocol());
   }
 
   @Test
@@ -58,10 +54,9 @@ class JdbcFilmRepositoryTest {
 
   @Test
   void saveAll() {
-    var date = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-    var aFilmReview = new FilmReview(date, 8, "Comment");
-    var anotherFilmReview = new FilmReview(date, 8, "Another comment");
-    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ACTION, GenreEnum.ROMANTIC), List.of(aFilmReview, anotherFilmReview));
+    var aFilmReview = new FilmReview(LocalDateTime.now(), 8, "Comment");
+    var anotherFilmReview = new FilmReview(LocalDateTime.now(), 8, "Another comment");
+    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC, GenreEnum.ACTION), List.of(aFilmReview, anotherFilmReview));
     var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
     var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 

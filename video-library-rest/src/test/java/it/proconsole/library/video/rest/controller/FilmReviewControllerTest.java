@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -27,8 +28,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 class FilmReviewControllerTest {
-  private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/existentFilmReview.json";
-  private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/insertFilmReview.json";
+  private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/existentFilmReview.json";
+  private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/insertFilmReview.json";
 
   @Mock
   private ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository;
@@ -63,13 +64,9 @@ class FilmReviewControllerTest {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      mvc.perform(post("/invalidProtocol/review")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)))
-              .andExpect(status().isNotFound());
-
-      verifyNoInteractions(filmReviewProtocolRepository);
-      verifyNoInteractions(filmReviewRepository);
+      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
     }
   }
 
@@ -93,13 +90,16 @@ class FilmReviewControllerTest {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      mvc.perform(put("/invalidProtocol/review")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)))
-              .andExpect(status().isNotFound());
-
-      verifyNoInteractions(filmReviewProtocolRepository);
-      verifyNoInteractions(filmReviewRepository);
+      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)));
     }
+  }
+
+  private void notFoundIfInvalidProtocolFor(MockHttpServletRequestBuilder mockedRequest) throws Exception {
+    mvc.perform(mockedRequest).andExpect(status().isNotFound());
+
+    verifyNoInteractions(filmReviewProtocolRepository);
+    verifyNoInteractions(filmReviewRepository);
   }
 }

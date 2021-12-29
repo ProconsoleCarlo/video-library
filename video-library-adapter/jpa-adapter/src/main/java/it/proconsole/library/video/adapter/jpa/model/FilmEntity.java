@@ -1,9 +1,9 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
-import it.proconsole.library.video.core.model.Film;
-import it.proconsole.library.video.core.model.FilmReview;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.Hibernate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,43 +37,25 @@ public class FilmEntity {
           inverseJoinColumns = @JoinColumn(name = "genre_id"))
   private List<GenreEntity> genres;
 
+  @JsonManagedReference
+  @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<FilmReviewEntity> reviews;
+
   public FilmEntity() {
   }
 
-  public FilmEntity(Long id, String title, Integer year, List<GenreEntity> genres) {
+  public FilmEntity(
+          Long id,
+          String title,
+          Integer year,
+          List<GenreEntity> genres,
+          List<FilmReviewEntity> reviews
+  ) {
     this.id = id;
     this.title = title;
     this.year = year;
     this.genres = genres;
-  }
-
-  public static FilmEntity fromDomain(Film film) {
-    return new FilmEntity(
-            film.id(),
-            film.title(),
-            film.year(),
-            film.genres().stream().map(GenreEntity::fromDomain).toList()
-    );
-  }
-
-  public Film toDomain() {
-    return new Film(
-            id,
-            title,
-            year,
-            genres.stream().map(GenreEntity::toDomain).toList(),
-            Collections.emptyList()
-    );
-  }
-
-  public Film toDomain(List<FilmReview> reviews) {
-    return new Film(
-            id,
-            title,
-            year,
-            genres.stream().map(GenreEntity::toDomain).toList(),
-            reviews
-    );
+    this.reviews = reviews;
   }
 
   public Long getId() {
@@ -106,6 +88,14 @@ public class FilmEntity {
 
   public void setGenres(List<GenreEntity> genres) {
     this.genres = genres;
+  }
+
+  public List<FilmReviewEntity> getReviews() {
+    return reviews;
+  }
+
+  public void setReviews(List<FilmReviewEntity> reviews) {
+    this.reviews = reviews;
   }
 
   @Override

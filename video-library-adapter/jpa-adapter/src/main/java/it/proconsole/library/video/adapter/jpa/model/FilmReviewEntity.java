@@ -1,15 +1,19 @@
 package it.proconsole.library.video.adapter.jpa.model;
 
-import it.proconsole.library.video.core.model.FilmReview;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.Hibernate;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,33 +33,29 @@ public class FilmReviewEntity {
   private Integer rating;
   @Lob
   @Column(name = "detail")
+  @Nullable
   private String detail;
-  @Column(name = "film_id", nullable = false)
-  private Long filmId;
+
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "film_id", nullable = false)
+  private FilmEntity film;
 
   public FilmReviewEntity() {
   }
 
-  public FilmReviewEntity(Long id, LocalDateTime date, Integer rating, String detail, Long filmId) {
+  public FilmReviewEntity(
+          Long id,
+          LocalDateTime date,
+          Integer rating,
+          @Nullable String detail,
+          FilmEntity film
+  ) {
     this.id = id;
     this.date = date;
     this.rating = rating;
     this.detail = detail;
-    this.filmId = filmId;
-  }
-
-  public static FilmReviewEntity fromDomain(FilmReview filmReview) {
-    return new FilmReviewEntity(
-            filmReview.id(),
-            filmReview.date(),
-            filmReview.rating(),
-            filmReview.detail(),
-            filmReview.filmId()
-    );
-  }
-
-  public FilmReview toDomain() {
-    return new FilmReview(id, date, rating, detail, filmId);
+    this.film = film;
   }
 
   public Long getId() {
@@ -82,20 +82,21 @@ public class FilmReviewEntity {
     this.rating = rating;
   }
 
+  @Nullable
   public String getDetail() {
     return detail;
   }
 
-  public void setDetail(String detail) {
+  public void setDetail(@Nullable String detail) {
     this.detail = detail;
   }
 
-  public Long getFilmId() {
-    return filmId;
+  public FilmEntity getFilm() {
+    return film;
   }
 
-  public void setFilmId(Long filmId) {
-    this.filmId = filmId;
+  public void setFilm(FilmEntity film) {
+    this.film = film;
   }
 
   @Override
@@ -109,14 +110,5 @@ public class FilmReviewEntity {
   @Override
   public int hashCode() {
     return getClass().hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "(" +
-            "id = " + id + ", " +
-            "date = " + date + ", " +
-            "rating = " + rating + ", " +
-            "detail = " + detail + ")";
   }
 }

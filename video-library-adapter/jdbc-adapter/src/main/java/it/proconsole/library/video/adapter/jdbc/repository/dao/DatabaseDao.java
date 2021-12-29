@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.jdbc.repository.dao;
 
+import it.proconsole.library.video.adapter.jdbc.exception.EntityNotSavedException;
 import it.proconsole.library.video.adapter.jdbc.model.EntityWithId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,7 +29,7 @@ public abstract class DatabaseDao<T extends EntityWithId> {
   }
 
   public void delete(T entity) {
-    deleteById(entity.id());
+    Optional.ofNullable(entity.id()).ifPresent(this::deleteById);
   }
 
   public void deleteAll() {
@@ -61,7 +62,8 @@ public abstract class DatabaseDao<T extends EntityWithId> {
   }
 
   public T save(T entity) {
-    return findById(entity.id())
+    return Optional.ofNullable(entity.id())
+            .map(this::findById)
             .map(e -> update(entity))
             .orElseGet(() -> insert(entity));
   }
@@ -74,19 +76,16 @@ public abstract class DatabaseDao<T extends EntityWithId> {
 
   private T insert(T entity) {
     var id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(entity));
-    return findById(id.longValue()).orElseThrow();
+    return findById(id.longValue()).orElseThrow(() -> new EntityNotSavedException(entity));
   }
 
   private T update(T entity) {
-    var params = entity.data().values().toArray();
-    var setSql = entity.data().keySet().stream().map(c -> c + "=?").collect(Collectors.joining(","));
-    jdbcTemplate.update("update " + tableName + " set " + setSql + " where id = " + entity.id(), params);
-    return findById(entity.id()).orElseThrow();
+    return Optional.ofNullable(entity.id())
+            .flatMap(id -> {
+              var params = entity.data().values().toArray();
+              var setSql = entity.data().keySet().stream().map(c -> c + "=?").collect(Collectors.joining(","));
+              jdbcTemplate.update("update " + tableName + " set " + setSql + " where id = " + id, params);
+              return findById(id);
+            }).orElseThrow(() -> new EntityNotSavedException(entity));
   }
-  /*
-
-  public boolean existsById(ID id) {
-    return false;
-  }
-*/
 }

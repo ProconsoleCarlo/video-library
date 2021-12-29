@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 class FilmReviewControllerTest {
-  private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/existentFilmReview.json";
-  private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/core/model/insertFilmReview.json";
+  private static final String EXISTENT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/existentFilmReview.json";
+  private static final String INSERT_FILM_REVIEW_JSON = "/it/proconsole/library/video/rest/controller/insertFilmReview.json";
 
   @Mock
   private ProtocolRepository<FilmReviewRepository> filmReviewProtocolRepository;

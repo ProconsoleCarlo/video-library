@@ -78,6 +78,7 @@ class FilmAdapterTest {
   @Test
   void genresFromDomain() {
     when(genreAdapter.fromDomain(DOMAIN_GENRE)).thenReturn(FRONTIER_GENRE);
+
     var current = adapter.genresFromDomain(DOMAIN_GENRE);
 
     assertEquals(FRONTIER_GENRE, current);
@@ -86,6 +87,7 @@ class FilmAdapterTest {
   @Test
   void reviewsFromDomain() {
     when(filmReviewAdapter.fromDomain(DOMAIN_FILM_REVIEW, FILM_ID)).thenReturn(FRONTIER_FILM_REVIEW);
+
     var current = adapter.reviewsFromDomain(DOMAIN_FILM_REVIEW, FILM_ID);
 
     assertEquals(FRONTIER_FILM_REVIEW, current);

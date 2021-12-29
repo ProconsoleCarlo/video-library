@@ -60,7 +60,7 @@ class FilmReviewControllerIT {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review")
+      notFoundIfInvalidProtocolFor(post("/invalidProtocol/review/" + FILM_ID)
               .contentType(MediaType.APPLICATION_JSON)
               .content(Fixtures.readFromClasspath(EXISTENT_FILM_REVIEW_JSON)));
     }
@@ -86,7 +86,7 @@ class FilmReviewControllerIT {
 
     @Test
     void notFoundIfInvalidProtocol() throws Exception {
-      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review")
+      notFoundIfInvalidProtocolFor(put("/invalidProtocol/review/" + FILM_ID)
               .contentType(MediaType.APPLICATION_JSON)
               .content(Fixtures.readFromClasspath(INSERT_FILM_REVIEW_JSON)));
     }

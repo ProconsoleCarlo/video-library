@@ -48,7 +48,6 @@ class JdbcFilmReviewRepositoryTest {
 
   @Nested
   class WhenSave {
-
     @Test
     void save() {
       var film = filmDao.save(new FilmEntity("Title", 2018));

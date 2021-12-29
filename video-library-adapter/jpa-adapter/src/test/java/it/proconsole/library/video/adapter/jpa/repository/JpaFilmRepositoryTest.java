@@ -56,7 +56,7 @@ class JpaFilmRepositoryTest {
   void saveAll() {
     var aFilmReview = new FilmReview(LocalDateTime.now(), 8, "Comment");
     var anotherFilmReview = new FilmReview(LocalDateTime.now(), 8, "Another comment");
-    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC), List.of(aFilmReview, anotherFilmReview));
+    var aFilm = new Film("Title", 2018, List.of(GenreEnum.ROMANTIC, GenreEnum.ACTION), List.of(aFilmReview, anotherFilmReview));
     var anotherFilm = new Film("Another title", 2017, List.of(GenreEnum.COMEDY), Collections.emptyList());
     var currentSavedFilms = repository.saveAll(List.of(aFilm, anotherFilm));
 

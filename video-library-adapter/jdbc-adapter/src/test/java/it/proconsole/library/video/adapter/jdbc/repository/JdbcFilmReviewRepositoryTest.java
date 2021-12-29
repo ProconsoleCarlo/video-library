@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,7 +53,7 @@ class JdbcFilmReviewRepositoryTest {
     void save() {
       var film = filmDao.save(new FilmEntity("Title", 2018));
       assertNotNull(film.id());
-      var review = new FilmReview(LocalDateTime.now(), 8, "A review", film.id());
+      var review = new FilmReview(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS), 8, "A review", film.id());
 
       var savedReview = repository.save(review);
 

@@ -9,73 +9,78 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 abstract class DatabaseDaoTest<T extends EntityWithId> {
-  DatabaseDao<T> dao;
+  abstract DatabaseDao<T> dao();
 
   @AfterEach
   void tearDown() {
-    dao.deleteAll();
+    dao().deleteAll();
   }
 
   @Test
   void delete() {
-    var entity = dao.save(anEntity());
-    assertTrue(dao.findById(entity.id()).isPresent());
+    var entity = dao().save(anEntity());
+    var id = entity.id();
+    assertNotNull(id);
+    assertTrue(dao().findById(id).isPresent());
 
-    dao.delete(entity);
+    dao().delete(entity);
 
-    assertFalse(dao.findById(entity.id()).isPresent());
+    assertFalse(dao().findById(id).isPresent());
   }
 
   @Test
   void deleteAllTable() {
-    dao.saveAll(List.of(anEntity(), anEntity()));
-    assertFalse(dao.findAll().isEmpty());
+    dao().saveAll(List.of(anEntity(), anEntity()));
+    assertFalse(dao().findAll().isEmpty());
 
-    dao.deleteAll();
+    dao().deleteAll();
 
-    assertTrue(dao.findAll().isEmpty());
+    assertTrue(dao().findAll().isEmpty());
   }
 
   @Test
   void deleteAll() {
-    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
+    var entities = dao().saveAll(List.of(anEntity(), anEntity()));
     var ids = entities.stream().map(EntityWithId::id).toList();
-    assertFalse(dao.findAllById(ids).isEmpty());
+    assertFalse(dao().findAllById(ids).isEmpty());
 
-    dao.deleteAll(entities);
+    dao().deleteAll(entities);
 
-    assertTrue(dao.findAllById(ids).isEmpty());
+    assertTrue(dao().findAllById(ids).isEmpty());
   }
 
   @Test
   void deleteById() {
-    var entity = dao.save(anEntity());
-    assertTrue(dao.findById(entity.id()).isPresent());
+    var entity = dao().save(anEntity());
+    var id = entity.id();
+    assertNotNull(id);
+    assertTrue(dao().findById(id).isPresent());
 
-    dao.deleteById(entity.id());
+    dao().deleteById(id);
 
-    assertFalse(dao.findById(entity.id()).isPresent());
+    assertFalse(dao().findById(id).isPresent());
   }
 
   @Test
   void deleteAllById() {
-    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
+    var entities = dao().saveAll(List.of(anEntity(), anEntity()));
     var ids = entities.stream().map(EntityWithId::id).toList();
-    assertFalse(dao.findAllById(ids).isEmpty());
+    assertFalse(dao().findAllById(ids).isEmpty());
 
-    dao.deleteAllById(ids);
+    dao().deleteAllById(ids);
 
-    assertTrue(dao.findAllById(ids).isEmpty());
+    assertTrue(dao().findAllById(ids).isEmpty());
   }
 
   @Test
   void findAll() {
-    var entities = dao.saveAll(List.of(anEntity(), anEntity()));
+    var entities = dao().saveAll(List.of(anEntity(), anEntity()));
 
-    var current = dao.findAll();
+    var current = dao().findAll();
 
     assertEquals(entities, current);
   }
@@ -83,17 +88,18 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   @Test
   void save() {
     var anEntity = anEntity();
-    assertFalse(dao.findById(anEntity.id()).isPresent());
 
-    var savedEntity = dao.save(anEntity);
+    var savedEntity = dao().save(anEntity);
 
-    var checkEntity = dao.findById(savedEntity.id());
+    var savedId = savedEntity.id();
+    assertNotNull(savedId);
+    var checkEntity = dao().findById(savedId);
     assertTrue(checkEntity.isPresent());
     assertEquals(savedEntity, checkEntity.get());
 
-    var entityToUpdate = anEntityForUpdate(savedEntity.id());
+    var entityToUpdate = anEntityForUpdate(savedId);
 
-    var updatedEntity = dao.save(entityToUpdate);
+    var updatedEntity = dao().save(entityToUpdate);
 
     assertEquals(savedEntity.id(), updatedEntity.id());
   }
@@ -102,18 +108,20 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   void saveAll() {
     var entities = List.of(anEntity(), anEntity());
     var ids = entities.stream().map(EntityWithId::id).toList();
-    assertTrue(dao.findAllById(ids).isEmpty());
+    assertTrue(dao().findAllById(ids).isEmpty());
 
-    var savedEntities = dao.saveAll(entities);
+    var savedEntities = dao().saveAll(entities);
 
     var savedIds = savedEntities.stream().map(EntityWithId::id).toList();
-    var checkEntities = dao.findAllById(savedIds);
+    var checkEntities = dao().findAllById(savedIds);
     assertEquals(savedEntities, checkEntities);
 
-    var entityToUpdate = anEntityForUpdate(savedEntities.get(0).id());
+    var idToUpdate = savedEntities.get(0).id();
+    assertNotNull(idToUpdate);
+    var entityToUpdate = anEntityForUpdate(idToUpdate);
     var entitiesToUpdate = List.of(entityToUpdate);
 
-    var updatedEntities = dao.saveAll(entitiesToUpdate);
+    var updatedEntities = dao().saveAll(entitiesToUpdate);
 
     assertEquals(entityToUpdate.id(), updatedEntities.get(0).id());
   }
@@ -122,17 +130,17 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   class WhenFindAllById {
     @Test
     void listIfPresent() {
-      var entities = dao.saveAll(List.of(anEntity(), anEntity()));
+      var entities = dao().saveAll(List.of(anEntity(), anEntity()));
       var ids = entities.stream().map(EntityWithId::id).toList();
 
-      var current = dao.findAllById(ids);
+      var current = dao().findAllById(ids);
 
       assertEquals(entities, current);
     }
 
     @Test
     void emptyIfAbsent() {
-      var current = dao.findAllById(List.of(Long.MAX_VALUE));
+      var current = dao().findAllById(List.of(Long.MAX_VALUE));
 
       assertTrue(current.isEmpty());
     }
@@ -142,9 +150,10 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
   class WhenFindById {
     @Test
     void entityIfPresent() {
-      var entity = dao.save(anEntity());
-
-      var current = dao.findById(entity.id());
+      var entity = dao().save(anEntity());
+      var id = entity.id();
+      assertNotNull(id);
+      var current = dao().findById(id);
 
       assertTrue(current.isPresent());
       assertEquals(entity, current.get());
@@ -152,7 +161,7 @@ abstract class DatabaseDaoTest<T extends EntityWithId> {
 
     @Test
     void emptyIfAbsent() {
-      var current = dao.findById(Long.MAX_VALUE);
+      var current = dao().findById(Long.MAX_VALUE);
 
       assertFalse(current.isPresent());
     }

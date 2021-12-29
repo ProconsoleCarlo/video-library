@@ -14,11 +14,18 @@ class FilmDaoTest extends DatabaseDaoTest<FilmEntity> {
   @Autowired
   private DataSource dataSource;
 
+  private DatabaseDao<FilmEntity> dao;
+
   @BeforeEach
   void setUp() {
     dao = new FilmDao(dataSource);
 
     new FilmReviewDao(dataSource).findAll();
+  }
+
+  @Override
+  DatabaseDao<FilmEntity> dao() {
+    return dao;
   }
 
   @Override

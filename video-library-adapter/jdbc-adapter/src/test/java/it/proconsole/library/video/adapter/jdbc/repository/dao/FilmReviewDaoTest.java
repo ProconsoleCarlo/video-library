@@ -25,12 +25,19 @@ class FilmReviewDaoTest extends DatabaseDaoTest<FilmReviewEntity> {
   @Autowired
   private DataSource dataSource;
 
+  private DatabaseDao<FilmReviewEntity> dao;
+
   @BeforeEach
   void setUp() {
     jdbcTemplate = new JdbcTemplate(dataSource);
     dao = new FilmReviewDao(dataSource);
 
     jdbcTemplate.update("insert into film VALUES (1, 'Film title', 2011);");
+  }
+
+  @Override
+  DatabaseDao<FilmReviewEntity> dao() {
+    return dao;
   }
 
   @Override

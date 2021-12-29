@@ -19,9 +19,16 @@ class GenreDaoTest extends DatabaseDaoTest<GenreEntity> {
   @Autowired
   private DataSource dataSource;
 
+  private DatabaseDao<GenreEntity> dao;
+
   @BeforeEach
   void setUp() {
     dao = new GenreDao(dataSource);
+  }
+
+  @Override
+  DatabaseDao<GenreEntity> dao() {
+    return dao;
   }
 
   @Override

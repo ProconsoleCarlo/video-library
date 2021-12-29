@@ -1,4 +1,4 @@
-import {Genre} from "./Film";
+import { Genre } from './Film';
 
 export interface NewFilm {
   id: number | null,
@@ -12,6 +12,5 @@ export interface NewReview {
   id: number | null,
   date: string,
   rating: number,
-  detail: string | null,
-  filmId: number
+	detail: string | null
 }

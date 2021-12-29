@@ -2,6 +2,5 @@
   "id": 1,
   "date": "2012-12-31T00:00:00",
   "rating": 8,
-  "detail": "This is a review",
-  "filmId": 1
+  "detail": "This is a review"
 }

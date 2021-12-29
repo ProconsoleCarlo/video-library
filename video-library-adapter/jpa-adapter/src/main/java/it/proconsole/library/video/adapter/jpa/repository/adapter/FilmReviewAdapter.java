@@ -33,8 +33,7 @@ public class FilmReviewAdapter {
             filmReview.getId(),
             filmReview.getDate(),
             filmReview.getRating(),
-            filmReview.getDetail(),
-            filmReview.getFilm().getId()
+            filmReview.getDetail()
     );
   }
 }

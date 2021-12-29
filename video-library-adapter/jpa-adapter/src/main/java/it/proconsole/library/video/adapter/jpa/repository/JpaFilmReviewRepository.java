@@ -8,8 +8,6 @@ import it.proconsole.library.video.core.model.FilmReview;
 import it.proconsole.library.video.core.repository.FilmReviewRepository;
 import it.proconsole.library.video.core.repository.Protocol;
 
-import java.util.Optional;
-
 public class JpaFilmReviewRepository implements FilmReviewRepository {
   private final FilmReviewCrudRepository filmReviewCrudRepository;
   private final FilmCrudRepository filmCrudRepository;
@@ -31,13 +29,12 @@ public class JpaFilmReviewRepository implements FilmReviewRepository {
   }
 
   @Override
-  public FilmReview save(FilmReview review) {
-    return Optional.ofNullable(review.filmId())
-            .flatMap(filmCrudRepository::findById)
+  public FilmReview save(FilmReview review, Long filmId) {
+    return filmCrudRepository.findById(filmId)
             .map(it -> {
               var entity = filmReviewAdapter.fromDomain(review, it);
               var saved = filmReviewCrudRepository.save(entity);
               return filmReviewAdapter.toDomain(saved);
-            }).orElseThrow(() -> new FilmNotFoundException(review));
+            }).orElseThrow(() -> new FilmNotFoundException(review, filmId));
   }
 }

@@ -28,8 +28,8 @@ class FilmAdapterTest {
   private static final List<Genre> DOMAIN_GENRE = List.of(new Genre(GenreEnum.ACTION));
   private static final List<GenreEntity> FRONTIER_GENRE = List.of(new GenreEntity(GenreEnum.ACTION.id(), GenreEnum.ACTION));
   private static final List<FilmReview> DOMAIN_FILM_REVIEW = List.of(
-          new FilmReview(1L, DATE, 10, "Review", FILM_ID),
-          new FilmReview(2L, DATE, 6, null, FILM_ID)
+          new FilmReview(1L, DATE, 10, "Review"),
+          new FilmReview(2L, DATE, 6, null)
   );
   private static final List<FilmReviewEntity> FRONTIER_FILM_REVIEW = List.of(
           new FilmReviewEntity(1L, DATE, 10, "Review", FILM_ID),

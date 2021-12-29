@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -48,27 +47,26 @@ class JpaFilmReviewRepositoryTest {
     @Test
     void save() {
       var film = filmCrudRepository.save(aFilm());
-      var review = new FilmReview(LocalDateTime.now(), 8, "Review", film.getId());
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review");
 
-      var currentSavedReview = repository.save(review);
+      var currentSavedReview = repository.save(review, film.getId());
 
       var savedReview = review.copy().withId(1L).build();
       assertEquals(savedReview, currentSavedReview);
 
       var reviewToUpdate = savedReview.copy().withRating(7).withDetail("Updated review").build();
 
-      var updatedReview = repository.save(reviewToUpdate);
+      var updatedReview = repository.save(reviewToUpdate, film.getId());
 
       assertEquals(reviewToUpdate, updatedReview);
     }
 
     @ParameterizedTest
     @ValueSource(longs = Long.MAX_VALUE)
-    @NullSource
     void notFoundExceptionWhenFilmDoesNotExist(Long filmId) {
-      var review = new FilmReview(LocalDateTime.now(), 8, "Review", filmId);
+      var review = new FilmReview(LocalDateTime.now(), 8, "Review");
 
-      assertThrows(FilmNotFoundException.class, () -> repository.save(review));
+      assertThrows(FilmNotFoundException.class, () -> repository.save(review, filmId));
     }
   }
 

@@ -8,19 +8,14 @@ public record FilmReview(
         @Nullable Long id,
         LocalDateTime date,
         int rating,
-        @Nullable String detail,
-        @Nullable Long filmId
+        @Nullable String detail
 ) {
-  public FilmReview(LocalDateTime date, int rating, @Nullable String detail, Long filmId) {
-    this(null, date, rating, detail, filmId);
-  }
-
   public FilmReview(LocalDateTime date, int rating, @Nullable String detail) {
-    this(null, date, rating, detail, null);
+    this(null, date, rating, detail);
   }
 
   public Builder copy() {
-    return new Builder(id, date, rating, detail, filmId);
+    return new Builder(id, date, rating, detail);
   }
 
   public static class Builder {
@@ -30,15 +25,12 @@ public record FilmReview(
     private int rating;
     @Nullable
     private String detail;
-    @Nullable
-    private Long filmId;
 
-    Builder(@Nullable Long id, LocalDateTime date, int rating, @Nullable String detail, @Nullable Long filmId) {
+    Builder(@Nullable Long id, LocalDateTime date, int rating, @Nullable String detail) {
       this.id = id;
       this.date = date;
       this.rating = rating;
       this.detail = detail;
-      this.filmId = filmId;
     }
 
     Builder(LocalDateTime date, int rating) {
@@ -70,13 +62,8 @@ public record FilmReview(
       return this;
     }
 
-    public Builder withFilmId(@Nullable Long filmId) {
-      this.filmId = filmId;
-      return this;
-    }
-
     public FilmReview build() {
-      return new FilmReview(id, date, rating, detail, filmId);
+      return new FilmReview(id, date, rating, detail);
     }
   }
 }

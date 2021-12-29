@@ -38,7 +38,7 @@ public class FilmAdapter {
             filmRow.title(),
             filmRow.year(),
             genreAdapter.toDomain(filmRow.genres()),
-            filmReviewAdapter.toDomain(filmRow.reviews(), filmRow.id())
+            filmReviewAdapter.toDomain(filmRow.reviews())
     );
   }
 }

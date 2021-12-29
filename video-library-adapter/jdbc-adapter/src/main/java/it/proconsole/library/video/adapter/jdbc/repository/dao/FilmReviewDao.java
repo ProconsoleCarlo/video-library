@@ -4,6 +4,7 @@ import it.proconsole.library.video.adapter.jdbc.model.FilmReviewEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class FilmReviewDao extends DatabaseDao<FilmReviewEntity> {
@@ -27,7 +28,7 @@ public class FilmReviewDao extends DatabaseDao<FilmReviewEntity> {
   RowMapper<FilmReviewEntity> rowMapper() {
     return (rs, rowNum) -> new FilmReviewEntity(
             rs.getLong("id"),
-            rs.getTimestamp("date").toLocalDateTime(),
+            rs.getTimestamp("date").toLocalDateTime().truncatedTo(ChronoUnit.MILLIS),
             rs.getInt("rating"),
             rs.getString("detail"),
             rs.getLong("film_id")

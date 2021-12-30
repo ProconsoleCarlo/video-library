@@ -6,8 +6,7 @@ import { filmReviewRepository } from './FilmReviewRepository';
 
 describe('FilmReviewRepository', () => {
   const FILM_ID = 1;
-  const protocols = Object.keys(Protocol) as Protocol[];
-  protocols.forEach((protocol) => {
+  Protocol.keys.forEach((protocol) => {
     describe(`when protocol is ${protocol}`, () => {
       const repository = filmReviewRepository(protocol);
 

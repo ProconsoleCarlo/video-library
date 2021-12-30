@@ -8,15 +8,15 @@ export interface FilmReviewRepository {
   insert(review: Review, filmId: Number): Promise<Review>;
 }
 
-const httpClient = fetchHttpClient<string, Review>();
+const httpClient = fetchHttpClient<Review, Review>();
 
 export const filmReviewRepository = (protocol: Protocol): FilmReviewRepository => {
   return {
     update(review: Review, filmId: Number): Promise<Review> {
-      return httpClient.post({url: `/${protocol}/review/${filmId}`, body: JSON.stringify(review)});
+      return httpClient.post({url: `/${protocol}/review/${filmId}`, body: review});
     },
     insert(review: Review, filmId: Number): Promise<Review> {
-      return httpClient.put({url: `/${protocol}/review/${filmId}`, body: JSON.stringify(review)});
+      return httpClient.put({url: `/${protocol}/review/${filmId}`, body: review});
     }
   };
 };

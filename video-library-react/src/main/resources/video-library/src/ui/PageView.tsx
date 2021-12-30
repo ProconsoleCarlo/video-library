@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { Film } from '../model/Film';
 import { Protocol } from '../model/Protocol';
-import { fetchHttpClient } from '../utils/HttpClient';
+import { filmProtocolRepository } from '../repository/ProtocolRepository';
 import { FilmListView } from './FilmListView';
 import { FilmView } from './FilmView';
-
-const httpClient = fetchHttpClient<any, any>();
-
-const dbProtocols = ['jpa', 'jdbc'];
 
 interface Props {
 }
@@ -17,17 +13,18 @@ export const PageView: React.FC<Props> = () => {
   const [films, setFilms] = useState<Film[]>([]);
   const [jsonBody, setJsonBody] = useState('');
   const [selectedFilm, setSelectedFilm] = useState<Film>();
+  const filmRepository = filmProtocolRepository[selectedDbProtocol];
 
-  const retrieveFilms = (dbProtocol: string): Promise<Film[]> => {
-    return httpClient.get({url: `/${dbProtocol}/films`});
+  const retrieveFilms = (): Promise<Film[]> => {
+    return filmRepository.get();
   };
 
-  const updateFilms = (dbProtocol: string): Promise<Film[]> => {
-    return httpClient.put({url: `/${dbProtocol}/films`, body: jsonBody});
+  const updateFilms = (): Promise<Film[]> => {
+    return filmRepository.insert(films);
   };
 
   const onRetrieveFilmClick = (): void => {
-    retrieveFilms(selectedDbProtocol.toLowerCase())
+    retrieveFilms()
       .then((films) => {
         setFilms(films);
         setJsonBody(JSON.stringify(films, null, 4));
@@ -35,7 +32,7 @@ export const PageView: React.FC<Props> = () => {
   };
 
   const onUpdateFilmClick = (): void => {
-    updateFilms(selectedDbProtocol.toLowerCase())
+    updateFilms()
       .then((films) => {
         setFilms(films);
       });
@@ -54,7 +51,7 @@ export const PageView: React.FC<Props> = () => {
       <div>
         <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value as Protocol)}>
           {
-            dbProtocols.map((dbProtocol) =>
+            Protocol.keys.map((dbProtocol) =>
               <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
             )
           }

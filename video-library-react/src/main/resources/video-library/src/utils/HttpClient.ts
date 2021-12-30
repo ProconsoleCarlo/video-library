@@ -20,12 +20,12 @@ export interface HttpClient<REQUEST, RESPONSE> {
   delete(params: ClientParams<REQUEST>): Promise<RESPONSE>;
 }
 
-export const fetchHttpClient = <REQUEST extends string, RESPONSE>(): HttpClient<REQUEST, RESPONSE> => {
+export const fetchHttpClient = <REQUEST, RESPONSE>(): HttpClient<REQUEST, RESPONSE> => {
   const request = (method: HttpMethod) => (params: ClientParams<REQUEST>): Promise<RESPONSE> => {
     const requestOptions: RequestInit = {
       method: method,
       headers: {'Content-Type': 'application/json'},
-      body: params.body || null
+      body: params.body ? JSON.stringify(params.body) : null
     };
 
     return fetch(params.url, requestOptions)

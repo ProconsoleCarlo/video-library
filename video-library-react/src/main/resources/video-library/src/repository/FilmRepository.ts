@@ -10,7 +10,7 @@ export interface FilmRepository {
   insert(films: Film[]): Promise<Film[]>;
 }
 
-const httpClient = fetchHttpClient<string, Film[]>();
+const httpClient = fetchHttpClient<Film[] | undefined, Film[]>();
 
 export const filmRepository = (protocol: Protocol): FilmRepository => {
   return {
@@ -18,10 +18,10 @@ export const filmRepository = (protocol: Protocol): FilmRepository => {
       return httpClient.get({url: `/${protocol}/films`});
     },
     update(films: Film[]): Promise<Film[]> {
-      return httpClient.post({url: `/${protocol}/films`, body: JSON.stringify(films)});
+      return httpClient.post({url: `/${protocol}/films`, body: films});
     },
     insert(films: Film[]): Promise<Film[]> {
-      return httpClient.put({url: `/${protocol}/films`, body: JSON.stringify(films)});
+      return httpClient.put({url: `/${protocol}/films`, body: films});
     }
   };
 };

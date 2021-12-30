@@ -1,1 +1,5 @@
-export const protocols = ['jpa', 'jdbc', 'xlsx'];
+export const JPA = 'jpa';
+export const JDBC = 'jdbc';
+export const XLSX = 'xlsx';
+
+export const protocols = [JPA, JDBC, XLSX];

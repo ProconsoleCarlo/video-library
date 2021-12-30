@@ -1,13 +1,13 @@
 import assert from 'assert';
 import fetchMockJest from 'fetch-mock-jest';
 import { existentFilmReview, insertFilmReview } from '../mock/FilmReviewMock';
-import { protocols } from '../model/Protocols';
+import { Protocol } from '../model/Protocol';
 import { filmReviewRepository } from './FilmReviewRepository';
 
 describe('FilmReviewRepository', () => {
 	const FILM_ID = 1;
-
-	protocols.forEach(protocol => {
+	const protocols = Object.keys(Protocol) as Protocol[];
+	protocols.forEach((protocol) => {
 		describe(`when protocol is ${protocol}`, () => {
 			const repository = filmReviewRepository(protocol);
 

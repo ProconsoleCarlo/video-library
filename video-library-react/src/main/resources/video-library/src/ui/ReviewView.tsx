@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Review } from '../model/Film';
-import { filmReviewRepositories } from '../repository/ProtocolRepository';
+import { Protocol } from '../model/Protocol';
+import { filmReviewProtocolRepository } from '../repository/ProtocolRepository';
 
 interface Props {
 	filmId: number,
 	reviews: Review[],
-	rootPath: string
+	protocol: Protocol
 }
 
 const EMPTY_REVIEW: Review = {
@@ -15,14 +16,15 @@ const EMPTY_REVIEW: Review = {
 	detail: null
 };
 
-export const ReviewView: React.FC<Props> = ({filmId, reviews, rootPath}) => {
-	const filmReviewRepository = filmReviewRepositories.get(rootPath);
+export const ReviewView: React.FC<Props> = ({filmId, reviews, protocol}) => {
+	const repository = filmReviewProtocolRepository[protocol];
+
 	const [jsonReview, setJsonReview] = useState(EMPTY_REVIEW);
 	const addReview = (): Promise<Review> => {
-		return filmReviewRepository.insert(jsonReview, filmId);
+		return repository.insert(jsonReview, filmId);
 	};
 	const updateReview = (): Promise<Review> => {
-		return filmReviewRepository.update(jsonReview, filmId);
+		return repository.update(jsonReview, filmId);
 	};
 
 	const saveReview = (): void => {

@@ -1,4 +1,5 @@
 import { Film } from '../model/Film';
+import { Protocol } from '../model/Protocol';
 import { fetchHttpClient } from '../utils/HttpClient';
 
 export interface FilmRepository {
@@ -11,7 +12,7 @@ export interface FilmRepository {
 
 const httpClient = fetchHttpClient<string, Film[]>();
 
-export const filmRepository = (protocol: String): FilmRepository => {
+export const filmRepository = (protocol: Protocol): FilmRepository => {
 	return {
 		get(): Promise<Film[]> {
 			return httpClient.get({url: `/${protocol}/films`});

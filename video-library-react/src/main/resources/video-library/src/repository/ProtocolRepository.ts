@@ -1,8 +1,8 @@
-import { JDBC, JPA, XLSX } from '../model/Protocols';
-import { filmReviewRepository } from './FilmReviewRepository';
+import { Protocol } from '../model/Protocol';
+import { FilmReviewRepository, filmReviewRepository } from './FilmReviewRepository';
 
-export const filmReviewRepositories = new Map([
-	[JPA, filmReviewRepository(JPA)],
-	[JDBC, filmReviewRepository(JDBC)],
-	[XLSX, filmReviewRepository(XLSX)],
-]);
+export const filmReviewProtocolRepository: Record<Protocol, FilmReviewRepository> = {
+	[Protocol.JPA]: filmReviewRepository(Protocol.JPA),
+	[Protocol.JDBC]: filmReviewRepository(Protocol.JDBC),
+	[Protocol.XLSX]: filmReviewRepository(Protocol.XLSX),
+};

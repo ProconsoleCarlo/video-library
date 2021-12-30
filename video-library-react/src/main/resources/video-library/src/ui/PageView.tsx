@@ -1,19 +1,20 @@
-import React, {useState} from "react";
-import {Film} from "../model/Film";
-import {fetchHttpClient} from "../utils/HttpClient";
-import {FilmView} from "./FilmView";
-import {FilmListView} from "./FilmListView";
+import React, { useState } from 'react';
+import { Film } from '../model/Film';
+import { Protocol } from '../model/Protocol';
+import { fetchHttpClient } from '../utils/HttpClient';
+import { FilmListView } from './FilmListView';
+import { FilmView } from './FilmView';
 
 const httpClient = fetchHttpClient<any, any>();
 
-const dbProtocols = ["jpa", "jdbc"];
+const dbProtocols = ['jpa', 'jdbc'];
 
 interface Props {
 }
 
 export const PageView: React.FC<Props> = () => {
-  const [selectedDbProtocol, setSelectedDbProtocol] = useState("jpa");
-  const [films, setFilms] = useState<Film[]>([]);
+	const [selectedDbProtocol, setSelectedDbProtocol] = useState(Protocol.JPA);
+	const [films, setFilms] = useState<Film[]>([]);
   const [jsonBody, setJsonBody] = useState("");
   const [selectedFilm, setSelectedFilm] = useState<Film>();
 
@@ -51,18 +52,18 @@ export const PageView: React.FC<Props> = () => {
   return (
     <div>
       <div>
-        <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value)}>
-          {
-            dbProtocols.map((dbProtocol) =>
-              <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
-            )
-          }
-        </select>
-        <button onClick={onRetrieveFilmClick}>Retrieve films</button>
+	      <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value as Protocol)}>
+		      {
+			      dbProtocols.map((dbProtocol) =>
+				      <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
+			      )
+		      }
+	      </select>
+	      <button onClick={onRetrieveFilmClick}>Retrieve films</button>
       </div>
       <FilmListView films={films} onFilmClick={onFilmClick}/>
       {
-        selectedFilm && <FilmView film={selectedFilm} rootPath={selectedDbProtocol.toLowerCase()}/>
+	      selectedFilm && <FilmView film={selectedFilm} protocol={selectedDbProtocol}/>
       }
       <div>
         <span>IO text area:</span><br/>

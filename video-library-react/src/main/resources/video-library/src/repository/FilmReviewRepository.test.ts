@@ -1,7 +1,7 @@
 import fetchMockJest from 'fetch-mock-jest';
 import { filmReviewRepository } from './FilmReviewRepository';
 import { deepStrictEqual } from 'assert';
-import { existentFilmReview, insertFilmReview } from '../mock/ReviewMock';
+import { existentFilmReview, insertFilmReview } from '../mock/FilmReviewMock';
 
 describe('FilmReviewRepository', () => {
 	const FILM_ID = 1;

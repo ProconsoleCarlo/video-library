@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const PageView: React.FC<Props> = () => {
-  const [selectedDbProtocol, setSelectedDbProtocol] = useState(Protocol.JPA);
+  const [selectedDbProtocol, setSelectedDbProtocol] = useState<Protocol>(Protocol.JPA);
   const [films, setFilms] = useState<Film[]>([]);
   const [jsonBody, setJsonBody] = useState('');
   const [selectedFilm, setSelectedFilm] = useState<Film>();
@@ -52,7 +52,7 @@ export const PageView: React.FC<Props> = () => {
         <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value as Protocol)}>
           {
             Protocol.keys.map((dbProtocol) =>
-              <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
+              <option key={dbProtocol} value={dbProtocol.toLowerCase()}>{dbProtocol}</option>
             )
           }
         </select>

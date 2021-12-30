@@ -1,8 +1,7 @@
 import fetchMockJest from 'fetch-mock-jest';
-import { Review } from '../model/Film';
 import { filmReviewRepository } from './FilmReviewRepository';
-import { NewReview } from '../model/NewFilm';
 import { deepStrictEqual } from 'assert';
+import { existentFilmReview, insertFilmReview } from '../mock/ReviewMock';
 
 describe('FilmReviewRepository', () => {
 	const FILM_ID = 1;
@@ -10,46 +9,28 @@ describe('FilmReviewRepository', () => {
 	const repository = filmReviewRepository('jpa');
 
 	test('update', async () => {
-		const review: Review = {
-			'id': 1,
-			'date': '2012-12-31T00:00:00',
-			'rating': 8,
-			'detail': 'This is a review'
-		};
 		fetchMockJest.postOnce(
 			(url: string, opts: Request | RequestInit) => {
-				deepStrictEqual(JSON.parse(opts.body!.toString()), review);
+				deepStrictEqual(JSON.parse(opts.body!.toString()), existentFilmReview);
 				return url === `/jpa/review/${FILM_ID}`;
 			},
-			review
+			existentFilmReview
 		);
 
-		await repository.update(review, FILM_ID)
-			.then(it => expect(it).toStrictEqual(review));
+		await repository.update(existentFilmReview, FILM_ID)
+			.then(it => expect(it).toStrictEqual(existentFilmReview));
 	});
 
 	test('insert', async () => {
-		const review: NewReview = {
-			'id': null,
-			'date': '2012-12-31T00:00:00',
-			'rating': 8,
-			'detail': 'This is a review'
-		};
-		const savedReview: Review = {
-			'id': 1,
-			'date': '2012-12-31T00:00:00',
-			'rating': 8,
-			'detail': 'This is a review'
-		};
 		fetchMockJest.putOnce(
 			(url: string, opts: Request | RequestInit) => {
-				deepStrictEqual(JSON.parse(opts.body!.toString()), review);
+				deepStrictEqual(JSON.parse(opts.body!.toString()), insertFilmReview);
 				return url === `/jpa/review/${FILM_ID}`;
 			},
-			savedReview
+			existentFilmReview
 		);
 
-		await repository.insert(review, FILM_ID)
-			.then(it => expect(it).toStrictEqual(savedReview));
+		await repository.insert(insertFilmReview, FILM_ID)
+			.then(it => expect(it).toStrictEqual(existentFilmReview));
 	});
 });

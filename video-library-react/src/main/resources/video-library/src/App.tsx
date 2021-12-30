@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {PageView} from "./ui/PageView";
+import { PageView } from './ui/PageView';
 
 const App: React.FC = () => {
   return (
@@ -11,6 +11,6 @@ const App: React.FC = () => {
       </header>
     </div>
   );
-}
+};
 
 export default App;

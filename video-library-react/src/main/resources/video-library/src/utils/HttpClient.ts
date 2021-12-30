@@ -30,13 +30,13 @@ export const fetchHttpClient = <REQUEST extends string, RESPONSE>(): HttpClient<
 
     return fetch(params.url, requestOptions)
       .then((response: Response) => {
-        return response.json()
+        return response.json();
       });
-  }
+  };
   return {
     get: request(HttpMethod.GET),
     post: request(HttpMethod.POST),
     put: request(HttpMethod.PUT),
     delete: request(HttpMethod.DELETE),
-  }
-}
+  };
+};

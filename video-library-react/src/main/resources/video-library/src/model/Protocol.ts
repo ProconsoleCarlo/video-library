@@ -1,5 +1,5 @@
 export enum Protocol {
-	JPA = 'jpa',
-	JDBC = 'jdbc',
-	XLSX = 'xlsx'
+  JPA = 'jpa',
+  JDBC = 'jdbc',
+  XLSX = 'xlsx'
 }

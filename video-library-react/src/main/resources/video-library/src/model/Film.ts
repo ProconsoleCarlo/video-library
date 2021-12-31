@@ -1,5 +1,5 @@
 export interface Film {
-  id: number,
+  id: number | null,
   title: string,
   year: number,
   genres: Genre[],
@@ -12,7 +12,7 @@ export interface Genre {
 }
 
 export interface Review {
-  id: number,
+  id: number | null,
   date: string,
   rating: number,
   detail: string | null

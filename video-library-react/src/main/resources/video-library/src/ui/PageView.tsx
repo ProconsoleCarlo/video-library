@@ -1,60 +1,58 @@
-import React, {useState} from "react";
-import {Film} from "../model/Film";
-import {fetchHttpClient} from "../utils/HttpClient";
-import {FilmView} from "./FilmView";
-import {FilmListView} from "./FilmListView";
-
-const httpClient = fetchHttpClient<any, any>();
-
-const dbProtocols = ["jpa", "jdbc"];
+import React, { useState } from 'react';
+import { Film } from '../model/Film';
+import { Protocol } from '../model/Protocol';
+import { filmProtocolRepository } from '../repository/ProtocolRepository';
+import { FilmListView } from './FilmListView';
+import { FilmView } from './FilmView';
 
 interface Props {
 }
 
 export const PageView: React.FC<Props> = () => {
-  const [selectedDbProtocol, setSelectedDbProtocol] = useState("jpa");
+  const [selectedDbProtocol, setSelectedDbProtocol] = useState<Protocol>(Protocol.JPA);
   const [films, setFilms] = useState<Film[]>([]);
-  const [jsonBody, setJsonBody] = useState("");
+  const [jsonBody, setJsonBody] = useState('');
   const [selectedFilm, setSelectedFilm] = useState<Film>();
+  const filmRepository = filmProtocolRepository[selectedDbProtocol];
 
-  const retrieveFilms = (dbProtocol: string): Promise<Film[]> => {
-    return httpClient.get({url: `/${dbProtocol}/films`})
-  }
+  const retrieveFilms = (): Promise<Film[]> => {
+    return filmRepository.get();
+  };
 
-  const updateFilms = (dbProtocol: string): Promise<Film[]> => {
-    return httpClient.put({url: `/${dbProtocol}/films`, body: jsonBody})
-  }
+  const updateFilms = (): Promise<Film[]> => {
+    return filmRepository.insert(films);
+  };
 
   const onRetrieveFilmClick = (): void => {
-    retrieveFilms(selectedDbProtocol.toLowerCase())
+    retrieveFilms()
       .then((films) => {
         setFilms(films);
         setJsonBody(JSON.stringify(films, null, 4));
-      })
-  }
+      });
+  };
 
   const onUpdateFilmClick = (): void => {
-    updateFilms(selectedDbProtocol.toLowerCase())
+    updateFilms()
       .then((films) => {
         setFilms(films);
-      })
-  }
+      });
+  };
 
   const onJsonChange = (value: string): void => {
     setJsonBody(value);
-  }
+  };
 
   const onFilmClick = (film: Film): void => {
     setSelectedFilm(film);
-  }
+  };
 
   return (
     <div>
       <div>
-        <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value)}>
+        <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value as Protocol)}>
           {
-            dbProtocols.map((dbProtocol) =>
-              <option key={dbProtocol} value={dbProtocol}>{dbProtocol}</option>
+            Protocol.values.map((protocol) =>
+              <option key={protocol} value={protocol}>{protocol}</option>
             )
           }
         </select>
@@ -62,7 +60,7 @@ export const PageView: React.FC<Props> = () => {
       </div>
       <FilmListView films={films} onFilmClick={onFilmClick}/>
       {
-        selectedFilm && <FilmView film={selectedFilm} rootPath={selectedDbProtocol.toLowerCase()}/>
+        selectedFilm && <FilmView film={selectedFilm} protocol={selectedDbProtocol}/>
       }
       <div>
         <span>IO text area:</span><br/>
@@ -75,4 +73,4 @@ export const PageView: React.FC<Props> = () => {
       </div>
     </div>
   );
-}
+};

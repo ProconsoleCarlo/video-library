@@ -1,64 +1,60 @@
-import React, {useState} from "react";
-import {Review} from "../model/Film";
-import {NewReview} from "../model/NewFilm";
-import {fetchHttpClient} from "../utils/HttpClient";
+import React, { useState } from 'react';
+import { Review } from '../model/Film';
+import { Protocol } from '../model/Protocol';
+import { filmReviewProtocolRepository } from '../repository/ProtocolRepository';
 
 interface Props {
   filmId: number,
   reviews: Review[],
-  rootPath: string
+  protocol: Protocol
 }
 
-const EMPTY_REVIEW = (filmId: number): NewReview => {
-  return {
-    id: null,
-    date: "",
-    rating: 6,
-    detail: null,
-    filmId: filmId
-  }
-}
+const EMPTY_REVIEW: Review = {
+  id: null,
+  date: '',
+  rating: 6,
+  detail: null
+};
 
-const httpClient = fetchHttpClient<any, any>();
+export const ReviewView: React.FC<Props> = ({filmId, reviews, protocol}) => {
+  const repository = filmReviewProtocolRepository[protocol];
 
-export const ReviewView: React.FC<Props> = ({filmId, reviews, rootPath}) => {
-  const [jsonReview, setJsonReview] = useState(JSON.stringify(EMPTY_REVIEW(filmId), null, 4));
-  const addReview = (dbProtocol: string): Promise<Review> => {
-    return httpClient.put({url: `/${dbProtocol}/review`, body: jsonReview})
-  }
-  const updateReview = (dbProtocol: string): Promise<Review> => {
-    return httpClient.post({url: `/${dbProtocol}/review`, body: jsonReview})
-  }
+  const [jsonReview, setJsonReview] = useState(EMPTY_REVIEW);
+  const addReview = (): Promise<Review> => {
+    return repository.insert(jsonReview, filmId);
+  };
+  const updateReview = (): Promise<Review> => {
+    return repository.update(jsonReview, filmId);
+  };
 
   const saveReview = (): void => {
-    const review: NewReview = JSON.parse(jsonReview)
-    if (review.id != null) {
-      updateReview(rootPath)
+    if (jsonReview.id != null) {
+      updateReview()
         .then((review) => {
-          console.log("review updated");
+          console.log('review updated');
           console.log(review);
-        })
+        });
     } else {
-      addReview(rootPath)
+      addReview()
         .then((review) => {
-          console.log("review inserted");
+          console.log('review inserted');
           console.log(review);
           reviews.push(review);
-        })
+        });
     }
-  }
+  };
 
   return (
     <>
-      <div className={"row"}>Reviews</div>
-      <div className={"table"}>
+      <div className={'row'}>Reviews</div>
+      <div className={'table'}>
         {
           reviews.map((review) =>
-            <div className={"row"} onClick={() => setJsonReview(JSON.stringify(review, null, 4))}>
-              <div className={"col width_40"}>{review.id}</div>
-              <div className={"col width_200"}>{review.date}</div>
-              <div className={"col width_40"}>{review.rating}</div>
-              <div className={"col width_200"}>{review.detail}</div>
+            <div className={'row'} onClick={() => setJsonReview(review)}>
+              <div className={'col width_40'}>{review.id}</div>
+              <div className={'col width_200'}>{review.date}</div>
+              <div className={'col width_40'}>{review.rating}</div>
+              <div className={'col width_200'}>{review.detail}</div>
             </div>
           )
         }
@@ -67,11 +63,11 @@ export const ReviewView: React.FC<Props> = ({filmId, reviews, rootPath}) => {
         <span>New review</span><br/>
         <textarea rows={12}
                   cols={200}
-                  value={jsonReview}
-                  onChange={e => setJsonReview(e.target.value)}
+                  value={JSON.stringify(jsonReview, null, 4)}
+                  onChange={e => setJsonReview(e.target.value as unknown as Review)}
         /><br/>
         <button onClick={saveReview}>Update films</button>
       </div>
     </>
   );
-}
+};

@@ -51,8 +51,8 @@ export const PageView: React.FC<Props> = () => {
       <div>
         <select value={selectedDbProtocol} onChange={(e): void => setSelectedDbProtocol(e.target.value as Protocol)}>
           {
-            Protocol.keys.map((dbProtocol) =>
-              <option key={dbProtocol} value={dbProtocol.toLowerCase()}>{dbProtocol}</option>
+            Protocol.values.map((protocol) =>
+              <option key={protocol} value={protocol}>{protocol}</option>
             )
           }
         </select>

@@ -10,6 +10,10 @@ describe('FilmReviewRepository', () => {
     describe(`when protocol is ${protocol}`, () => {
       const repository = filmReviewRepository(protocol);
 
+      test('protocol', () => {
+        expect(repository.protocol()).toBe(protocol);
+      });
+
       test('update', async () => {
         fetchMockJest.postOnce(
           (url: string, opts: Request | RequestInit) => {

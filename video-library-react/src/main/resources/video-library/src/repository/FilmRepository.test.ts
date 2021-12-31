@@ -9,6 +9,10 @@ describe('FilmRepository', () => {
     describe(`when protocol is ${protocol}`, () => {
       const repository = filmRepository(protocol);
 
+      test('protocol', () => {
+        expect(repository.protocol()).toBe(protocol);
+      });
+
       test('get', async () => {
         fetchMockJest.getOnce(
           (url: string) => url === `/${protocol}/films`,

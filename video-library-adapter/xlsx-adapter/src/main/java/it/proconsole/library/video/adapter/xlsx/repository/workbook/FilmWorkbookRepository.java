@@ -5,6 +5,7 @@ import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,12 +17,15 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 public class FilmWorkbookRepository {
   private static final int FILM_SHEET = 0;
+  private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
+
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
 
@@ -56,50 +60,48 @@ public class FilmWorkbookRepository {
             (long) row.getRowNum() - 2,
             row.getCell(CellValue.TITLE.id()).getStringCellValue(),
             (int) row.getCell(CellValue.YEAR.id()).getNumericCellValue(),
-            row.getCell(CellValue.GENRES.id()).getStringCellValue(),
-            adaptFilmReview(row)
+            adaptGenres(row),
+            adaptReviews(row)
     );
   }
 
-  private List<FilmReviewRow> adaptFilmReview(Row row) {
+  private List<String> adaptGenres(Row row) {
+    var genresCell = row.getCell(CellValue.GENRES.id());
+    if (isEmpty(genresCell)) {
+      return Collections.emptyList();
+    }
+    return Arrays.stream(genresCell.getStringCellValue().toLowerCase().split(", ")).toList();
+  }
+
+  private List<FilmReviewRow> adaptReviews(Row row) {
     var reviewRows = new ArrayList<FilmReviewRow>();
+
     int i = CellValue.FIRST_REVIEW.id();
     while (i < row.getLastCellNum()) {
-      DateComment.from(row.getCell(i), row.getCell(i + 1))
-              .ifPresent(xlsxReview -> {
-                        reviewRows.add(
-                                new FilmReviewRow(
-                                        filmReviewId,
-                                        xlsxReview.date,
-                                        (int) row.getCell(2).getNumericCellValue(),
-                                        xlsxReview.comment
-                                )
-                        );
-                        filmReviewId++;
-                      }
-              );
-
-      i = i + 2;
+      var dateCell = row.getCell(i + 1);
+      if (!isEmpty(dateCell)) {
+        if (isEmpty(row.getCell(i))) {
+          //generate id
+        }
+        var commentCell = row.getCell(i + 2);
+        reviewRows.add(
+                new FilmReviewRow(
+                        filmReviewId,
+                        DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
+                        (int) row.getCell(3).getNumericCellValue(),
+                        isEmpty(commentCell) ? null : commentCell.getStringCellValue()
+                )
+        );
+        filmReviewId++;
+      }
+      i += 3;
     }
     return reviewRows;
   }
 
-  private record DateComment(LocalDateTime date, @Nullable String comment) {
-    private static final Logger logger = LoggerFactory.getLogger(DateComment.class);
-    private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
-
-    public static Optional<DateComment> from(Cell dateCell, @Nullable Cell commentCell) {
-      try {
-        var date = DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE;
-        var comment = Optional.ofNullable(commentCell)
-                .map(Cell::getStringCellValue)
-                .filter(it -> !it.isBlank())
-                .orElse(null);
-        return Optional.ofNullable(date).map(it -> new DateComment(it, comment));
-      } catch (Exception e) {
-        logger.error("Error parsing review {} {}", dateCell, commentCell, e);
-        return Optional.empty();
-      }
-    }
+  private static boolean isEmpty(@Nullable Cell cell) {
+    return cell == null
+            || cell.getCellType() == CellType.BLANK
+            || (cell.getCellType() == CellType.STRING && cell.getStringCellValue().isBlank());
   }
 }

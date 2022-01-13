@@ -27,8 +27,8 @@ class XlsxFilmRepositoryTest {
           new Film(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
   private static final List<FilmRow> FRONTIER = List.of(
-          new FilmRow(1L, "Title", 2021, "", Collections.emptyList()),
-          new FilmRow(2L, "Another title", 2012, "", Collections.emptyList())
+          new FilmRow(1L, "Title", 2021, Collections.emptyList(), Collections.emptyList()),
+          new FilmRow(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
 
   @Mock

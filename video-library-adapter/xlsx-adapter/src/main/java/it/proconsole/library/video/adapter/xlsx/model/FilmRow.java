@@ -8,7 +8,7 @@ public record FilmRow(
         @Nullable Long id,
         String title,
         Integer year,
-        String genres,
+        List<String> genres,
         List<FilmReviewRow> reviews
 ) {
 

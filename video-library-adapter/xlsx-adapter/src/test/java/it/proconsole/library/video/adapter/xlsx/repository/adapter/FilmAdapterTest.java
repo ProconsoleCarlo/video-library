@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class FilmAdapterTest {
   private static final LocalDateTime DATE = LocalDateTime.now();
   private static final List<Genre> DOMAIN_GENRE = List.of(new Genre(GenreEnum.ACTION.id(), GenreEnum.ACTION));
-  private static final String FRONTIER_GENRE = "Azione";
+  private static final List<String> FRONTIER_GENRE = List.of("azione");
   private static final List<FilmReview> DOMAIN_FILM_REVIEW = List.of(
           new FilmReview(1L, DATE, 10, "Review"),
           new FilmReview(2L, DATE, 6, null)
@@ -38,7 +38,7 @@ class FilmAdapterTest {
   );
   private static final List<FilmRow> FRONTIER = List.of(
           new FilmRow(1L, "Title", 2021, FRONTIER_GENRE, FRONTIER_FILM_REVIEW),
-          new FilmRow(2L, "Another title", 2012, "", Collections.emptyList())
+          new FilmRow(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
 
   @Mock
@@ -56,7 +56,7 @@ class FilmAdapterTest {
   @Test
   void fromDomain() {
     when(genreAdapter.fromDomain(DOMAIN_GENRE)).thenReturn(FRONTIER_GENRE);
-    when(genreAdapter.fromDomain(Collections.emptyList())).thenReturn("");
+    when(genreAdapter.fromDomain(Collections.emptyList())).thenReturn(Collections.emptyList());
     when(filmReviewAdapter.fromDomain(DOMAIN_FILM_REVIEW)).thenReturn(FRONTIER_FILM_REVIEW);
     when(filmReviewAdapter.fromDomain(Collections.emptyList())).thenReturn(Collections.emptyList());
 
@@ -68,7 +68,7 @@ class FilmAdapterTest {
   @Test
   void toDomain() {
     when(genreAdapter.toDomain(FRONTIER_GENRE)).thenReturn(DOMAIN_GENRE);
-    when(genreAdapter.toDomain("")).thenReturn(Collections.emptyList());
+    when(genreAdapter.toDomain(Collections.emptyList())).thenReturn(Collections.emptyList());
     when(filmReviewAdapter.toDomain(FRONTIER_FILM_REVIEW)).thenReturn(DOMAIN_FILM_REVIEW);
     when(filmReviewAdapter.toDomain(Collections.emptyList())).thenReturn(Collections.emptyList());
 

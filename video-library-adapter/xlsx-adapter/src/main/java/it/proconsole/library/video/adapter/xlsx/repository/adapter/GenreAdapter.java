@@ -3,24 +3,19 @@ package it.proconsole.library.video.adapter.xlsx.repository.adapter;
 import it.proconsole.library.video.adapter.xlsx.exception.UnknownGenreException;
 import it.proconsole.library.video.core.model.Genre;
 import it.proconsole.library.video.core.model.GenreEnum;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GenreAdapter {
-  public String fromDomain(List<Genre> genres) {
-    return StringUtils.capitalize(
-            genres.stream()
-                    .map(this::fromDomain)
-                    .collect(Collectors.joining(", "))
-    );
+  public List<String> fromDomain(List<Genre> genres) {
+    return genres.stream()
+            .map(this::fromDomain)
+            .toList();
   }
 
-  public List<Genre> toDomain(String xlsxGenres) {
-    return Arrays.stream(xlsxGenres.toLowerCase().split(", "))
+  public List<Genre> toDomain(List<String> genres) {
+    return genres.stream()
             .map(this::genreToDomain)
             .filter(Optional::isPresent)
             .map(Optional::get)

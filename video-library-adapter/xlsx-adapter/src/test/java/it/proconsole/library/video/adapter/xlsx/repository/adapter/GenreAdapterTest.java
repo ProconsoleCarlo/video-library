@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GenreAdapterTest {
   private static final List<Genre> DOMAIN = Arrays.stream(GenreEnum.values()).map(it -> new Genre(it.id(), it)).toList();
-  private static final String FRONTIER = "Azione, avventura, biografico, commedia, crimine, catastrofico, documentario, drammatico, erotico, fantastico, storico, horror, romantico, fantascienza, suspense/thriller, western";
+  private static final List<String> FRONTIER = List.of("azione", "avventura", "biografico", "commedia", "crimine", "catastrofico", "documentario", "drammatico", "erotico", "fantastico", "storico", "horror", "romantico", "fantascienza", "suspense/thriller", "western");
 
   private final GenreAdapter adapter = new GenreAdapter();
 
@@ -36,15 +35,8 @@ class GenreAdapterTest {
     }
 
     @Test
-    void adaptEmptyString() {
-      var current = adapter.toDomain("");
-
-      assertEquals(Collections.emptyList(), current);
-    }
-
-    @Test
     void failsWhenUnknownGenre() {
-      assertThrows(UnknownGenreException.class, () -> adapter.toDomain("not existent genre"));
+      assertThrows(UnknownGenreException.class, () -> adapter.toDomain(List.of("not existent genre")));
     }
   }
 }

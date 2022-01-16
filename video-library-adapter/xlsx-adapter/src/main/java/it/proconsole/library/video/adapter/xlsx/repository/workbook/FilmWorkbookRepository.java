@@ -5,7 +5,6 @@ import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -22,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
+
 public class FilmWorkbookRepository {
   private static final int FILM_SHEET = 0;
   private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
@@ -29,7 +30,7 @@ public class FilmWorkbookRepository {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
 
-  private long filmReviewId = 1L;
+  private long filmReviewId = 0L;
 
   public FilmWorkbookRepository(String xlsxPath) {
     this.xlsxPath = xlsxPath;
@@ -42,17 +43,13 @@ public class FilmWorkbookRepository {
       var spliterator = filmsSheet.spliterator();
       return StreamSupport.stream(spliterator, false)
               .skip(3)
-              .filter(this::notEmptyRows)
+              .filter(row -> !isEmpty(row.getCell(0)))
               .map(this::adaptRow)
               .toList();
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
-  }
-
-  private boolean notEmptyRows(Row row) {
-    return row.getCell(0) != null;
   }
 
   private FilmRow adaptRow(Row row) {
@@ -80,28 +77,26 @@ public class FilmWorkbookRepository {
     while (i < row.getLastCellNum()) {
       var dateCell = row.getCell(i + 1);
       if (!isEmpty(dateCell)) {
-        if (isEmpty(row.getCell(i))) {
-          //generate id
-        }
         var commentCell = row.getCell(i + 2);
         reviewRows.add(
                 new FilmReviewRow(
-                        filmReviewId,
+                        filmReviewId(row.getCell(i)),
                         DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
                         (int) row.getCell(3).getNumericCellValue(),
                         isEmpty(commentCell) ? null : commentCell.getStringCellValue()
                 )
         );
-        filmReviewId++;
       }
       i += 3;
     }
     return reviewRows;
   }
 
-  private static boolean isEmpty(@Nullable Cell cell) {
-    return cell == null
-            || cell.getCellType() == CellType.BLANK
-            || (cell.getCellType() == CellType.STRING && cell.getStringCellValue().isBlank());
+  private Long filmReviewId(@Nullable Cell cell) {
+    if (isEmpty(cell)) {
+      return filmReviewId++;
+    } else {
+      return (long) cell.getNumericCellValue();
+    }
   }
 }

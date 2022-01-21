@@ -20,6 +20,15 @@ class FilmWorkbookRepositoryTest {
     assertEquals(Fixtures.readListFromClasspath("/filmRows.json", FilmRow.class), current);
   }
 
+  @Test
+  void saveAll() {
+    var current = repository.saveAll(Fixtures.readListFromClasspath("/newFilmRows.json", FilmRow.class));
+
+    assertEquals(Fixtures.readListFromClasspath("/newFilmRows.json", FilmRow.class), current);
+
+    repository.saveAll(Fixtures.readListFromClasspath("/filmRows.json", FilmRow.class));
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {"/invalidPath/TestCatalogoFilm.xlsx", "./src/test/resources/InvalidFile.xlsx"})
   void invalidXlsxFile(String path) {

@@ -91,7 +91,7 @@ public class FilmWorkbookRepository {
   private Row saveFilm(FilmRow filmRow, Row row) {
     row.getCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
-
+    row.getCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));
     return row;
   }
 
@@ -111,6 +111,10 @@ public class FilmWorkbookRepository {
       return Collections.emptyList();
     }
     return Arrays.stream(genresCell.getStringCellValue().toLowerCase().split(", ")).toList();
+  }
+
+  private String adaptGenres(List<String> genres) {
+    return String.join(", ", genres);
   }
 
   private List<FilmReviewRow> adaptReviews(Row row) {

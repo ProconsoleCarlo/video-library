@@ -3,7 +3,7 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -11,7 +11,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,8 +34,6 @@ public class FilmWorkbookRepository {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
 
-  private long filmReviewId = 0L;
-
   public FilmWorkbookRepository(String xlsxPath) {
     this.xlsxPath = xlsxPath;
   }
@@ -48,17 +45,16 @@ public class FilmWorkbookRepository {
         filmsSheet.removeRow(filmsSheet.getRow(i));
       }
       save(workbook);
-    } catch (IOException e) {
+    } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }
 
   public List<FilmRow> findAll() {
-    filmReviewId = 1L;
     try (var sheets = new XSSFWorkbook(xlsxPath)) {
       return rowsOf(sheets.getSheetAt(FILM_SHEET)).map(this::adaptRow).toList();
-    } catch (IOException e) {
+    } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
@@ -80,7 +76,7 @@ public class FilmWorkbookRepository {
               .toList();
       save(workbook);
       return savedRows.stream().map(this::adaptRow).toList();
-    } catch (IOException e) {
+    } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
@@ -126,12 +122,8 @@ public class FilmWorkbookRepository {
   }
 
   private FilmRow adaptRow(Row row) {
-    var id = (long) row.getRowNum() - 2;
-    if (!isEmpty(row.getCell(CellValue.ID.id()))) {
-      id = (long) row.getCell(CellValue.ID.id()).getNumericCellValue();
-    }
     return new FilmRow(
-            id,
+            (long) row.getCell(CellValue.ID.id()).getNumericCellValue(),
             row.getCell(CellValue.TITLE.id()).getStringCellValue(),
             (int) row.getCell(CellValue.YEAR.id()).getNumericCellValue(),
             adaptGenres(row),
@@ -161,7 +153,7 @@ public class FilmWorkbookRepository {
         var commentCell = row.getCell(i + 2);
         reviewRows.add(
                 new FilmReviewRow(
-                        filmReviewId(row.getCell(i)),
+                        (long) row.getCell(i).getNumericCellValue(),
                         DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
                         (int) row.getCell(3).getNumericCellValue(),
                         isEmpty(commentCell) ? null : commentCell.getStringCellValue()
@@ -171,13 +163,5 @@ public class FilmWorkbookRepository {
       i += 3;
     }
     return reviewRows;
-  }
-
-  private Long filmReviewId(@Nullable Cell cell) {
-    if (isEmpty(cell)) {
-      return filmReviewId++;
-    } else {
-      return (long) cell.getNumericCellValue();
-    }
   }
 }

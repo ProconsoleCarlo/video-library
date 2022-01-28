@@ -3,7 +3,6 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
-import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -24,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
@@ -44,16 +44,11 @@ public class FilmWorkbookRepository {
   public void deleteAll() {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
       var filmsSheet = workbook.getSheetAt(FILM_SHEET);
-
       for (int i = 3; i <= filmsSheet.getLastRowNum(); i++) {
         filmsSheet.removeRow(filmsSheet.getRow(i));
       }
-
-      try (var outFile = new FileOutputStream(xlsxPath)) {
-        workbook.write(outFile);
-      }
-
-    } catch (IOException | InvalidOperationException e) {
+      save(workbook);
+    } catch (IOException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
@@ -62,14 +57,8 @@ public class FilmWorkbookRepository {
   public List<FilmRow> findAll() {
     filmReviewId = 1L;
     try (var sheets = new XSSFWorkbook(xlsxPath)) {
-      var filmsSheet = sheets.getSheetAt(FILM_SHEET);
-      var spliterator = filmsSheet.spliterator();
-      return StreamSupport.stream(spliterator, false)
-              .skip(3)
-              .filter(row -> !isEmpty(row.getCell(0)))
-              .map(this::adaptRow)
-              .toList();
-    } catch (IOException | InvalidOperationException e) {
+      return rowsOf(sheets.getSheetAt(FILM_SHEET)).map(this::adaptRow).toList();
+    } catch (IOException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
@@ -82,34 +71,37 @@ public class FilmWorkbookRepository {
   public List<FilmRow> saveAll(List<FilmRow> filmRowsToSave) {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
       var filmsSheet = workbook.getSheetAt(FILM_SHEET);
-      var spliterator = filmsSheet.spliterator();
-
-      var xlsxRows = StreamSupport.stream(spliterator, false)
-              .skip(3)
-              .filter(row -> !isEmpty(row.getCell(CellValue.ID.id())))
-              .toList();
-
+      var xlsxRows = rowsOf(filmsSheet).toList();
       var savedRows = filmRowsToSave.stream()
-              .map(filmRow -> {
-                if (filmRow.id() == null) {
-                  return insert(filmRow, newRow(filmsSheet));
-                } else {
-                  return xlsxRows.stream().filter(it -> it.getCell(CellValue.ID.id()).getNumericCellValue() == filmRow.id())
-                          .findFirst()
-                          .map(row -> update(filmRow, row))
-                          .orElseGet(() -> insert(filmRow, newRow(filmsSheet)));
-                }
-              }).toList();
-
-      try (var outFile = new FileOutputStream(xlsxPath)) {
-        workbook.write(outFile);
-      }
-
+              .map(filmRow -> Optional.ofNullable(filmRow.id())
+                      .flatMap(id -> searchById(xlsxRows, id))
+                      .map(row -> update(filmRow, row))
+                      .orElseGet(() -> insert(filmRow, newRow(filmsSheet))))
+              .toList();
+      save(workbook);
       return savedRows.stream().map(this::adaptRow).toList();
-    } catch (IOException | InvalidOperationException e) {
+    } catch (IOException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
+  }
+
+  private Stream<Row> rowsOf(XSSFSheet sheet) {
+    return StreamSupport.stream(sheet.spliterator(), false)
+            .skip(3)
+            .filter(row -> !isEmpty(row.getCell(0)));
+  }
+
+  private void save(XSSFWorkbook workbook) throws IOException {
+    try (var outFile = new FileOutputStream(xlsxPath)) {
+      workbook.write(outFile);
+    }
+  }
+
+  private Optional<Row> searchById(List<Row> xlsxRows, Long id) {
+    return xlsxRows.stream()
+            .filter(it -> it.getCell(CellValue.ID.id()).getNumericCellValue() == id)
+            .findFirst();
   }
 
   private XSSFRow newRow(XSSFSheet filmsSheet) {

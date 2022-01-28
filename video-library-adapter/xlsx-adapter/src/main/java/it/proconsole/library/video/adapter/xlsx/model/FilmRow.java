@@ -2,6 +2,7 @@ package it.proconsole.library.video.adapter.xlsx.model;
 
 import org.springframework.lang.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public record FilmRow(
@@ -29,6 +30,17 @@ public record FilmRow(
       this.year = filmRow.year;
       this.genres = filmRow.genres;
       this.reviews = filmRow.reviews;
+    }
+
+    private Builder(String title, Integer year) {
+      this.title = title;
+      this.year = year;
+      this.genres = Collections.emptyList();
+      this.reviews = Collections.emptyList();
+    }
+
+    public static Builder aFilmRow(String title, Integer year) {
+      return new Builder(title, year);
     }
 
     public Builder withId(@Nullable Long id) {

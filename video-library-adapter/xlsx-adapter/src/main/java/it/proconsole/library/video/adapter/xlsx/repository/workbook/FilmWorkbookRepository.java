@@ -7,6 +7,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +97,7 @@ public class FilmWorkbookRepository {
                   .findFirst()
                   .ifPresentOrElse(
                           row -> update(filmRow, row),
-                          () -> insert(filmRow, filmsSheet.createRow(filmsSheet.getLastRowNum() + 1))
+                          () -> insert(filmRow, newRow(filmsSheet))
                   );
         }
       });
@@ -112,6 +114,10 @@ public class FilmWorkbookRepository {
     return findAll();
   }
 
+  private XSSFRow newRow(XSSFSheet filmsSheet) {
+    return filmsSheet.createRow(filmsSheet.getLastRowNum() + 1);
+  }
+
   private void update(FilmRow filmRow, Row row) {
     row.getCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
@@ -121,7 +127,7 @@ public class FilmWorkbookRepository {
   private void insert(FilmRow filmRow, Row row) {
     Optional.ofNullable(filmRow.id()).ifPresentOrElse(
             it -> row.createCell(CellValue.ID.id()).setCellValue(it),
-            () -> new RuntimeException());
+            () -> row.createCell(CellValue.ID.id()).setCellValue(row.getRowNum() - 2));
     row.createCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
     row.createCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
     row.createCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));

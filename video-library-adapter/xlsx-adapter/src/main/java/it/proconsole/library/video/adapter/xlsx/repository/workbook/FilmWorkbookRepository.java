@@ -28,7 +28,6 @@ import java.util.stream.StreamSupport;
 import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
 
 public class FilmWorkbookRepository {
-  private static final int FILM_SHEET = 0;
   private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,8 +39,8 @@ public class FilmWorkbookRepository {
 
   public void deleteAll() {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(FILM_SHEET);
-      for (int i = 3; i <= filmsSheet.getLastRowNum(); i++) {
+      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
+      for (int i = Sheet.FILM.rowsToSkip(); i <= filmsSheet.getLastRowNum(); i++) {
         filmsSheet.removeRow(filmsSheet.getRow(i));
       }
       save(workbook);
@@ -53,7 +52,7 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> findAll() {
     try (var sheets = new XSSFWorkbook(xlsxPath)) {
-      return rowsOf(sheets.getSheetAt(FILM_SHEET)).map(this::adaptRow).toList();
+      return rowsOf(sheets.getSheetAt(Sheet.FILM.id())).map(this::adaptRow).toList();
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
@@ -66,7 +65,7 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> saveAll(List<FilmRow> filmRowsToSave) {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(FILM_SHEET);
+      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
       var xlsxRows = rowsOf(filmsSheet).toList();
       var savedRows = filmRowsToSave.stream()
               .map(filmRow -> Optional.ofNullable(filmRow.id())
@@ -84,8 +83,8 @@ public class FilmWorkbookRepository {
 
   private Stream<Row> rowsOf(XSSFSheet sheet) {
     return StreamSupport.stream(sheet.spliterator(), false)
-            .skip(3)
-            .filter(row -> !isEmpty(row.getCell(0)));
+            .skip(Sheet.FILM.rowsToSkip())
+            .filter(row -> !isEmpty(row.getCell(CellValue.ID.id())));
   }
 
   private void save(XSSFWorkbook workbook) throws IOException {

@@ -1,5 +1,6 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
+import it.proconsole.library.video.adapter.xlsx.exception.EntityNotSavedException;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -37,12 +39,51 @@ public class FilmWorkbookRepository {
     this.xlsxPath = xlsxPath;
   }
 
+  public void delete(FilmRow entity) {
+    Optional.ofNullable(entity.id()).ifPresent(this::deleteById);
+  }
+
   public void deleteAll() {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
       var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
-      for (int i = Sheet.FILM.rowsToSkip(); i <= filmsSheet.getLastRowNum(); i++) {
-        filmsSheet.removeRow(filmsSheet.getRow(i));
-      }
+      IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
+              .forEach(i -> filmsSheet.removeRow(filmsSheet.getRow(i)));
+      save(workbook);
+    } catch (IOException | InvalidOperationException e) {
+      logger.error("Error trying to read {}", xlsxPath, e);
+      throw new InvalidXlsxFileException(xlsxPath, e);
+    }
+  }
+
+  public void deleteAll(List<FilmRow> entities) {
+    entities.forEach(this::delete);
+  }
+
+  public void deleteById(Long id) {
+    try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
+      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
+      IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
+              .filter(i -> filmsSheet.getRow(i).getCell(CellValue.ID.id()).getNumericCellValue() == id)
+              .findFirst()
+              .ifPresent(i -> filmsSheet.removeRow(filmsSheet.getRow(i)));
+      save(workbook);
+    } catch (IOException | InvalidOperationException e) {
+      logger.error("Error trying to read {}", xlsxPath, e);
+      throw new InvalidXlsxFileException(xlsxPath, e);
+    }
+  }
+
+  public void deleteAllById(List<Long> ids) {
+    try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
+      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
+      int bound = filmsSheet.getLastRowNum();
+      ids.forEach(id -> {
+        IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), bound)
+                .filter(i1 -> filmsSheet.getRow(i1).getCell(CellValue.ID.id()).getNumericCellValue() == id)
+                .findFirst()
+                .ifPresent(i1 -> filmsSheet.removeRow(filmsSheet.getRow(i1)));
+      });
+
       save(workbook);
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
@@ -61,6 +102,14 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> findAllById(List<Long> ids) {
     return findAll().stream().filter(it -> ids.contains(it.id())).toList();
+  }
+
+  public Optional<FilmRow> findById(Long id) {
+    return findAllById(List.of(id)).stream().findFirst();
+  }
+
+  public FilmRow save(FilmRow entity) {
+    return saveAll(List.of(entity)).stream().findFirst().orElseThrow(() -> new EntityNotSavedException(entity));
   }
 
   public List<FilmRow> saveAll(List<FilmRow> filmRowsToSave) {

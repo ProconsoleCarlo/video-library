@@ -1,6 +1,7 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 public enum CellValue {
+  ID(0),
   TITLE(1),
   YEAR(2),
   GENRES(4),

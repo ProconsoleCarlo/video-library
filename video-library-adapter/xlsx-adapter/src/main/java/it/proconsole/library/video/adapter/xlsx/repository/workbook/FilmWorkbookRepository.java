@@ -89,48 +89,48 @@ public class FilmWorkbookRepository {
               .filter(row -> !isEmpty(row.getCell(CellValue.ID.id())))
               .toList();
 
-      filmRowsToSave.forEach(filmRow -> {
-        if (filmRow.id() == null) {
-          //insert row (new film
-        } else {
-          xlsxRows.stream().filter(it -> it.getCell(CellValue.ID.id()).getNumericCellValue() == filmRow.id())
-                  .findFirst()
-                  .ifPresentOrElse(
-                          row -> update(filmRow, row),
-                          () -> insert(filmRow, newRow(filmsSheet))
-                  );
-        }
-      });
+      var savedRows = filmRowsToSave.stream()
+              .map(filmRow -> {
+                if (filmRow.id() == null) {
+                  return insert(filmRow, newRow(filmsSheet));
+                } else {
+                  return xlsxRows.stream().filter(it -> it.getCell(CellValue.ID.id()).getNumericCellValue() == filmRow.id())
+                          .findFirst()
+                          .map(row -> update(filmRow, row))
+                          .orElseGet(() -> insert(filmRow, newRow(filmsSheet)));
+                }
+              }).toList();
 
       try (var outFile = new FileOutputStream(xlsxPath)) {
         workbook.write(outFile);
       }
 
+      return savedRows.stream().map(this::adaptRow).toList();
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
-
-    return findAll();
   }
 
   private XSSFRow newRow(XSSFSheet filmsSheet) {
     return filmsSheet.createRow(filmsSheet.getLastRowNum() + 1);
   }
 
-  private void update(FilmRow filmRow, Row row) {
+  private Row update(FilmRow filmRow, Row row) {
     row.getCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
     row.getCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));
+    return row;
   }
 
-  private void insert(FilmRow filmRow, Row row) {
+  private Row insert(FilmRow filmRow, Row row) {
     Optional.ofNullable(filmRow.id()).ifPresentOrElse(
             it -> row.createCell(CellValue.ID.id()).setCellValue(it),
             () -> row.createCell(CellValue.ID.id()).setCellValue(row.getRowNum() - 2));
     row.createCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
     row.createCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
     row.createCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));
+    return row;
   }
 
   private FilmRow adaptRow(Row row) {

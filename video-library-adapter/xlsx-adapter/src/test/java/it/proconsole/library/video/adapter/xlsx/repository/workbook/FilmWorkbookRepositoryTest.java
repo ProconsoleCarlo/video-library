@@ -2,17 +2,19 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
-import it.proconsole.library.video.core.Fixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collections;
 import java.util.List;
 
 import static it.proconsole.library.video.adapter.xlsx.model.FilmRow.Builder.aFilmRow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,6 +29,7 @@ class FilmWorkbookRepositoryTest {
   @Test
   void deleteAllRows() {
     repository.saveAll(List.of(anEntity(), anEntity()));
+    assertFalse(repository.findAll().isEmpty());
 
     repository.deleteAll();
 
@@ -35,11 +38,11 @@ class FilmWorkbookRepositoryTest {
 
   @Test
   void findAll() {
-    repository.saveAll(Fixtures.readListFromClasspath("/filmRows.json", FilmRow.class));
+    var entities = repository.saveAll(List.of(anEntity(), anEntity()));
 
     var current = repository.findAll();
 
-    assertEquals(Fixtures.readListFromClasspath("/filmRows.json", FilmRow.class), current);
+    assertEquals(entities, current);
   }
 
   @Nested
@@ -62,14 +65,26 @@ class FilmWorkbookRepositoryTest {
     }
   }
 
-
   @Test
   void saveAll() {
-    var current = repository.saveAll(Fixtures.readListFromClasspath("/newFilmRows.json", FilmRow.class));
+    var entities = List.of(anEntity(), anEntity());
+    var ids = entities.stream().map(FilmRow::id).toList();
+    assertTrue(repository.findAllById(ids).isEmpty());
 
-    assertEquals(Fixtures.readListFromClasspath("/newFilmRows.json", FilmRow.class), current);
+    var savedEntities = repository.saveAll(entities);
 
-    repository.saveAll(Fixtures.readListFromClasspath("/filmRows.json", FilmRow.class));
+    var savedIds = savedEntities.stream().map(FilmRow::id).toList();
+    var checkEntities = repository.findAllById(savedIds);
+    assertEquals(savedEntities, checkEntities);
+
+    var idToUpdate = savedEntities.get(0).id();
+    assertNotNull(idToUpdate);
+    var entityToUpdate = anEntityForUpdate(idToUpdate);
+    var entitiesToUpdate = List.of(entityToUpdate);
+
+    var updatedEntities = repository.saveAll(entitiesToUpdate);
+
+    assertEquals(entityToUpdate.id(), updatedEntities.get(0).id());
   }
 
   @ParameterizedTest
@@ -80,5 +95,14 @@ class FilmWorkbookRepositoryTest {
 
   private FilmRow anEntity() {
     return aFilmRow("Title", 2021).build();
+  }
+
+  private FilmRow anEntityForUpdate(Long id) {
+    return new FilmRow(id,
+            "Title",
+            2021,
+            List.of("Commedia"),
+            Collections.emptyList()
+    );
   }
 }

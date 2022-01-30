@@ -6,6 +6,7 @@ import it.proconsole.library.video.adapter.xlsx.repository.adapter.FilmReviewAda
 import it.proconsole.library.video.adapter.xlsx.repository.adapter.GenreAdapter;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.FilmWorkbookRepository;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmReviewValueAdapter;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmValueAdapter;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.GenreValueAdapter;
 import it.proconsole.library.video.core.repository.FilmRepository;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,8 @@ public class XlsxConfig {
     return new FilmWorkbookRepository(
             "D:/OneDrive/Documents/Catalogo film.xlsx",
             new GenreValueAdapter(),
-            new FilmReviewValueAdapter()
+            new FilmReviewValueAdapter(),
+            new FilmValueAdapter(new GenreValueAdapter(), new FilmReviewValueAdapter())
     );
   }
 

@@ -2,6 +2,8 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmReviewValueAdapter;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.GenreValueAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FilmWorkbookRepositoryTest {
-  private final FilmWorkbookRepository repository = new FilmWorkbookRepository("./src/test/resources/TestCatalogoFilm.xlsx", new GenreValueAdapter());
+  private final FilmReviewValueAdapter filmReviewAdapter = new FilmReviewValueAdapter();
+  private final GenreValueAdapter genreValueAdapter = new GenreValueAdapter();
+  private final FilmWorkbookRepository repository = new FilmWorkbookRepository(
+          "./src/test/resources/TestCatalogoFilm.xlsx",
+          genreValueAdapter,
+          filmReviewAdapter
+  );
 
   @BeforeEach
   void setUp() {
@@ -135,7 +143,7 @@ class FilmWorkbookRepositoryTest {
   @ParameterizedTest
   @ValueSource(strings = {"/invalidPath/TestCatalogoFilm.xlsx", "./src/test/resources/InvalidFile.xlsx"})
   void invalidXlsxFile(String path) {
-    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, new GenreValueAdapter()).findAll());
+    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, genreValueAdapter, filmReviewAdapter).findAll());
   }
 
   @Nested

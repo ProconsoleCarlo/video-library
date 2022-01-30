@@ -1,5 +1,6 @@
-package it.proconsole.library.video.adapter.xlsx.repository.workbook;
+package it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter;
 
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.CellValue;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellU
 public class GenreValueAdapter {
   private static final String GENRE_SEPARATOR = ", ";
 
-  public List<String> fromRowValue(Row row) {
+  public List<String> fromRow(Row row) {
     var genresCell = row.getCell(CellValue.GENRES.id());
     if (isEmpty(genresCell)) {
       return Collections.emptyList();

@@ -3,10 +3,10 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 import it.proconsole.library.video.adapter.xlsx.exception.EntityNotSavedException;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.exception.RowOutOfBoundException;
-import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmReviewValueAdapter;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.GenreValueAdapter;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -30,15 +27,15 @@ import java.util.stream.StreamSupport;
 import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
 
 public class FilmWorkbookRepository {
-  private static final LocalDateTime FALLBACK_DATE = LocalDateTime.of(2012, Month.JANUARY, 1, 0, 0);
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
   private final GenreValueAdapter genreAdapter;
+  private final FilmReviewValueAdapter filmReviewAdapter;
 
-  public FilmWorkbookRepository(String xlsxPath, GenreValueAdapter genreAdapter) {
+  public FilmWorkbookRepository(String xlsxPath, GenreValueAdapter genreAdapter, FilmReviewValueAdapter filmReviewAdapter) {
     this.xlsxPath = xlsxPath;
     this.genreAdapter = genreAdapter;
+    this.filmReviewAdapter = filmReviewAdapter;
   }
 
   public void delete(FilmRow entity) {
@@ -169,29 +166,10 @@ public class FilmWorkbookRepository {
             (long) row.getCell(CellValue.ID.id()).getNumericCellValue(),
             row.getCell(CellValue.TITLE.id()).getStringCellValue(),
             (int) row.getCell(CellValue.YEAR.id()).getNumericCellValue(),
-            genreAdapter.fromRowValue(row),
-            adaptReviews(row)
+            genreAdapter.fromRow(row),
+            filmReviewAdapter.fromRow(row)
     );
   }
 
-  private List<FilmReviewRow> adaptReviews(Row row) {
-    var reviewRows = new ArrayList<FilmReviewRow>();
-    int i = CellValue.FIRST_REVIEW.id();
-    while (i < row.getLastCellNum()) {
-      var dateCell = row.getCell(i + 1);
-      if (!isEmpty(dateCell)) {
-        var commentCell = row.getCell(i + 2);
-        reviewRows.add(
-                new FilmReviewRow(
-                        (long) row.getCell(i).getNumericCellValue(),
-                        DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
-                        (int) row.getCell(3).getNumericCellValue(), //TODO each review should have a rating
-                        isEmpty(commentCell) ? null : commentCell.getStringCellValue()
-                )
-        );
-      }
-      i += 3;
-    }
-    return reviewRows;
-  }
+
 }

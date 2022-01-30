@@ -156,8 +156,8 @@ public class FilmWorkbookRepository {
 
   private Row save(FilmRow filmRow, Row row) {
     Optional.ofNullable(filmRow.id()).ifPresentOrElse(
-            it -> row.createCell(CellValue.ID.id()).setCellValue(it),
-            () -> row.createCell(CellValue.ID.id()).setCellValue(row.getRowNum() - 2));
+            it -> row.getCell(CellValue.ID.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(it),
+            () -> row.getCell(CellValue.ID.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(row.getRowNum() - 2));
     row.getCell(CellValue.TITLE.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.year());
     row.getCell(CellValue.GENRES.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(genreAdapter.toRowValue(filmRow.genres()));

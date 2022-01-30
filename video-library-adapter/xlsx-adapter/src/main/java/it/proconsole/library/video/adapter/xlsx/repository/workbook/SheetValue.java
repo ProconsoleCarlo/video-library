@@ -1,12 +1,12 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
-public enum Sheet {
+public enum SheetValue {
   FILM(0, 3);
 
   private final int id;
   private final int rowsToSkip;
 
-  Sheet(int id, int rowsToSkip) {
+  SheetValue(int id, int rowsToSkip) {
     this.id = id;
     this.rowsToSkip = rowsToSkip;
   }

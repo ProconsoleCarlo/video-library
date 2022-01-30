@@ -3,7 +3,6 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,12 +48,10 @@ class FilmWorkbookRepositoryTest {
     assertTrue(repository.findAll().isEmpty());
   }
 
-  @Disabled
   @Test
   void deleteAll() {
-    //broken
-    var entities = repository.saveAll(List.of(anEntity(), anEntity()));
-    var ids = entities.stream().map(FilmRow::id).toList();
+    var entities = repository.saveAll(List.of(anEntity(), anEntity(), anEntity()));
+    var ids = entities.stream().skip(1).map(FilmRow::id).toList();
     assertFalse(repository.findAllById(ids).isEmpty());
 
     repository.deleteAll(entities);
@@ -64,8 +61,8 @@ class FilmWorkbookRepositoryTest {
 
   @Test
   void deleteById() {
-    var entity = repository.save(anEntity());
-    var id = entity.id();
+    var entities = repository.saveAll(List.of(anEntity(), anEntity()));
+    var id = entities.get(0).id();
     assertNotNull(id);
     assertTrue(repository.findById(id).isPresent());
 
@@ -74,12 +71,10 @@ class FilmWorkbookRepositoryTest {
     assertFalse(repository.findById(id).isPresent());
   }
 
-  @Disabled
   @Test
   void deleteAllById() {
-    //broken
-    var entities = repository.saveAll(List.of(anEntity(), anEntity()));
-    var ids = entities.stream().map(FilmRow::id).toList();
+    var entities = repository.saveAll(List.of(anEntity(), anEntity(), anEntity()));
+    var ids = entities.stream().skip(1).map(FilmRow::id).toList();
     assertFalse(repository.findAllById(ids).isEmpty());
 
     repository.deleteAllById(ids);

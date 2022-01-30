@@ -2,13 +2,15 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 import it.proconsole.library.video.adapter.xlsx.exception.EntityNotSavedException;
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
+import it.proconsole.library.video.adapter.xlsx.exception.RowOutOfBoundException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +47,8 @@ public class FilmWorkbookRepository {
 
   public void deleteAll() {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
-      IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
+      var filmsSheet = workbook.getSheetAt(SheetValue.FILM.id());
+      IntStream.rangeClosed(SheetValue.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
               .forEach(i -> filmsSheet.removeRow(filmsSheet.getRow(i)));
       save(workbook);
     } catch (IOException | InvalidOperationException e) {
@@ -56,33 +58,22 @@ public class FilmWorkbookRepository {
   }
 
   public void deleteAll(List<FilmRow> entities) {
-    entities.forEach(this::delete);
+    deleteAllById(entities.stream().map(FilmRow::id).toList());
   }
 
   public void deleteById(Long id) {
-    try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
-      IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
-              .filter(i -> filmsSheet.getRow(i).getCell(CellValue.ID.id()).getNumericCellValue() == id)
-              .findFirst()
-              .ifPresent(i -> filmsSheet.removeRow(filmsSheet.getRow(i)));
-      save(workbook);
-    } catch (IOException | InvalidOperationException e) {
-      logger.error("Error trying to read {}", xlsxPath, e);
-      throw new InvalidXlsxFileException(xlsxPath, e);
-    }
+    deleteAllById(List.of(id));
   }
 
   public void deleteAllById(List<Long> ids) {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
-      int bound = filmsSheet.getLastRowNum();
-      ids.forEach(id -> {
-        IntStream.rangeClosed(Sheet.FILM.rowsToSkip(), bound)
-                .filter(i1 -> filmsSheet.getRow(i1).getCell(CellValue.ID.id()).getNumericCellValue() == id)
-                .findFirst()
-                .ifPresent(i1 -> filmsSheet.removeRow(filmsSheet.getRow(i1)));
-      });
+      var filmsSheet = workbook.getSheetAt(SheetValue.FILM.id());
+      ids.forEach(id ->
+              IntStream.rangeClosed(SheetValue.FILM.rowsToSkip(), filmsSheet.getLastRowNum())
+                      .filter(i -> filmsSheet.getRow(i).getCell(CellValue.ID.id()).getNumericCellValue() == id)
+                      .findFirst()
+                      .ifPresent(i -> deleteRow(filmsSheet, i))
+      );
 
       save(workbook);
     } catch (IOException | InvalidOperationException e) {
@@ -93,7 +84,7 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> findAll() {
     try (var sheets = new XSSFWorkbook(xlsxPath)) {
-      return rowsOf(sheets.getSheetAt(Sheet.FILM.id())).map(this::adaptRow).toList();
+      return rowsOf(sheets.getSheetAt(SheetValue.FILM.id())).map(this::adaptRow).toList();
     } catch (IOException | InvalidOperationException e) {
       logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
@@ -114,13 +105,13 @@ public class FilmWorkbookRepository {
 
   public List<FilmRow> saveAll(List<FilmRow> filmRowsToSave) {
     try (var workbook = new XSSFWorkbook(new FileInputStream(xlsxPath))) {
-      var filmsSheet = workbook.getSheetAt(Sheet.FILM.id());
+      var filmsSheet = workbook.getSheetAt(SheetValue.FILM.id());
       var xlsxRows = rowsOf(filmsSheet).toList();
       var savedRows = filmRowsToSave.stream()
               .map(filmRow -> Optional.ofNullable(filmRow.id())
                       .flatMap(id -> searchById(xlsxRows, id))
-                      .map(row -> update(filmRow, row))
-                      .orElseGet(() -> insert(filmRow, newRow(filmsSheet))))
+                      .map(row -> save(filmRow, row))
+                      .orElseGet(() -> save(filmRow, newRow(filmsSheet))))
               .toList();
       save(workbook);
       return savedRows.stream().map(this::adaptRow).toList();
@@ -130,13 +121,28 @@ public class FilmWorkbookRepository {
     }
   }
 
-  private Stream<Row> rowsOf(XSSFSheet sheet) {
+  private void deleteRow(Sheet sheet, int rowNumber) {
+    var lastRowNum = sheet.getLastRowNum();
+    if (rowNumber >= 0 && rowNumber < lastRowNum) {
+      sheet.shiftRows(rowNumber + 1, lastRowNum, -1);
+    } else if (rowNumber == lastRowNum) {
+      Optional.ofNullable(sheet.getRow(rowNumber)).ifPresent(sheet::removeRow);
+    } else {
+      throw new RowOutOfBoundException(rowNumber);
+    }
+  }
+
+  private Row newRow(Sheet filmsSheet) {
+    return filmsSheet.createRow(filmsSheet.getLastRowNum() + 1);
+  }
+
+  private Stream<Row> rowsOf(Sheet sheet) {
     return StreamSupport.stream(sheet.spliterator(), false)
-            .skip(Sheet.FILM.rowsToSkip())
+            .skip(SheetValue.FILM.rowsToSkip())
             .filter(row -> !isEmpty(row.getCell(CellValue.ID.id())));
   }
 
-  private void save(XSSFWorkbook workbook) throws IOException {
+  private void save(Workbook workbook) throws IOException {
     try (var outFile = new FileOutputStream(xlsxPath)) {
       workbook.write(outFile);
     }
@@ -148,24 +154,13 @@ public class FilmWorkbookRepository {
             .findFirst();
   }
 
-  private XSSFRow newRow(XSSFSheet filmsSheet) {
-    return filmsSheet.createRow(filmsSheet.getLastRowNum() + 1);
-  }
-
-  private Row update(FilmRow filmRow, Row row) {
-    row.getCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
-    row.getCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
-    row.getCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));
-    return row;
-  }
-
-  private Row insert(FilmRow filmRow, Row row) {
+  private Row save(FilmRow filmRow, Row row) {
     Optional.ofNullable(filmRow.id()).ifPresentOrElse(
             it -> row.createCell(CellValue.ID.id()).setCellValue(it),
             () -> row.createCell(CellValue.ID.id()).setCellValue(row.getRowNum() - 2));
-    row.createCell(CellValue.TITLE.id()).setCellValue(filmRow.title());
-    row.createCell(CellValue.YEAR.id()).setCellValue(filmRow.year());
-    row.createCell(CellValue.GENRES.id()).setCellValue(adaptGenres(filmRow.genres()));
+    row.getCell(CellValue.TITLE.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.title());
+    row.getCell(CellValue.YEAR.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.year());
+    row.getCell(CellValue.GENRES.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(adaptGenres(filmRow.genres()));
     return row;
   }
 
@@ -193,7 +188,6 @@ public class FilmWorkbookRepository {
 
   private List<FilmReviewRow> adaptReviews(Row row) {
     var reviewRows = new ArrayList<FilmReviewRow>();
-
     int i = CellValue.FIRST_REVIEW.id();
     while (i < row.getLastCellNum()) {
       var dateCell = row.getCell(i + 1);
@@ -203,7 +197,7 @@ public class FilmWorkbookRepository {
                 new FilmReviewRow(
                         (long) row.getCell(i).getNumericCellValue(),
                         DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
-                        (int) row.getCell(3).getNumericCellValue(),
+                        (int) row.getCell(3).getNumericCellValue(), //TODO each review should have a rating
                         isEmpty(commentCell) ? null : commentCell.getStringCellValue()
                 )
         );

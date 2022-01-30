@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FilmWorkbookRepositoryTest {
-  private final FilmWorkbookRepository repository = new FilmWorkbookRepository("./src/test/resources/TestCatalogoFilm.xlsx");
+  private final FilmWorkbookRepository repository = new FilmWorkbookRepository("./src/test/resources/TestCatalogoFilm.xlsx", new GenreValueAdapter());
 
   @BeforeEach
   void setUp() {
@@ -135,7 +135,7 @@ class FilmWorkbookRepositoryTest {
   @ParameterizedTest
   @ValueSource(strings = {"/invalidPath/TestCatalogoFilm.xlsx", "./src/test/resources/InvalidFile.xlsx"})
   void invalidXlsxFile(String path) {
-    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path).findAll());
+    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, new GenreValueAdapter()).findAll());
   }
 
   @Nested

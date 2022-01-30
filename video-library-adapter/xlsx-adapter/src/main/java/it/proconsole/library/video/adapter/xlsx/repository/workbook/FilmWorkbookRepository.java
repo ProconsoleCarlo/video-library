@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -36,9 +34,11 @@ public class FilmWorkbookRepository {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
+  private final GenreValueAdapter genreAdapter;
 
-  public FilmWorkbookRepository(String xlsxPath) {
+  public FilmWorkbookRepository(String xlsxPath, GenreValueAdapter genreAdapter) {
     this.xlsxPath = xlsxPath;
+    this.genreAdapter = genreAdapter;
   }
 
   public void delete(FilmRow entity) {
@@ -160,7 +160,7 @@ public class FilmWorkbookRepository {
             () -> row.createCell(CellValue.ID.id()).setCellValue(row.getRowNum() - 2));
     row.getCell(CellValue.TITLE.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.year());
-    row.getCell(CellValue.GENRES.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(adaptGenres(filmRow.genres()));
+    row.getCell(CellValue.GENRES.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(genreAdapter.toRowValue(filmRow.genres()));
     return row;
   }
 
@@ -169,21 +169,9 @@ public class FilmWorkbookRepository {
             (long) row.getCell(CellValue.ID.id()).getNumericCellValue(),
             row.getCell(CellValue.TITLE.id()).getStringCellValue(),
             (int) row.getCell(CellValue.YEAR.id()).getNumericCellValue(),
-            adaptGenres(row),
+            genreAdapter.fromRowValue(row),
             adaptReviews(row)
     );
-  }
-
-  private List<String> adaptGenres(Row row) {
-    var genresCell = row.getCell(CellValue.GENRES.id());
-    if (isEmpty(genresCell)) {
-      return Collections.emptyList();
-    }
-    return Arrays.stream(genresCell.getStringCellValue().toLowerCase().split(", ")).toList();
-  }
-
-  private String adaptGenres(List<String> genres) {
-    return String.join(", ", genres);
   }
 
   private List<FilmReviewRow> adaptReviews(Row row) {

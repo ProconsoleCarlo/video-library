@@ -4,12 +4,9 @@ import it.proconsole.library.video.adapter.xlsx.exception.EntityNotSavedExceptio
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
 import it.proconsole.library.video.adapter.xlsx.exception.RowOutOfBoundException;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
-import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmReviewValueAdapter;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmValueAdapter;
-import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.GenreValueAdapter;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,14 +27,10 @@ import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellU
 public class FilmWorkbookRepository {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
-  private final GenreValueAdapter genreAdapter;
-  private final FilmReviewValueAdapter filmReviewAdapter;
   private final FilmValueAdapter filmValueAdapter;
 
-  public FilmWorkbookRepository(String xlsxPath, GenreValueAdapter genreAdapter, FilmReviewValueAdapter filmReviewAdapter, FilmValueAdapter filmValueAdapter) {
+  public FilmWorkbookRepository(String xlsxPath, FilmValueAdapter filmValueAdapter) {
     this.xlsxPath = xlsxPath;
-    this.genreAdapter = genreAdapter;
-    this.filmReviewAdapter = filmReviewAdapter;
     this.filmValueAdapter = filmValueAdapter;
   }
 
@@ -110,8 +103,8 @@ public class FilmWorkbookRepository {
       var savedRows = filmRowsToSave.stream()
               .map(filmRow -> Optional.ofNullable(filmRow.id())
                       .flatMap(id -> searchById(xlsxRows, id))
-                      .map(row -> save(filmRow, row))
-                      .orElseGet(() -> save(filmRow, newRow(filmsSheet))))
+                      .map(row -> filmValueAdapter.toRow(filmRow, row))
+                      .orElseGet(() -> filmValueAdapter.toRow(filmRow, newRow(filmsSheet))))
               .toList();
       save(workbook);
       return savedRows.stream().map(filmValueAdapter::fromRow).toList();
@@ -146,16 +139,6 @@ public class FilmWorkbookRepository {
     try (var outFile = new FileOutputStream(xlsxPath)) {
       workbook.write(outFile);
     }
-  }
-
-  private Row save(FilmRow filmRow, Row row) {
-    Optional.ofNullable(filmRow.id()).ifPresentOrElse(
-            it -> row.getCell(CellValue.ID.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(it),
-            () -> row.getCell(CellValue.ID.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(row.getRowNum() - 2));
-    row.getCell(CellValue.TITLE.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.title());
-    row.getCell(CellValue.YEAR.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.year());
-    row.getCell(CellValue.GENRES.id(), MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(genreAdapter.toRowValue(filmRow.genres()));
-    return row;
   }
 
   private Optional<Row> searchById(List<Row> xlsxRows, Long id) {

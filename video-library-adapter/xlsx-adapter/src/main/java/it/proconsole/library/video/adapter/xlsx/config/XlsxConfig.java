@@ -18,8 +18,6 @@ public class XlsxConfig {
   public FilmWorkbookRepository filmWorkbookRepository() {
     return new FilmWorkbookRepository(
             "D:/OneDrive/Documents/Catalogo film.xlsx",
-            new GenreValueAdapter(),
-            new FilmReviewValueAdapter(),
             new FilmValueAdapter(new GenreValueAdapter(), new FilmReviewValueAdapter())
     );
   }

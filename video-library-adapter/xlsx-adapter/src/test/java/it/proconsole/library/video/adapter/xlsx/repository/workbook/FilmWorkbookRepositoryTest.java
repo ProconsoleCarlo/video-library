@@ -27,8 +27,6 @@ class FilmWorkbookRepositoryTest {
   private final FilmValueAdapter filmValueAdapter = new FilmValueAdapter(genreValueAdapter, filmReviewAdapter);
   private final FilmWorkbookRepository repository = new FilmWorkbookRepository(
           "./src/test/resources/TestCatalogoFilm.xlsx",
-          genreValueAdapter,
-          filmReviewAdapter,
           filmValueAdapter
   );
 
@@ -146,7 +144,7 @@ class FilmWorkbookRepositoryTest {
   @ParameterizedTest
   @ValueSource(strings = {"/invalidPath/TestCatalogoFilm.xlsx", "./src/test/resources/InvalidFile.xlsx"})
   void invalidXlsxFile(String path) {
-    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, genreValueAdapter, filmReviewAdapter, filmValueAdapter).findAll());
+    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, filmValueAdapter).findAll());
   }
 
   @Nested

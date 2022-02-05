@@ -1,6 +1,7 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 import it.proconsole.library.video.adapter.xlsx.exception.InvalidXlsxFileException;
+import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.model.FilmRow;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmReviewValueAdapter;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter.FilmValueAdapter;
@@ -11,10 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static it.proconsole.library.video.adapter.xlsx.model.FilmRow.Builder.aFilmRow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -189,7 +189,7 @@ class FilmWorkbookRepositoryTest {
   }
 
   private FilmRow anEntity() {
-    return aFilmRow("Title", 2021).build();
+    return new FilmRow("Title", 2021, List.of("Azione"), List.of(new FilmReviewRow(LocalDateTime.now(), 8, "Comment")));
   }
 
   private FilmRow anEntityForUpdate(Long id) {
@@ -197,7 +197,7 @@ class FilmWorkbookRepositoryTest {
             "Title",
             2021,
             List.of("Commedia"),
-            Collections.emptyList()
+            List.of(new FilmReviewRow(1L, LocalDateTime.now(), 8, "Comment"), new FilmReviewRow(LocalDateTime.now(), 10, "Another comment"))
     );
   }
 }

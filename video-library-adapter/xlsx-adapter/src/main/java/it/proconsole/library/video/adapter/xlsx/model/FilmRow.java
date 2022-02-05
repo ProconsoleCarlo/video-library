@@ -12,6 +12,10 @@ public record FilmRow(
         List<String> genres,
         List<FilmReviewRow> reviews
 ) {
+  public FilmRow(String title, int year, List<String> genres, List<FilmReviewRow> reviews) {
+    this(null, title, year, genres, reviews);
+  }
+
   public Builder copy() {
     return new Builder(this);
   }

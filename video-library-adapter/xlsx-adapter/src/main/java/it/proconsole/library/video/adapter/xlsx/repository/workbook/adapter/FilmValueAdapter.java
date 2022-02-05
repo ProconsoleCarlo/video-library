@@ -28,10 +28,10 @@ public class FilmValueAdapter {
   public Row toRow(FilmRow filmRow, Row row) {
     Optional.ofNullable(filmRow.id()).ifPresentOrElse(
             it -> row.getCell(CellValue.ID.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(it),
-            () -> row.getCell(CellValue.ID.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(row.getRowNum() - 2));
+            () -> row.getCell(CellValue.ID.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(row.getRowNum() - 2)); //TODO generate ids
     row.getCell(CellValue.TITLE.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.title());
     row.getCell(CellValue.YEAR.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmRow.year());
     row.getCell(CellValue.GENRES.id(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(genreAdapter.toRowValue(filmRow.genres()));
-    return row;
+    return filmReviewAdapter.toRow(filmRow.reviews(), row);
   }
 }

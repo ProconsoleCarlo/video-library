@@ -4,6 +4,7 @@ public enum CellValue {
   ID(0),
   TITLE(1),
   YEAR(2),
+  RATING(3),
   GENRES(4),
   FIRST_REVIEW(17);
 

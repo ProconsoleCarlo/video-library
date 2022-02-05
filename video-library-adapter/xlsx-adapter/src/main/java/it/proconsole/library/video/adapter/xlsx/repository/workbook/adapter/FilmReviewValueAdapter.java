@@ -1,6 +1,7 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter;
 
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
+import it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -9,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
 
@@ -21,18 +24,50 @@ public class FilmReviewValueAdapter {
     while (i < row.getLastCellNum()) {
       var dateCell = row.getCell(i + 1);
       if (!isEmpty(dateCell)) {
-        var commentCell = row.getCell(i + 2);
+        var commentCell = row.getCell(i + 3);
         reviewRows.add(
                 new FilmReviewRow(
                         (long) row.getCell(i).getNumericCellValue(),
                         DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
-                        (int) row.getCell(3).getNumericCellValue(), //TODO each review should have a rating
+                        getRating(row, i),
                         isEmpty(commentCell) ? null : commentCell.getStringCellValue()
                 )
         );
       }
-      i += 3;
+      i = nextReview(i);
     }
     return reviewRows;
   }
+
+  private int nextReview(int i) {
+    return i + 4;
+  }
+
+  private int getRating(Row row, int i) {
+    if (CellUtil.isEmpty(row.getCell(i + 2))) {
+      return (int) row.getCell(CellValue.RATING.id()).getNumericCellValue();
+    } else {
+      return (int) row.getCell(i + 2, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getNumericCellValue();
+    }
+  }
+
+  public Row toRow(List<FilmReviewRow> filmReviews, Row row) {
+    var i = CellValue.FIRST_REVIEW.id();
+    for (FilmReviewRow filmReview : filmReviews) {
+      var cell = row.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+      Optional.ofNullable(filmReview.id())
+              .ifPresent(cell::setCellValue); //TODO define the id with orElse
+      row.getCell(i + 1, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmReview.date());
+      row.getCell(i + 2, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(filmReview.rating());
+      Optional.ofNullable(filmReview.detail())
+              .ifPresent(row.getCell(i + 3, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)::setCellValue);
+      i = nextReview(i);
+    }
+
+    IntStream.rangeClosed(i, row.getLastCellNum())
+            .forEach(id -> row.removeCell(row.getCell(id, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)));
+
+    return row;
+  }
+
 }

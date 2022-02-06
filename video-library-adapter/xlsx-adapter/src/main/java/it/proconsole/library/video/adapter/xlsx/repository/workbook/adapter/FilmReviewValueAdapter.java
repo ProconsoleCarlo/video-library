@@ -3,7 +3,7 @@ package it.proconsole.library.video.adapter.xlsx.repository.workbook.adapter;
 import it.proconsole.library.video.adapter.xlsx.model.FilmReviewRow;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.CellValue;
-import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.time.LocalDateTime;
@@ -27,9 +27,9 @@ public class FilmReviewValueAdapter {
         var commentCell = row.getCell(i + 3);
         reviewRows.add(
                 new FilmReviewRow(
-                        (long) row.getCell(i).getNumericCellValue(),
-                        DateUtil.isCellDateFormatted(dateCell) ? dateCell.getLocalDateTimeCellValue() : FALLBACK_DATE,
-                        getRating(row, i),
+                        filmReviewId(row, i),
+                        filmReviewDate(dateCell),
+                        filmReviewRating(row, i),
                         isEmpty(commentCell) ? null : commentCell.getStringCellValue()
                 )
         );
@@ -39,11 +39,23 @@ public class FilmReviewValueAdapter {
     return reviewRows;
   }
 
-  private int nextReview(int i) {
-    return i + 4;
+  private LocalDateTime filmReviewDate(Cell dateCell) {
+    if (dateCell.getNumericCellValue() == 2012) {
+      return FALLBACK_DATE;
+    } else {
+      return dateCell.getLocalDateTimeCellValue();
+    }
   }
 
-  private int getRating(Row row, int i) {
+  private Long filmReviewId(Row row, int i) {
+    if (isEmpty(row.getCell(i))) {
+      return null;
+    } else {
+      return (long) row.getCell(i).getNumericCellValue();
+    }
+  }
+
+  private int filmReviewRating(Row row, int i) {
     if (CellUtil.isEmpty(row.getCell(i + 2))) {
       return (int) row.getCell(CellValue.RATING.id()).getNumericCellValue();
     } else {
@@ -70,4 +82,7 @@ public class FilmReviewValueAdapter {
     return row;
   }
 
+  private int nextReview(int i) {
+    return i + 4;
+  }
 }

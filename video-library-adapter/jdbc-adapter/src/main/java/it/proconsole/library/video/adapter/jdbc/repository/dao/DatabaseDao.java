@@ -18,7 +18,7 @@ public abstract class DatabaseDao<T extends EntityWithId> {
   private final SimpleJdbcInsert simpleJdbcInsert;
   private final String tableName;
 
-  public DatabaseDao(DataSource dataSource, String tableName) {
+  DatabaseDao(DataSource dataSource, String tableName) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
     this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(tableName).usingGeneratedKeyColumns("id");
     this.tableName = tableName;

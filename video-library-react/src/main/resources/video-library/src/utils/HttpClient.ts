@@ -1,14 +1,15 @@
-export interface ClientParams<REQUEST> {
+type ClientParams<REQUEST> = {
   url: string,
   body?: REQUEST | null;
 }
 
-export enum HttpMethod {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE'
-}
+const httpMethod = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+} as const;
+type HttpMethod = keyof typeof httpMethod
 
 export interface HttpClient<REQUEST, RESPONSE> {
   get(params: ClientParams<REQUEST>): Promise<RESPONSE>;
@@ -29,14 +30,12 @@ export const fetchHttpClient = <REQUEST, RESPONSE>(): HttpClient<REQUEST, RESPON
     };
 
     return fetch(params.url, requestOptions)
-      .then((response: Response) => {
-        return response.json();
-      });
+      .then((response: Response) => response.json());
   };
   return {
-    get: request(HttpMethod.GET),
-    post: request(HttpMethod.POST),
-    put: request(HttpMethod.PUT),
-    delete: request(HttpMethod.DELETE),
+    get: request(httpMethod.GET),
+    post: request(httpMethod.POST),
+    put: request(httpMethod.PUT),
+    delete: request(httpMethod.DELETE),
   };
 };

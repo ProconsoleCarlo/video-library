@@ -1,4 +1,4 @@
-export interface Film {
+export type Film = {
   id: number | null,
   title: string,
   year: number,
@@ -6,12 +6,12 @@ export interface Film {
   reviews: Review[]
 }
 
-export interface Genre {
+export type Genre = {
   id: number,
   value: string
 }
 
-export interface Review {
+export type Review = {
   id: number | null,
   date: string,
   rating: number,

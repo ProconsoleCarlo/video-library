@@ -1,10 +1,12 @@
 package it.proconsole.library.video.adapter.xlsx.repository.workbook;
 
 public enum CellValue {
-  TITLE(0),
-  YEAR(1),
-  GENRES(3),
-  FIRST_REVIEW(16);
+  ID(0),
+  TITLE(1),
+  YEAR(2),
+  RATING(3),
+  GENRES(4),
+  FIRST_REVIEW(17);
 
   private final int id;
 

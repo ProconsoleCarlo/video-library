@@ -3,11 +3,11 @@ package it.proconsole.library.video.core;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 public class Fixtures {
   private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -19,17 +19,15 @@ public class Fixtures {
     return objectMapper;
   }
 
-  @NonNull
-  public static String readFromClasspath(@NonNull String path) {
+  public static String readFromClasspath(String path) {
     try {
-      return new String(Fixtures.class.getResourceAsStream(path).readAllBytes(), StandardCharsets.UTF_8);
+      return new String(Objects.requireNonNull(Fixtures.class.getResourceAsStream(path)).readAllBytes(), StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  @NonNull
-  public static <T> T readFromClasspath(@NonNull String path, @NonNull Class<T> clazz) {
+  public static <T> T readFromClasspath(String path, Class<T> clazz) {
     try {
       return objectMapper
               .readValue(Fixtures.class.getResourceAsStream(path), clazz);
@@ -38,7 +36,7 @@ public class Fixtures {
     }
   }
 
-  public static <T> List<T> readListFromClasspath(@NonNull String path, Class<T> clazz) {
+  public static <T> List<T> readListFromClasspath(String path, Class<T> clazz) {
     try {
       var type = objectMapper.getTypeFactory().constructCollectionType(List.class, clazz);
       return objectMapper

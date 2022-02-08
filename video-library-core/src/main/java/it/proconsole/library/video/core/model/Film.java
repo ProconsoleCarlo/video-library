@@ -13,7 +13,7 @@ public record Film(@Nullable Long id,
                    List<FilmReview> reviews
 ) {
   public Film(String title, int year, List<GenreEnum> genres, List<FilmReview> reviews) {
-    this(null, title, year, genres.stream().map(it -> new Genre(it.id(), it)).toList(), reviews);
+    this(null, title, year, genres.stream().map(it -> new Genre(it)).toList(), reviews); //NOSONAR issue with record
   }
 
   public Builder copy() {

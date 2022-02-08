@@ -6,7 +6,6 @@ import it.proconsole.library.video.adapter.xlsx.repository.workbook.FilmWorkbook
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
 import it.proconsole.library.video.core.repository.Protocol;
-import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,8 +25,8 @@ class XlsxFilmRepositoryTest {
           new Film(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
   private static final List<FilmRow> FRONTIER = List.of(
-          new FilmRow(1L, "Title", 2021, "", Collections.emptyList()),
-          new FilmRow(2L, "Another title", 2012, "", Collections.emptyList())
+          new FilmRow(1L, "Title", 2021, Collections.emptyList(), Collections.emptyList()),
+          new FilmRow(2L, "Another title", 2012, Collections.emptyList(), Collections.emptyList())
   );
 
   @Mock
@@ -60,6 +58,12 @@ class XlsxFilmRepositoryTest {
 
   @Test
   void saveAll() {
-    assertThrows(NotImplementedException.class, () -> repository.saveAll(DOMAIN));
+    when(filmAdapter.fromDomain(DOMAIN)).thenReturn(FRONTIER);
+    when(filmWorkbookRepository.saveAll(FRONTIER)).thenReturn(FRONTIER);
+    when(filmAdapter.toDomain(FRONTIER)).thenReturn(DOMAIN);
+
+    var current = repository.saveAll(DOMAIN);
+
+    assertEquals(DOMAIN, current);
   }
 }

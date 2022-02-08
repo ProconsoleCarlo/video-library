@@ -4,8 +4,8 @@ import it.proconsole.library.video.adapter.xlsx.repository.adapter.FilmAdapter;
 import it.proconsole.library.video.adapter.xlsx.repository.workbook.FilmWorkbookRepository;
 import it.proconsole.library.video.core.model.Film;
 import it.proconsole.library.video.core.repository.FilmRepository;
+import it.proconsole.library.video.core.repository.Operation;
 import it.proconsole.library.video.core.repository.Protocol;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
@@ -25,11 +25,18 @@ public class XlsxFilmRepository implements FilmRepository {
 
   @Override
   public List<Film> findAll() {
-    return filmAdapter.toDomain(repository.findAll());
+    logStart(protocol(), Operation.FIND_ALL);
+    var films = filmAdapter.toDomain(repository.findAll());
+    logEnd(protocol(), Operation.FIND_ALL, films.size());
+    return films;
   }
 
   @Override
   public List<Film> saveAll(List<Film> films) {
-    throw new NotImplementedException();
+    logStart(protocol(), Operation.SAVE_ALL, films.size());
+    var entities = filmAdapter.fromDomain(films);
+    var savedFilms = repository.saveAll(entities);
+    logEnd(protocol(), Operation.SAVE_ALL, savedFilms.size());
+    return filmAdapter.toDomain(savedFilms);
   }
 }

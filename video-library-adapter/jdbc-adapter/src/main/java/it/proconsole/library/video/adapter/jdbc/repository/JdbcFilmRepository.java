@@ -48,6 +48,7 @@ public class JdbcFilmRepository implements FilmRepository {
 
   @Override
   public List<Film> saveAll(List<Film> films) {
+    //TODO optimize to use saveAll instead of saving each row
     var filmEntities = films.stream().map(it -> {
       var film = filmDao.save(filmAdapter.fromDomain(it));
       Optional.ofNullable(film.id())

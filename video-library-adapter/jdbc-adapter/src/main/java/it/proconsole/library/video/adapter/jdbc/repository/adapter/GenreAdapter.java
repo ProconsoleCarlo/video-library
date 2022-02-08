@@ -20,6 +20,6 @@ public class GenreAdapter {
   }
 
   private Genre toDomain(GenreEntity genre) {
-    return new Genre(genre.id(), genre.value());
+    return new Genre(genre.value());
   }
 }

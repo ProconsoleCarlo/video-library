@@ -20,7 +20,7 @@ public class FilmReviewValueAdapter {
 
   public List<FilmReviewRow> fromRow(Row row) {
     var reviewRows = new ArrayList<FilmReviewRow>();
-    int i = CellValue.FIRST_REVIEW.id();
+    var i = CellValue.FIRST_REVIEW.id();
     while (i < row.getLastCellNum()) {
       var dateCell = row.getCell(i + 1);
       if (!isEmpty(dateCell)) {

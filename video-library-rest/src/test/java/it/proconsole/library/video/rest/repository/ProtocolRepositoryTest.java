@@ -16,6 +16,8 @@ public abstract class ProtocolRepositoryTest<R extends ByProtocolRepository> {
 
   @Test
   void whenProtocolIsInvalid() {
-    assertThrows(UnknownProtocolException.class, () -> repository().getBy(INVALID_PROTOCOL));
+    var repository = repository();
+
+    assertThrows(UnknownProtocolException.class, () -> repository.getBy(INVALID_PROTOCOL));
   }
 }

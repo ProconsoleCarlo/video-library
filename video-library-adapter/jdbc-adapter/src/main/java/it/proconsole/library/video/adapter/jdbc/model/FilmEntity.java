@@ -6,7 +6,7 @@ import java.util.Map;
 
 public record FilmEntity(@Nullable Long id, String title, Integer year) implements EntityWithId {
   public FilmEntity(String title, Integer year) {
-    this(null, title, year);
+    this(null, title, year); //NOSONAR issue with record
   }
 
   @Override

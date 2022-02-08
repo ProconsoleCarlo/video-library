@@ -14,14 +14,14 @@ public interface FilmRepository extends ByProtocolRepository {
   List<Film> saveAll(List<Film> films);
 
   default void logStart(Protocol protocol, Operation operation) {
-    logger.info("%s - %s request received".formatted(protocol, operation));
+    logger.info("{} - {} request received", protocol, operation);
   }
 
   default void logStart(Protocol protocol, Operation operation, int inputs) {
-    logger.info("%s - %s request received with %d values".formatted(protocol, operation, inputs));
+    logger.info("{} - {} request received with {} values", protocol, operation, inputs);
   }
 
   default void logEnd(Protocol protocol, Operation operation, int results) {
-    logger.info("%s - %s request completed with %d results".formatted(protocol, operation, results));
+    logger.info("{} - {} request completed with {} results", protocol, operation, results);
   }
 }

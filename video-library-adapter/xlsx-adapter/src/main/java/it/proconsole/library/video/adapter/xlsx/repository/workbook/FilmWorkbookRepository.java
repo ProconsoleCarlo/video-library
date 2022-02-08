@@ -10,8 +10,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +23,6 @@ import java.util.stream.StreamSupport;
 import static it.proconsole.library.video.adapter.xlsx.repository.workbook.CellUtil.isEmpty;
 
 public class FilmWorkbookRepository {
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final String xlsxPath;
   private final FilmValueAdapter filmValueAdapter;
 
@@ -45,7 +42,6 @@ public class FilmWorkbookRepository {
               .forEach(i -> filmsSheet.removeRow(filmsSheet.getRow(i)));
       save(workbook);
     } catch (IOException | InvalidOperationException e) {
-      logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }
@@ -70,7 +66,6 @@ public class FilmWorkbookRepository {
 
       save(workbook);
     } catch (IOException | InvalidOperationException e) {
-      logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }
@@ -79,7 +74,6 @@ public class FilmWorkbookRepository {
     try (var sheets = new XSSFWorkbook(xlsxPath)) {
       return rowsOf(sheets.getSheetAt(SheetValue.FILM.id())).map(filmValueAdapter::fromRow).toList();
     } catch (IOException | InvalidOperationException e) {
-      logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }
@@ -109,7 +103,6 @@ public class FilmWorkbookRepository {
       save(workbook);
       return savedRows.stream().map(filmValueAdapter::fromRow).toList();
     } catch (IOException | InvalidOperationException e) {
-      logger.error("Error trying to read {}", xlsxPath, e);
       throw new InvalidXlsxFileException(xlsxPath, e);
     }
   }

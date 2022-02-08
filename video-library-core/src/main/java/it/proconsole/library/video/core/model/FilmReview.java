@@ -11,7 +11,7 @@ public record FilmReview(
         @Nullable String detail
 ) {
   public FilmReview(LocalDateTime date, int rating, @Nullable String detail) {
-    this(null, date, rating, detail);
+    this(null, date, rating, detail); //NOSONAR issue with record
   }
 
   public Builder copy() {

@@ -15,16 +15,16 @@ public record FilmReviewEntity(
         @Nullable Long filmId
 ) implements EntityWithId {
   public FilmReviewEntity(LocalDateTime date, int rating, @Nullable String detail, Long filmId) {
-    this(null, date, rating, detail, filmId);
+    this(null, date, rating, detail, filmId); //NOSONAR issue with record
   }
 
   @Override
   public Map<String, Object> data() {
-    return new HashMap<>() {{
-      put("date", date.truncatedTo(ChronoUnit.MILLIS));
-      put("rating", rating);
-      put("detail", detail);
-      put("film_id", filmId);
-    }};
+    var data = new HashMap<String, Object>();
+    data.put("date", date.truncatedTo(ChronoUnit.MILLIS));
+    data.put("rating", rating);
+    data.put("detail", detail);
+    data.put("film_id", filmId);
+    return data;
   }
 }

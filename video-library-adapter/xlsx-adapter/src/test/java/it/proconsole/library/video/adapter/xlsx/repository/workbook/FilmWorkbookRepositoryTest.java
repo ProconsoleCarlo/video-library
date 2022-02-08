@@ -144,7 +144,9 @@ class FilmWorkbookRepositoryTest {
   @ParameterizedTest
   @ValueSource(strings = {"/invalidPath/TestCatalogoFilm.xlsx", "./src/test/resources/InvalidFile.xlsx"})
   void invalidXlsxFile(String path) {
-    assertThrows(InvalidXlsxFileException.class, () -> new FilmWorkbookRepository(path, filmValueAdapter).findAll());
+    var repository = new FilmWorkbookRepository(path, filmValueAdapter);
+
+    assertThrows(InvalidXlsxFileException.class, repository::findAll);
   }
 
   @Nested

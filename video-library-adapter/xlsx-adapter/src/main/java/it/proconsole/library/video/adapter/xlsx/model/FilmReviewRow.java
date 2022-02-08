@@ -11,6 +11,6 @@ public record FilmReviewRow(
         @Nullable String detail
 ) {
   public FilmReviewRow(LocalDateTime date, Integer rating, @Nullable String detail) {
-    this(null, date, rating, detail);
+    this(null, date, rating, detail); //NOSONAR issue with record
   }
 }

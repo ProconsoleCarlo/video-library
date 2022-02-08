@@ -36,7 +36,9 @@ class GenreAdapterTest {
 
     @Test
     void failsWhenUnknownGenre() {
-      assertThrows(UnknownGenreException.class, () -> adapter.toDomain(List.of("not existent genre")));
+      var unknownGenres = List.of("not existent genre");
+
+      assertThrows(UnknownGenreException.class, () -> adapter.toDomain(unknownGenres));
     }
   }
 }

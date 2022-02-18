@@ -4,7 +4,7 @@ import { Protocol } from '../model/Protocol';
 import { GenresView } from './GenresView';
 import { ReviewView } from './ReviewView';
 
-interface Props {
+type Props = {
   film: Film,
   protocol: Protocol
 }

@@ -11,7 +11,7 @@ export interface FilmRepository extends ByProtocolRepository {
   insert(films: Film[]): Promise<Film[]>;
 }
 
-const httpClient = fetchHttpClient<Film[] | undefined, Film[]>();
+const httpClient = fetchHttpClient<Film[] | void, Film[]>();
 
 export const filmRepository = (protocol: Protocol): FilmRepository => {
   return {

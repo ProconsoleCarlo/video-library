@@ -3,7 +3,7 @@ import { Review } from '../model/Film';
 import { Protocol } from '../model/Protocol';
 import { filmReviewProtocolRepository } from '../repository/ProtocolRepository';
 
-interface Props {
+type Props = {
   filmId: number,
   reviews: Review[],
   protocol: Protocol

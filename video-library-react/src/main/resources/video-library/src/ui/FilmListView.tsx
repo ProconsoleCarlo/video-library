@@ -1,7 +1,7 @@
 import React from 'react';
 import { Film } from '../model/Film';
 
-interface Props {
+type Props = {
   films: Film[],
   onFilmClick: (film: Film) => void
 }

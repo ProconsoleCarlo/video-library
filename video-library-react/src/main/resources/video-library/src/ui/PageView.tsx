@@ -5,8 +5,7 @@ import { filmProtocolRepository } from '../repository/ProtocolRepository';
 import { FilmListView } from './FilmListView';
 import { FilmView } from './FilmView';
 
-interface Props {
-}
+type Props = {}
 
 export const PageView: React.FC<Props> = () => {
   const [selectedDbProtocol, setSelectedDbProtocol] = useState<Protocol>(Protocol.JPA);

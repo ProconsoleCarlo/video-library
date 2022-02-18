@@ -1,7 +1,7 @@
 import React from 'react';
 import { Genre } from '../model/Film';
 
-interface Props {
+type Props = {
   genres: Genre[];
 }
 
